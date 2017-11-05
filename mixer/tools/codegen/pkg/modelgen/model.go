@@ -68,6 +68,8 @@ type (
 		PackageName     string
 		TemplateMessage MessageInfo
 
+		ResourceMessages []MessageInfo
+
 		// Warnings/Errors in the Template proto file.
 		diags []diag
 	}
@@ -96,6 +98,7 @@ type (
 
 	// MessageInfo contains the data about the type/message
 	MessageInfo struct {
+		Name    string
 		Comment string
 		Fields  []FieldInfo
 	}
@@ -114,14 +117,15 @@ func Create(parser *FileDescriptorSetParser) (*Model, error) {
 		return nil, createGoError(diags)
 	}
 
+	resourceProtos := getResourceDesc(parser.allFiles, templateProto.GetPackage())
+
 	// set the current generated code package to the package of the
 	// templateProto. This will make sure references within the
 	// generated file into the template's pb.go file are fully qualified.
 	parser.packageName = goPackageName(templateProto.GetPackage())
 
-	model := &Model{diags: make([]diag, 0)}
-
-	model.fillModel(templateProto, parser)
+	model := &Model{diags: make([]diag, 0), ResourceMessages: make([]MessageInfo, 0)}
+	model.fillModel(templateProto, resourceProtos, parser)
 	if len(model.diags) > 0 {
 		return nil, createGoError(model.diags)
 	}
@@ -133,7 +137,7 @@ func createGoError(diags []diag) error {
 	return fmt.Errorf("errors during parsing:\n%s", stringifyDiags(diags))
 }
 
-func (m *Model) fillModel(templateProto *FileDescriptor, parser *FileDescriptorSetParser) {
+func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileDescriptor, parser *FileDescriptorSetParser) {
 	m.PackageImportPath = parser.PackageImportPath
 
 	m.addTopLevelFields(templateProto)
@@ -147,11 +151,28 @@ func (m *Model) fillModel(templateProto *FileDescriptor, parser *FileDescriptorS
 			map[string]bool{"name": true},
 			&m.TemplateMessage,
 		)
+		m.TemplateMessage.Name = "Template"
 		m.diags = append(m.diags, diags...)
 	}
-}
 
-type isFieldNameReserved func(string) bool
+	for _, resourceProto := range resourceProtos {
+		for _, desc := range resourceProto.desc {
+			if desc.GetName() != "Template" {
+				var rescMsg MessageInfo
+				diags := addMessageFields(parser,
+					resourceProto,
+					desc,
+					map[string]bool{"name": true},
+					&rescMsg,
+				)
+				rescMsg.Name = desc.GetName()
+				m.ResourceMessages = append(m.ResourceMessages, rescMsg)
+				m.diags = append(m.diags, diags...)
+			}
+		}
+	}
+
+}
 
 func addMessageFields(parser *FileDescriptorSetParser, tmplProto *FileDescriptor, tmplDesc *Descriptor,
 	reservedNames map[string]bool, outMessage *MessageInfo) []diag {
@@ -188,6 +209,18 @@ func addMessageFields(parser *FileDescriptorSetParser, tmplProto *FileDescriptor
 	}
 
 	return diags
+}
+
+
+// get all file descriptors that has the same package as the Template message.
+func getResourceDesc(fds []*FileDescriptor, pkg string) []*FileDescriptor {
+	result := make([]*FileDescriptor, 0)
+	for _, fd := range fds {
+		if fd.GetPackage() == pkg {
+			result = append(result, fd)
+		}
+	}
+	return result
 }
 
 // Find the file that has the options TemplateVariety and TemplateName. There should only be one such file.

@@ -40,3 +40,7 @@ message Template {
 
     google.protobuf.Duration duration = 10;
 }
+
+message Resource1 {
+    string str = 1;
+}
