@@ -37,6 +37,8 @@ message Type {
   map<string, istio.mixer.v1.config.descriptor.ValueType> dimensions = 2;
 
   istio.mixer.v1.config.descriptor.ValueType anotherValueType = 7;
+
+  repeated istio.mixer.adapter.metric.Resource3Type res3_list = 11;
 }
 
 
@@ -88,6 +90,10 @@ message InstanceParam {
   string timeStamp = 9;
 
   string duration = 10;
+
+  repeated istio.mixer.adapter.metric.Resource3InterfaceParam res3_list = 11;
+
+  map<string, istio.mixer.adapter.metric.Resource3InterfaceParam> res3_map = 12;
 
 }
 

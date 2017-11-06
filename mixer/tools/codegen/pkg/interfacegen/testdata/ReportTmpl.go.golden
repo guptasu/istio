@@ -60,6 +60,10 @@ type Instance struct {
 	TimeStamp time.Time
 
 	Duration time.Duration
+
+	Res3List []*Resource3
+
+	Res3Map map[string]*Resource3
 }
 
 type Resource1 struct {

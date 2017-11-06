@@ -39,6 +39,9 @@ message Template {
     google.protobuf.Timestamp timeStamp = 9;
 
     google.protobuf.Duration duration = 10;
+
+    repeated Resource3 res3_list = 11;
+    map<string, Resource3> res3_map = 12;
 }
 
 message Resource1 {
