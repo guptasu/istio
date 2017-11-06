@@ -61,7 +61,7 @@ func containsValueType(ti modelgen.TypeInfo) bool {
 }
 
 func hasDynamicType(ti modelgen.TypeInfo) bool {
-	return ti.IsValueType || ti.IsMap && ti.MapValue.IsValueType //|| ti.IsResourceMessage
+	return ti.IsValueType || ti.IsMap && ti.MapValue.IsValueType || ti.IsResourceMessage
 }
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
