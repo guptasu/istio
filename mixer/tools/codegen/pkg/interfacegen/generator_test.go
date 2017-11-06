@@ -42,12 +42,12 @@ func TestGenerator_Generate(t *testing.T) {
 		{"Report", "testdata/report_proto.descriptor_set",
 			"testdata/ReportTmpl.go.golden",
 			"testdata/ReportTmpl.golden.proto"},
-		/*{"Quota", "testdata/quota_proto.descriptor_set",
+		{"Quota", "testdata/quota_proto.descriptor_set",
 			"testdata/QuotaTmpl.go.golden",
 			"testdata/QuotaTmpl.golden.proto"},
 		{"Check", "testdata/check_proto.descriptor_set",
 			"testdata/CheckTmpl.go.golden",
-			"testdata/CheckTmpl.golden.proto"},*/
+			"testdata/CheckTmpl.golden.proto"},
 	}
 	for _, v := range tests {
 		t.Run(v.name, func(t *testing.T) {
