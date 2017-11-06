@@ -96,9 +96,9 @@ message Resource1InterfaceParam {
 
   string str = 1;
 
-  istio.mixer.adapter.metric.Resource1 self_ref_res1 = 3;
+  istio.mixer.adapter.metric.Resource1InterfaceParam self_ref_res1 = 3;
 
-  istio.mixer.adapter.metric.Resource2 resRef2 = 2;
+  istio.mixer.adapter.metric.Resource2InterfaceParam resRef2 = 2;
 
 }
 
@@ -106,11 +106,11 @@ message Resource2InterfaceParam {
 
   string str = 1;
 
-  istio.mixer.adapter.metric.Resource3 res3 = 2;
+  istio.mixer.adapter.metric.Resource3InterfaceParam res3 = 2;
 
-  repeated istio.mixer.adapter.metric.Resource3 res3_list = 4;
+  repeated istio.mixer.adapter.metric.Resource3InterfaceParam res3_list = 4;
 
-  map<string, istio.mixer.adapter.metric.Resource3> res3_map = 5;
+  map<string, istio.mixer.adapter.metric.Resource3InterfaceParam> res3_map = 5;
 
 }
 
