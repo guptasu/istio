@@ -400,7 +400,6 @@ func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescripto
 					nil
 			}
 		} else {
-			fmt.Println(field.GetTypeName()[1:], g.TypeName(desc))
 			return TypeInfo{Name: field.GetTypeName()[1:], IsResourceMessage: true}, TypeInfo{Name: "*" + g.TypeName(desc), IsResourceMessage: true}, nil
 		}
 	default:

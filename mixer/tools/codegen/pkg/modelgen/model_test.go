@@ -91,8 +91,8 @@ func TestTypeFields(t *testing.T) {
 	model, _ := createTestModel(t,
 		testFilename)
 
-	if len(model.TemplateMessage.Fields) != 10 {
-		t.Fatalf("len(CreateModel(%s).TypeMessage.Fields) = %v, wanted %d", testFilename, len(model.TemplateMessage.Fields), 10)
+	if len(model.TemplateMessage.Fields) != 12 {
+		t.Fatalf("len(CreateModel(%s).TypeMessage.Fields) = %v, wanted %d", testFilename, len(model.TemplateMessage.Fields), 12)
 	}
 	testField(t, model.TemplateMessage.Fields,
 		"blacklist", TypeInfo{Name: "bool"}, "Blacklist", TypeInfo{Name: "bool"}, "multi line comment line 2")
@@ -187,6 +187,19 @@ func TestTypeFields(t *testing.T) {
 			IsMap:    true,
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "float64"},
+		}, "")
+
+	testField(t, model.TemplateMessage.Fields,
+		"res3_list",
+		TypeInfo{Name: "repeated foo.bar.Resource3",
+			IsResourceMessage: true,
+			IsRepeated: true,
+		},
+		"Res3List",
+		TypeInfo{
+			Name:     "[]*Resource3",
+			IsResourceMessage: true,
+			IsRepeated: true,
 		}, "")
 }
 
