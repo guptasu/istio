@@ -50,11 +50,19 @@ func stringify(protoType modelgen.TypeInfo) string {
 	if protoType.IsMap {
 		return toProtoMap(stringify(*protoType.MapKey), stringify(*protoType.MapValue))
 	}
+	if protoType.IsResourceMessage {
+		return protoType.Name
+	}
 	return "string"
 }
 
 func containsValueType(ti modelgen.TypeInfo) bool {
 	return ti.IsValueType || ti.IsMap && ti.MapValue.IsValueType
+}
+
+
+func hasDynamicType(ti modelgen.TypeInfo) bool {
+	return ti.IsValueType || ti.IsMap && ti.MapValue.IsValueType || ti.IsResourceMessage
 }
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
@@ -172,7 +180,25 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model) ([]byte, err
 
 	augmentedTemplateTmpl, err := template.New("AugmentedTemplateTmpl").Funcs(
 		template.FuncMap{
-			"containsValueType": containsValueType,
+			"hasDynamicType": hasDynamicType,
+			"getFieldTypeName": func(protoTypeInfo modelgen.TypeInfo) string {
+				if protoTypeInfo.IsResourceMessage {
+					return protoTypeInfo.Name + "Type"
+				}
+				return protoTypeInfo.Name
+			},
+			"getFieldTypeInterfaceParamName": func(protoTypeInfo modelgen.TypeInfo) string {
+				if protoTypeInfo.IsResourceMessage {
+					return protoTypeInfo.Name + "InterfaceParam"
+				}
+				return protoTypeInfo.Name
+			},
+			"getResourcMessageTypeName": func(s string) string {
+				return s + "Type"
+			},
+			"getResourcMessageInterfaceParamTypeName": func(s string) string {
+				return s + "InterfaceParam"
+			},
 			"stringify":         stringify,
 			"reportTypeUsed": func(ti modelgen.TypeInfo) string {
 				// Only record of type has ValueType. In augmented proto,

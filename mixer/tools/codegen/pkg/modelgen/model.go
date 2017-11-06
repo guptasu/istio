@@ -89,6 +89,7 @@ type (
 	TypeInfo struct {
 		Name        string
 		IsRepeated  bool
+		IsResourceMessage  bool
 		IsMap       bool
 		IsValueType bool
 		MapKey      *TypeInfo
@@ -157,7 +158,7 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 
 	for _, resourceProto := range resourceProtos {
 		for _, desc := range resourceProto.desc {
-			if desc.GetName() != "Template" {
+			if desc.GetName() != "Template" && !desc.GetOptions().GetMapEntry() {
 				var rescMsg MessageInfo
 				diags := addMessageFields(parser,
 					resourceProto,
@@ -171,7 +172,6 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 			}
 		}
 	}
-
 }
 
 func addMessageFields(parser *FileDescriptorSetParser, tmplProto *FileDescriptor, tmplDesc *Descriptor,
@@ -338,6 +338,17 @@ func getAllSupportedTypes(simpleTypes []string) string {
 }
 
 func getTypeName(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorProto) (protoType TypeInfo, goType TypeInfo, err error) {
+	proto, golang, err := getTypeNameRec(g, field)
+	if err == nil && !proto.IsMap && field.IsRepeated() {
+		proto.IsRepeated = true
+		proto.Name = "repeated " + proto.Name
+		golang.IsRepeated = true
+		golang.Name = "[]" + golang.Name
+	}
+	return proto, golang, err
+}
+
+func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorProto) (protoType TypeInfo, goType TypeInfo, err error) {
 	switch *field.Type {
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return TypeInfo{Name: "string"}, TypeInfo{Name: sSTRING}, nil
@@ -362,11 +373,11 @@ func getTypeName(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorPr
 		if d, ok := desc.(*Descriptor); ok && d.GetOptions().GetMapEntry() {
 			keyField, valField := d.Field[0], d.Field[1]
 
-			protoKeyType, goKeyType, err := getTypeName(g, keyField)
+			protoKeyType, goKeyType, err := getTypeNameRec(g, keyField)
 			if err != nil {
 				return TypeInfo{}, TypeInfo{}, createInvalidTypeError(field.GetName(), err)
 			}
-			protoValType, goValType, err := getTypeName(g, valField)
+			protoValType, goValType, err := getTypeNameRec(g, valField)
 			if err != nil {
 				return TypeInfo{}, TypeInfo{}, createInvalidTypeError(field.GetName(), err)
 			}
@@ -388,6 +399,9 @@ func getTypeName(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorPr
 					},
 					nil
 			}
+		} else {
+			fmt.Println(field.GetTypeName()[1:], g.TypeName(desc))
+			return TypeInfo{Name: field.GetTypeName()[1:], IsResourceMessage: true}, TypeInfo{Name: "*" + g.TypeName(desc), IsResourceMessage: true}, nil
 		}
 	default:
 		return TypeInfo{}, TypeInfo{}, createInvalidTypeError(field.GetName(), nil)
