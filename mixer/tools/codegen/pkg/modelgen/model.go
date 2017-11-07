@@ -311,30 +311,25 @@ func getMsg(fdp *FileDescriptor, msgName string) (*Descriptor, bool) {
 	return cstrDesc, cstrDesc != nil
 }
 
-func createInvalidTypeError2(field string, extraErr error, supportedTypes []string) error {
-	errStr := fmt.Sprintf("unsupported type for field '%s'. Supported types are '%s'", field, getAllSupportedTypes(supportedTypes))
+func createInvalidTypeError(field string, extraErr error) error {
+	errStr := fmt.Sprintf("unsupported type for field '%s'. Supported types are '%s'", field, getAllSupportedTypes(simpleTypes))
 	if extraErr == nil {
 		return fmt.Errorf(errStr)
 	}
 	return fmt.Errorf(errStr+"; %v", extraErr)
 }
 
-func createInvalidTypeError(field string, extraErr error) error {
-	return createInvalidTypeError2(field, extraErr, simpleTypes)
-}
-
-func createInvalidTypeErrorNoValType(field string, extraErr error) error {
-	return createInvalidTypeError2(field, extraErr, simpleTypesWithoutValType)
-}
-
-// protoType returns a Proto type name for a Field's DescriptorProto.
-// We only support primitives that can be represented as ValueTypes,ValueType itself, or map<string, ValueType>.
-var simpleTypesWithoutValType = []string{"string", "int64", "double", "bool"}
-var simpleTypes = append(simpleTypesWithoutValType, fullProtoNameOfValueTypeEnum)
+var simpleTypes = []string{
+	"string",
+	"int64",
+	"double",
+	"bool",
+	fullProtoNameOfValueTypeEnum,
+	"other messages defined within the same package",
+	}
 
 func getAllSupportedTypes(simpleTypes []string) string {
-	return strings.Join(simpleTypes, ", ") + ", " +
-		fmt.Sprintf("map<string, %s>", strings.Join(simpleTypes, " | "))
+	return strings.Join(simpleTypes, ", ") + ", map<string, any of the listed supported types>"
 }
 
 func getTypeName(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorProto) (protoType TypeInfo, goType TypeInfo, err error) {
