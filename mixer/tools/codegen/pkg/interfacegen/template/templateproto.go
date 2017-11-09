@@ -30,7 +30,7 @@ option (istio.mixer.v1.template.template_variety) = {{.VarietyName}};
 {{.TemplateMessage.Comment}}
 message Type {
   {{range .TemplateMessage.Fields -}}
-  {{- if hasDynamicType .ProtoType}}
+  {{- if valueTypeOrResMsg .ProtoType}}
   {{.Comment}}
   {{getFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
   {{- end}}
@@ -38,9 +38,10 @@ message Type {
 }
 
 {{range .ResourceMessages}}
+{{.Comment}}
 message {{getResourcMessageTypeName .Name}} {
   {{range .Fields}}
-  {{- if hasDynamicType .ProtoType}}
+  {{- if valueTypeOrResMsg .ProtoType}}
   {{.Comment}}
   {{getFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
   {{- end}}

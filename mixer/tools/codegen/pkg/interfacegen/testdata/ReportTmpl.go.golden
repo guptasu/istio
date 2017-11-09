@@ -84,6 +84,7 @@ type Resource2 struct {
 	Res3Map map[string]*Resource3
 }
 
+// resource3 comment
 type Resource3 struct {
 
 	// value is ...

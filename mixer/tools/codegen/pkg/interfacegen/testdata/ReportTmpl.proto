@@ -57,6 +57,7 @@ message Resource2 {
     map<string, Resource3> res3_map = 5;
 }
 
+// resource3 comment
 message Resource3 {
     // value is ...
     istio.mixer.v1.config.descriptor.ValueType value = 1;

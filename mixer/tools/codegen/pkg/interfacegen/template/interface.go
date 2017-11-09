@@ -45,6 +45,7 @@ type Instance struct {
 }
 
 {{range .ResourceMessages}}
+{{.Comment}}
 type {{.Name}} struct {
   {{range .Fields}}
   {{.Comment}}
