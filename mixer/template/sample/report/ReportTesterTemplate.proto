@@ -49,6 +49,8 @@ message Res1 {
     google.protobuf.Duration duration = 10;
 
     Res2 res2 = 11;
+
+    map<string, Res2> res2_map = 12;
 }
 
 message Res2 {

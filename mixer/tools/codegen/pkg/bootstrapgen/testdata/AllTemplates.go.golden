@@ -74,6 +74,9 @@ var (
 				_ = BuildRes2
 
 				BuildTemplate = func(cpb *istio_mixer_template_list.InstanceParam) (*istio_mixer_template_list.Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_list.Type{}
 					var err error = nil
 
@@ -170,6 +173,9 @@ var (
 				}
 
 				BuildRes1 = func(cpb *istio_mixer_template_list.Res1InstanceParam) (*istio_mixer_template_list.Res1Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_list.Res1Type{}
 					var err error = nil
 
@@ -279,6 +285,9 @@ var (
 				}
 
 				BuildRes2 = func(cpb *istio_mixer_template_list.Res2InstanceParam) (*istio_mixer_template_list.Res2Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_list.Res2Type{}
 					var err error = nil
 
@@ -665,6 +674,9 @@ var (
 				_ = BuildTemplate
 
 				BuildTemplate = func(cpb *istio_mixer_template_quota.InstanceParam) (*istio_mixer_template_quota.Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_quota.Type{}
 					var err error = nil
 
@@ -901,6 +913,9 @@ var (
 				_ = BuildRes2
 
 				BuildTemplate = func(cpb *istio_mixer_template_log.InstanceParam) (*istio_mixer_template_log.Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_log.Type{}
 					var err error = nil
 
@@ -1007,6 +1022,9 @@ var (
 				}
 
 				BuildRes1 = func(cpb *istio_mixer_template_log.Res1InstanceParam) (*istio_mixer_template_log.Res1Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_log.Res1Type{}
 					var err error = nil
 
@@ -1116,6 +1134,9 @@ var (
 				}
 
 				BuildRes2 = func(cpb *istio_mixer_template_log.Res2InstanceParam) (*istio_mixer_template_log.Res2Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_log.Res2Type{}
 					var err error = nil
 
@@ -1513,6 +1534,9 @@ var (
 				_ = BuildTemplate
 
 				BuildTemplate = func(cpb *istio_mixer_template_metric.InstanceParam) (*istio_mixer_template_metric.Type, error) {
+					if cpb == nil {
+						return nil, nil
+					}
 					infrdType := &istio_mixer_template_metric.Type{}
 					var err error = nil
 

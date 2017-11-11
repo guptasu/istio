@@ -85,6 +85,9 @@ var (
 				{{range getAllMsgs .}}
 				{{with $msg := .}}
 				Build{{$msg.Name}} = func(cpb *{{$goPkgName}}.{{getResourcMessageInterfaceParamTypeName $msg.Name}}) (*{{$goPkgName}}.{{getResourcMessageTypeName $msg.Name}}, error) {
+				if cpb == nil {
+					return nil, nil
+				}
 				infrdType := &{{$goPkgName}}.{{getResourcMessageTypeName $msg.Name}}{}
 				var err error = nil
 

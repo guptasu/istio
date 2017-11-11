@@ -269,14 +269,13 @@ func TestBuilderSupportsTemplate(t *testing.T) {
 }
 
 type inferTypeTest struct {
-	name               string
-	ctrCnfg            string
-	cstrParam          interface{}
-	typeEvalError      error
-	wantValueType      pb.ValueType
-	wantDimensionsType map[string]pb.ValueType
-	wantErr            string
-	willPanic          bool
+	name          string
+	ctrCnfg       string
+	cstrParam     interface{}
+	typeEvalError error
+	wantErr       string
+	willPanic     bool
+	wantType      interface{}
 }
 
 func getExprEvalFunc(err error) func(string) (pb.ValueType, error) {
@@ -321,87 +320,14 @@ dimensions:
   source: source.string
   target: source.string
 `,
-			cstrParam:          &sample_report.InstanceParam{},
-			typeEvalError:      nil,
-			wantValueType:      pb.INT64,
-			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
-			wantErr:            "",
-			willPanic:          false,
-		},
-		{
-			name: "MissingAFieldFromInstanceParam",
-			ctrCnfg: `
-value: source.int64
-# int64Primitive: source.int64 # missing int64Primitive
-boolPrimitive: source.bool
-doublePrimitive: source.double
-stringPrimitive: source.string
-timeStamp: source.timestamp
-duration: source.duration
-dimensions:
-  source: source.string
-  target: source.string
-`,
 			cstrParam:     &sample_report.InstanceParam{},
 			typeEvalError: nil,
-			wantErr:       "expression for field Int64Primitive cannot be empty",
+			wantErr:       "",
 			willPanic:     false,
-		},
-		{
-			name: "InferredTypeNotMatchStaticTypeFromTemplate",
-			ctrCnfg: `
-value: source.int64
-int64Primitive: source.int64 # missing int64Primitive
-boolPrimitive: source.bool
-doublePrimitive: source.double
-stringPrimitive: source.double # Double does not match string
-timeStamp: source.timestamp
-duration: source.duration
-dimensions:
-  source: source.string
-  target: source.string
-`,
-			cstrParam:     &sample_report.InstanceParam{},
-			typeEvalError: nil,
-			wantErr:       "error type checking for field StringPrimitive: Evaluated expression type DOUBLE want STRING",
-			willPanic:     false,
-		},
-		{
-			name: "EmptyString",
-			ctrCnfg: `
-value: source.int64
-int64Primitive: source.int64
-boolPrimitive: source.bool
-doublePrimitive: source.double
-stringPrimitive: '""'
-timeStamp: source.timestamp
-duration: source.duration
-dimensions:
-  source: source.string
-  target: source.string
-`,
-			cstrParam:     &sample_report.InstanceParam{},
-			typeEvalError: nil,
-			wantErr:       "expression for field StringPrimitive cannot be empty",
-			willPanic:     false,
-		},
-		{
-			name:      "NotValidInstanceParam",
-			ctrCnfg:   ``,
-			cstrParam: &empty.Empty{}, // cnstr type mismatch
-			wantErr:   "is not of type",
-			willPanic: true,
-		},
-		{
-			name: "ErrorFromTypeEvaluator",
-			ctrCnfg: `
-value: response.int64
-dimensions:
-  source: source.string
-`,
-			cstrParam:     &sample_report.InstanceParam{},
-			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
-			wantErr:       "some expression x.y.z is invalid",
+			wantType: &sample_report.Type{
+				Value:      pb.INT64,
+				Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+			},
 		},
 		{
 			name: "SimpleValidWithSubmsg",
@@ -428,12 +354,179 @@ res1:
     source: source.string
     target: source.string
 `,
-			cstrParam:          &sample_report.InstanceParam{},
-			typeEvalError:      nil,
-			wantValueType:      pb.INT64,
-			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
-			wantErr:            "",
-			willPanic:          false,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "",
+			willPanic:     false,
+			wantType: &sample_report.Type{
+				Value:      pb.INT64,
+				Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+				Res1: &sample_report.Res1Type{
+					Value:      pb.INT64,
+					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+					Res2Map:    map[string]*sample_report.Res2Type{},
+				},
+			},
+		},
+		{
+			name: "MissingAFieldFromInstanceParam",
+			ctrCnfg: `
+value: source.int64
+# int64Primitive: source.int64 # missing int64Primitive
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "expression for field Int64Primitive cannot be empty",
+			willPanic:     false,
+		},
+		{
+			name: "MissingAFieldFromInstanceParamSubMsg",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+res1:
+  value: source.int64
+  # int64Primitive: source.int64 # missing int64Primitive
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.string
+  timeStamp: source.timestamp
+  duration: source.duration
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "expression for field Int64Primitive cannot be empty",
+			willPanic:     false,
+		},
+		{
+			name: "InferredTypeNotMatchStaticTypeFromTemplate",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.double # Double does not match string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "error type checking for field StringPrimitive: Evaluated expression type DOUBLE want STRING",
+			willPanic:     false,
+		},
+		{
+			name: "InferredTypeNotMatchStaticTypeFromTemplateSubMsg",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.double # Double does not match string
+  timeStamp: source.timestamp
+  duration: source.duration
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "error type checking for field StringPrimitive: Evaluated expression type DOUBLE want STRING",
+			willPanic:     false,
+		},
+		{
+			name: "EmptyString",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: '""'
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "expression for field StringPrimitive cannot be empty",
+			willPanic:     false,
+		},
+
+		{
+			name: "EmptyStringSubMsg",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: '""'
+  timeStamp: source.timestamp
+  duration: source.duration
+  dimensions:
+    source: source.string
+    target: source.string
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "expression for field StringPrimitive cannot be empty",
+			willPanic:     false,
+		},
+		{
+			name:      "NotValidInstanceParam",
+			ctrCnfg:   ``,
+			cstrParam: &empty.Empty{}, // cnstr type mismatch
+			wantErr:   "is not of type",
+			willPanic: true,
+		},
+		{
+			name: "ErrorFromTypeEvaluator",
+			ctrCnfg: `
+value: response.int64
+dimensions:
+  source: source.string
+`,
+			cstrParam:     &sample_report.InstanceParam{},
+			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
+			wantErr:       "some expression x.y.z is invalid",
 		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
@@ -456,19 +549,9 @@ res1:
 				if cerr != nil {
 					t.Errorf("got err %v\nwant <nil>", cerr)
 				}
-				if tst.wantValueType != cv.(*sample_report.Type).Value {
-					t.Errorf("got inferTypeForSampleReport(\n%s\n).value=%v\nwant %v",
-						tst.ctrCnfg, cv.(*sample_report.Type).Value, tst.wantValueType)
-				}
-				if len(tst.wantDimensionsType) != len(cv.(*sample_report.Type).Dimensions) {
-					t.Errorf("got len ( inferTypeForSampleReport(\n%s\n).dimensions) =%v \n want %v",
-						tst.ctrCnfg, len(cv.(*sample_report.Type).Dimensions), len(tst.wantDimensionsType))
-				}
-				for a, b := range tst.wantDimensionsType {
-					if cv.(*sample_report.Type).Dimensions[a] != b {
-						t.Errorf("got inferTypeForSampleReport(\n%s\n).dimensions[%s] =%v \n want %v",
-							tst.ctrCnfg, a, cv.(*sample_report.Type).Dimensions[a], b)
-					}
+				v := cv.(*sample_report.Type)
+				if !reflect.DeepEqual(v, tst.wantType) {
+					t.Errorf("InferType (%s) = \n%v, want \n%v", tst.name, spew.Sdump(v), spew.Sdump(tst.wantType))
 				}
 			} else {
 				if cerr == nil || !strings.Contains(cerr.Error(), tst.wantErr) {
@@ -498,12 +581,30 @@ res1:
   dimensions:
     source: source.string
     target: source.string
+  res2_map:
+    source2:
+      value: source.int64
+      dimensions:
+        source: source.string
+        target: source.string
+      int64Primitive: source.int64
 `,
 			cstrParam:     &sample_check.InstanceParam{},
 			typeEvalError: nil,
-			wantValueType: pb.STRING,
 			wantErr:       "",
 			willPanic:     false,
+			wantType: &sample_check.Type{
+				Res1: &sample_check.Res1Type{
+					Value:      pb.INT64,
+					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+					Res2Map: map[string]*sample_check.Res2Type{
+						"source2": {
+							Value:      pb.INT64,
+							Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+						},
+					},
+				},
+			},
 		},
 		{
 			name:      "NotValidInstanceParam",
@@ -511,23 +612,13 @@ res1:
 			cstrParam: &empty.Empty{}, // cnstr type mismatch
 			willPanic: true,
 		},
-		{
-			name: "SimpleValidWithSubmsg",
-			ctrCnfg: `
-check_expression: source.string
-timeStamp: source.timestamp
-duration: source.duration
-`,
-			cstrParam:     &sample_check.InstanceParam{},
-			typeEvalError: nil,
-			wantValueType: pb.STRING,
-			wantErr:       "",
-			willPanic:     false,
-		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			_ = fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.ctrCnfg, cp)
+			if err != nil {
+				t.Fatalf("cannot load yaml %v", err)
+			}
 			typeEvalFn := getExprEvalFunc(tst.typeEvalError)
 			defer func() {
 				r := recover()
@@ -537,13 +628,17 @@ duration: source.duration
 					t.Errorf("got panic %v, expected success.", r)
 				}
 			}()
-			_, cerr := SupportedTmplInfo[sample_check.TemplateName].InferType(cp.(proto.Message), typeEvalFn)
+			cv, cerr := SupportedTmplInfo[sample_check.TemplateName].InferType(cp.(proto.Message), typeEvalFn)
 			if tst.willPanic {
 				t.Error("Should not reach this statement due to panic.")
 			}
 			if tst.wantErr == "" {
 				if cerr != nil {
 					t.Errorf("got err %v\nwant <nil>", cerr)
+				}
+				v := cv.(*sample_check.Type)
+				if !reflect.DeepEqual(v, tst.wantType) {
+					t.Errorf("InferType (%s) = \n%v, want \n%v", tst.name, spew.Sdump(v), spew.Sdump(tst.wantType))
 				}
 			} else {
 				if cerr == nil || !strings.Contains(cerr.Error(), tst.wantErr) {
@@ -565,13 +660,28 @@ dimensions:
   source: source.string
   target: source.string
   env: target.string
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.string
+  timeStamp: source.timestamp
+  duration: source.duration
+  dimensions:
+    source: source.string
+    target: source.string
+    env: target.string
 `,
-			cstrParam:          &sample_quota.InstanceParam{},
-			typeEvalError:      nil,
-			wantValueType:      pb.STRING,
-			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING, "env": pb.STRING},
-			wantErr:            "",
-			willPanic:          false,
+			cstrParam: &sample_quota.InstanceParam{},
+			wantType: &sample_quota.Type{
+				Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING, "env": pb.STRING},
+				Res1: &sample_quota.Res1Type{
+					Value:      pb.INT64,
+					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING, "env": pb.STRING},
+					Res2Map:    map[string]*sample_quota.Res2Type{},
+				},
+			},
 		},
 		{
 			name:      "NotValidInstanceParam",
@@ -592,38 +702,13 @@ dimensions:
 			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
 			wantErr:       "some expression x.y.z is invalid",
 		},
-		{
-			name: "SimpleValidWithSubmsg",
-			ctrCnfg: `
-timeStamp: source.timestamp
-duration: source.duration
-dimensions:
-  source: source.string
-  target: source.string
-  env: target.string
-res1:
-  value: source.int64
-  int64Primitive: source.int64
-  boolPrimitive: source.bool
-  doublePrimitive: source.double
-  stringPrimitive: source.string
-  timeStamp: source.timestamp
-  duration: source.duration
-  dimensions:
-    source: source.string
-    target: source.string
-`,
-			cstrParam:          &sample_quota.InstanceParam{},
-			typeEvalError:      nil,
-			wantValueType:      pb.STRING,
-			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING, "env": pb.STRING},
-			wantErr:            "",
-			willPanic:          false,
-		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			_ = fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.ctrCnfg, cp)
+			if err != nil {
+				t.Fatalf("cannot load yaml %v", err)
+			}
 			typeEvalFn := getExprEvalFunc(tst.typeEvalError)
 			defer func() {
 				r := recover()
@@ -638,17 +723,10 @@ res1:
 				if cerr != nil {
 					t.Errorf("got err %v\nwant <nil>", cerr)
 				}
-				if len(tst.wantDimensionsType) != len(cv.(*sample_quota.Type).Dimensions) {
-					t.Errorf("got len ( inferTypeForSampleReport(\n%s\n).dimensions) =%v \n want %v",
-						tst.ctrCnfg, len(cv.(*sample_quota.Type).Dimensions), len(tst.wantDimensionsType))
+				v := cv.(*sample_quota.Type)
+				if !reflect.DeepEqual(v, tst.wantType) {
+					t.Errorf("InferType (%s) = \n%v, want \n%v", tst.name, spew.Sdump(v), spew.Sdump(tst.wantType))
 				}
-				for a, b := range tst.wantDimensionsType {
-					if cv.(*sample_quota.Type).Dimensions[a] != b {
-						t.Errorf("got inferTypeForSampleReport(\n%s\n).dimensions[%s] =%v \n want %v",
-							tst.ctrCnfg, a, cv.(*sample_quota.Type).Dimensions[a], b)
-					}
-				}
-
 			} else {
 				if cerr == nil || !strings.Contains(cerr.Error(), tst.wantErr) {
 					t.Errorf("got error %v\nwant %v", cerr, tst.wantErr)
@@ -852,6 +930,7 @@ func TestProcessReport(t *testing.T) {
 						Int64Map:        map[string]int64{"a": int64(1)},
 						TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
 						Duration:        10 * time.Second,
+						Res2Map:         map[string]*sample_report.Res2{},
 					},
 				},
 				{
