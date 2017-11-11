@@ -1274,6 +1274,18 @@ func TestProcessQuota(t *testing.T) {
 			wantError: "unknown attribute bad.attribute",
 		},
 		{
+			name:     "EvalErrorSubMsg",
+			instName: "foo",
+			inst: &sample_quota.InstanceParam{
+				Dimensions: map[string]string{"a": "source.string"},
+				BoolMap:    map[string]string{"a": "true"},
+				Res1: &sample_quota.Res1InstanceParam{
+					Value: "bad.attribute",
+				},
+			},
+			wantError: "unresolved attribute bad.attribute",
+		},
+		{
 			name:     "ProcessError",
 			instName: "foo",
 			inst: &sample_quota.InstanceParam{
