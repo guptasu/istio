@@ -1093,11 +1093,59 @@ func TestProcessCheck(t *testing.T) {
 			inst: &sample_check.InstanceParam{
 				CheckExpression: `"abcd asd"`,
 				StringMap:       map[string]string{"a": `"aaa"`},
+				Res1: &sample_check.Res1InstanceParam{
+					Value:           "1",
+					Dimensions:      map[string]string{"s": "2"},
+					BoolPrimitive:   "true",
+					DoublePrimitive: "1.2",
+					Int64Primitive:  "54362",
+					StringPrimitive: `"mystring"`,
+					Int64Map:        map[string]string{"a": "1"},
+					TimeStamp:       "request.timestamp",
+					Duration:        "request.duration",
+					Res2: &sample_check.Res2InstanceParam{
+						Value:          "1",
+						Dimensions:     map[string]string{"s": "2"},
+						Int64Primitive: "54362",
+					},
+					Res2Map: map[string]*sample_check.Res2InstanceParam{
+						"foo": {
+							Value:          "1",
+							Dimensions:     map[string]string{"s": "2"},
+							Int64Primitive: "54362",
+						},
+					},
+				},
 			},
 			hdlr: &fakeCheckHandler{
 				retResult: adapter.CheckResult{Status: rpc.Status{Message: "msg"}},
 			},
-			wantInstance:    &sample_check.Instance{Name: "foo", CheckExpression: "abcd asd", StringMap: map[string]string{"a": "aaa"}},
+			wantInstance: &sample_check.Instance{
+				Name: "foo", CheckExpression: "abcd asd", StringMap: map[string]string{"a": "aaa"},
+				Res1: &sample_check.Res1{
+					Value:           int64(1),
+					Dimensions:      map[string]interface{}{"s": int64(2)},
+					BoolPrimitive:   true,
+					DoublePrimitive: 1.2,
+					Int64Primitive:  54362,
+					StringPrimitive: "mystring",
+					Int64Map:        map[string]int64{"a": int64(1)},
+					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+					Duration:        10 * time.Second,
+					Res2: &sample_check.Res2{
+						Value:          int64(1),
+						Dimensions:     map[string]interface{}{"s": int64(2)},
+						Int64Primitive: 54362,
+					},
+					Res2Map: map[string]*sample_check.Res2{
+						"foo": {
+							Value:          int64(1),
+							Dimensions:     map[string]interface{}{"s": int64(2)},
+							Int64Primitive: 54362,
+						},
+					},
+				},
+			},
 			wantCheckResult: adapter.CheckResult{Status: rpc.Status{Message: "msg"}},
 		},
 		{
@@ -1126,7 +1174,6 @@ func TestProcessCheck(t *testing.T) {
 			h := &tst.hdlr
 			ev, _ := evaluator.NewILEvaluator(evaluator.DefaultCacheSize, evaluator.DefaultMaxStringTableSizeForPurge)
 			ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
-			res, err := SupportedTmplInfo[sample_check.TemplateName].ProcessCheck(context.TODO(), tst.instName, tst.inst, fakeBag{}, ev, *h)
 
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
@@ -1162,11 +1209,59 @@ func TestProcessQuota(t *testing.T) {
 			inst: &sample_quota.InstanceParam{
 				Dimensions: map[string]string{"a": `"str"`},
 				BoolMap:    map[string]string{"a": "true"},
+				Res1: &sample_quota.Res1InstanceParam{
+					Value:           "1",
+					Dimensions:      map[string]string{"s": "2"},
+					BoolPrimitive:   "true",
+					DoublePrimitive: "1.2",
+					Int64Primitive:  "54362",
+					StringPrimitive: `"mystring"`,
+					Int64Map:        map[string]string{"a": "1"},
+					TimeStamp:       "request.timestamp",
+					Duration:        "request.duration",
+					Res2: &sample_quota.Res2InstanceParam{
+						Value:          "1",
+						Dimensions:     map[string]string{"s": "2"},
+						Int64Primitive: "54362",
+					},
+					Res2Map: map[string]*sample_quota.Res2InstanceParam{
+						"foo": {
+							Value:          "1",
+							Dimensions:     map[string]string{"s": "2"},
+							Int64Primitive: "54362",
+						},
+					},
+				},
 			},
 			hdlr: &fakeQuotaHandler{
 				retResult: adapter.QuotaResult{Amount: 1},
 			},
-			wantInstance:    &sample_quota.Instance{Name: "foo", Dimensions: map[string]interface{}{"a": "str"}, BoolMap: map[string]bool{"a": true}},
+			wantInstance: &sample_quota.Instance{
+				Name: "foo", Dimensions: map[string]interface{}{"a": "str"}, BoolMap: map[string]bool{"a": true},
+				Res1: &sample_quota.Res1{
+					Value:           int64(1),
+					Dimensions:      map[string]interface{}{"s": int64(2)},
+					BoolPrimitive:   true,
+					DoublePrimitive: 1.2,
+					Int64Primitive:  54362,
+					StringPrimitive: "mystring",
+					Int64Map:        map[string]int64{"a": int64(1)},
+					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+					Duration:        10 * time.Second,
+					Res2: &sample_quota.Res2{
+						Value:          int64(1),
+						Dimensions:     map[string]interface{}{"s": int64(2)},
+						Int64Primitive: 54362,
+					},
+					Res2Map: map[string]*sample_quota.Res2{
+						"foo": {
+							Value:          int64(1),
+							Dimensions:     map[string]interface{}{"s": int64(2)},
+							Int64Primitive: 54362,
+						},
+					},
+				},
+			},
 			wantQuotaResult: adapter.QuotaResult{Amount: 1},
 		},
 		{
@@ -1195,7 +1290,6 @@ func TestProcessQuota(t *testing.T) {
 			h := &tst.hdlr
 			ev, _ := evaluator.NewILEvaluator(evaluator.DefaultCacheSize, evaluator.DefaultMaxStringTableSizeForPurge)
 			ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
-			res, err := SupportedTmplInfo[sample_quota.TemplateName].ProcessQuota(context.TODO(), tst.instName, tst.inst, fakeBag{}, ev, *h, adapter.QuotaArgs{})
 
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
