@@ -91,7 +91,7 @@ var (
 				{{range $msg.Fields}}
 					{{if containsValueTypeOrResMsg .GoType}}
 						{{if .GoType.IsMap}}
-							infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]istio_mixer_v1_config_descriptor.ValueType, len(cpb.{{.GoName}}))
+							infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{.GoType.MapValue.Name}}, len(cpb.{{.GoName}}))
 							for k, v := range cpb.{{.GoName}} {
 							{{if .GoType.MapValue.IsResourceMessage}}
 								if infrdType.{{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(v); err != nil {

@@ -263,7 +263,7 @@ var (
 						}
 					}
 
-					infrdType.Res2Map = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Res2Map))
+					infrdType.Res2Map = make(map[string]*Res2, len(cpb.Res2Map))
 					for k, v := range cpb.Res2Map {
 
 						if infrdType.Res2Map[k], err = BuildRes2(v); err != nil {
@@ -1095,7 +1095,7 @@ var (
 						}
 					}
 
-					infrdType.Res2Map = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Res2Map))
+					infrdType.Res2Map = make(map[string]*Res2, len(cpb.Res2Map))
 					for k, v := range cpb.Res2Map {
 
 						if infrdType.Res2Map[k], err = BuildRes2(v); err != nil {
