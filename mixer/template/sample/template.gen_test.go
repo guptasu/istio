@@ -893,6 +893,18 @@ func TestProcessReport(t *testing.T) {
 						Int64Map:        map[string]string{"a": "1"},
 						TimeStamp:       "request.timestamp",
 						Duration:        "request.duration",
+						Res2: &sample_report.Res2InstanceParam{
+							Value:          "1",
+							Dimensions:     map[string]string{"s": "2"},
+							Int64Primitive: "54362",
+						},
+						Res2Map: map[string]*sample_report.Res2InstanceParam{
+							"foo": {
+								Value:          "1",
+								Dimensions:     map[string]string{"s": "2"},
+								Int64Primitive: "54362",
+							},
+						},
 					},
 				},
 				"bar": &sample_report.InstanceParam{
@@ -930,7 +942,18 @@ func TestProcessReport(t *testing.T) {
 						Int64Map:        map[string]int64{"a": int64(1)},
 						TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
 						Duration:        10 * time.Second,
-						Res2Map:         map[string]*sample_report.Res2{},
+						Res2: &sample_report.Res2{
+							Value:          int64(1),
+							Dimensions:     map[string]interface{}{"s": int64(2)},
+							Int64Primitive: 54362,
+						},
+						Res2Map: map[string]*sample_report.Res2{
+							"foo": {
+								Value:          int64(1),
+								Dimensions:     map[string]interface{}{"s": int64(2)},
+								Int64Primitive: 54362,
+							},
+						},
 					},
 				},
 				{
