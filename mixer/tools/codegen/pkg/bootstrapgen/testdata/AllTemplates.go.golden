@@ -85,6 +85,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -180,6 +181,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -263,7 +265,8 @@ var (
 						}
 					}
 
-					infrdType.Res2Map = make(map[string]*Res2, len(cpb.Res2Map))
+					infrdType.Res2Map = make(map[string]*istio_mixer_template_list.Res2Type, len(cpb.Res2Map))
+
 					for k, v := range cpb.Res2Map {
 
 						if infrdType.Res2Map[k], err = BuildRes2(v); err != nil {
@@ -287,6 +290,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -541,9 +545,9 @@ var (
 						return nil, errors.New(msg)
 					}
 
-					Res2Map = make(map[string]*Res2, len(md.Res2Map))
+					Res2Map := make(map[string]*istio_mixer_template_list.Res2, len(md.Res2Map))
 					for k, v := range md.Res2Map {
-						if Res2Map[k], err = BuildRes2(v); err != nil {
+						if Res2Map[k], err = BuildRes2(instName, v); err != nil {
 							return nil, err
 						}
 					}
@@ -672,6 +676,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -907,6 +912,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -1012,6 +1018,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -1095,7 +1102,8 @@ var (
 						}
 					}
 
-					infrdType.Res2Map = make(map[string]*Res2, len(cpb.Res2Map))
+					infrdType.Res2Map = make(map[string]*istio_mixer_template_log.Res2Type, len(cpb.Res2Map))
+
 					for k, v := range cpb.Res2Map {
 
 						if infrdType.Res2Map[k], err = BuildRes2(v); err != nil {
@@ -1119,6 +1127,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {
@@ -1381,9 +1390,9 @@ var (
 						return nil, errors.New(msg)
 					}
 
-					Res2Map = make(map[string]*Res2, len(md.Res2Map))
+					Res2Map := make(map[string]*istio_mixer_template_log.Res2, len(md.Res2Map))
 					for k, v := range md.Res2Map {
-						if Res2Map[k], err = BuildRes2(v); err != nil {
+						if Res2Map[k], err = BuildRes2(instName, v); err != nil {
 							return nil, err
 						}
 					}
@@ -1515,6 +1524,7 @@ var (
 					}
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(cpb.Dimensions))
+
 					for k, v := range cpb.Dimensions {
 
 						if infrdType.Dimensions[k], err = tEvalFn(v); err != nil {

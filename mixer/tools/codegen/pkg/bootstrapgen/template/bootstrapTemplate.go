@@ -91,7 +91,11 @@ var (
 				{{range $msg.Fields}}
 					{{if containsValueTypeOrResMsg .GoType}}
 						{{if .GoType.IsMap}}
-							infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{.GoType.MapValue.Name}}, len(cpb.{{.GoName}}))
+							{{if .GoType.MapValue.IsResourceMessage}}
+								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}Type, len(cpb.{{.GoName}})) {{/*Fix Hack*/}}
+							{{else}}
+								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{getBuildTypeFnName .GoType.MapValue}}, len(cpb.{{.GoName}}))
+							{{end}}
 							for k, v := range cpb.{{.GoName}} {
 							{{if .GoType.MapValue.IsResourceMessage}}
 								if infrdType.{{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(v); err != nil {
@@ -181,9 +185,9 @@ var (
 						{{range $msg.Fields}}
 							{{if .GoType.IsMap}}
 								{{if .GoType.MapValue.IsResourceMessage}}
-									{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{.GoType.MapValue.Name}}, len(md.{{.GoName}}))
+									{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}, len(md.{{.GoName}}))
 									for k, v := range md.{{.GoName}} {
-										if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(v); err != nil {
+										if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(instName, v); err != nil {
 											return nil, err
 										}
 									}
@@ -273,9 +277,9 @@ var (
 					{{range $msg.Fields}}
 						{{if .GoType.IsMap}}
 							{{if .GoType.MapValue.IsResourceMessage}}
-								{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{.GoType.MapValue.Name}}, len(md.{{.GoName}}))
+								{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}, len(md.{{.GoName}}))
 								for k, v := range md.{{.GoName}} {
-									if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(v); err != nil {
+									if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(instName, v); err != nil {
 										return nil, err
 									}
 								}
