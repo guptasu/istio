@@ -805,7 +805,7 @@ func TestProcessReport(t *testing.T) {
 					Int64Map:        map[string]string{"a": "1"},
 					TimeStamp:       "request.timestamp",
 					Duration:        "request.duration",
-					Res1:            &sample_report.Res1InstanceParam{
+					Res1: &sample_report.Res1InstanceParam{
 						Value:           "1",
 						Dimensions:      map[string]string{"s": "2"},
 						BoolPrimitive:   "true",
@@ -842,7 +842,7 @@ func TestProcessReport(t *testing.T) {
 					Int64Map:        map[string]int64{"a": int64(1)},
 					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
 					Duration:        10 * time.Second,
-					Res1:            &sample_report.Res1{
+					Res1: &sample_report.Res1{
 						Value:           int64(1),
 						Dimensions:      map[string]interface{}{"s": int64(2)},
 						BoolPrimitive:   true,
