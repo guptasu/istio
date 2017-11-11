@@ -403,10 +403,45 @@ dimensions:
 			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
 			wantErr:       "some expression x.y.z is invalid",
 		},
+		{
+			name: "SimpleValidWithSubmsg",
+			ctrCnfg: `
+value: source.int64
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.string
+  timeStamp: source.timestamp
+  duration: source.duration
+  dimensions:
+    source: source.string
+    target: source.string
+`,
+			cstrParam:          &sample_report.InstanceParam{},
+			typeEvalError:      nil,
+			wantValueType:      pb.INT64,
+			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+			wantErr:            "",
+			willPanic:          false,
+		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			_ = fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.ctrCnfg, cp)
+			if err != nil {
+				t.Fatalf("cannot load yaml %v", err)
+			}
 			typeEvalFn := getExprEvalFunc(tst.typeEvalError)
 			defer func() {
 				r := recover()
@@ -452,6 +487,17 @@ func TestInferTypeForSampleCheck(t *testing.T) {
 check_expression: source.string
 timeStamp: source.timestamp
 duration: source.duration
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.string
+  timeStamp: source.timestamp
+  duration: source.duration
+  dimensions:
+    source: source.string
+    target: source.string
 `,
 			cstrParam:     &sample_check.InstanceParam{},
 			typeEvalError: nil,
@@ -464,6 +510,19 @@ duration: source.duration
 			ctrCnfg:   ``,
 			cstrParam: &empty.Empty{}, // cnstr type mismatch
 			willPanic: true,
+		},
+		{
+			name: "SimpleValidWithSubmsg",
+			ctrCnfg: `
+check_expression: source.string
+timeStamp: source.timestamp
+duration: source.duration
+`,
+			cstrParam:     &sample_check.InstanceParam{},
+			typeEvalError: nil,
+			wantValueType: pb.STRING,
+			wantErr:       "",
+			willPanic:     false,
 		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
@@ -532,6 +591,34 @@ dimensions:
 			cstrParam:     &sample_quota.InstanceParam{},
 			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
 			wantErr:       "some expression x.y.z is invalid",
+		},
+		{
+			name: "SimpleValidWithSubmsg",
+			ctrCnfg: `
+timeStamp: source.timestamp
+duration: source.duration
+dimensions:
+  source: source.string
+  target: source.string
+  env: target.string
+res1:
+  value: source.int64
+  int64Primitive: source.int64
+  boolPrimitive: source.bool
+  doublePrimitive: source.double
+  stringPrimitive: source.string
+  timeStamp: source.timestamp
+  duration: source.duration
+  dimensions:
+    source: source.string
+    target: source.string
+`,
+			cstrParam:          &sample_quota.InstanceParam{},
+			typeEvalError:      nil,
+			wantValueType:      pb.STRING,
+			wantDimensionsType: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING, "env": pb.STRING},
+			wantErr:            "",
+			willPanic:          false,
 		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
@@ -644,7 +731,7 @@ func (e *fakeExpr) Eval(mapExpression string, attrs attribute.Bag) (interface{},
 		return true, nil
 	}
 	if strings.HasSuffix(expr2, "int64") {
-		return "1234", nil
+		return int64(1234), nil
 	}
 	if strings.HasSuffix(expr2, "duration") {
 		return 10 * time.Second, nil
@@ -718,6 +805,17 @@ func TestProcessReport(t *testing.T) {
 					Int64Map:        map[string]string{"a": "1"},
 					TimeStamp:       "request.timestamp",
 					Duration:        "request.duration",
+					Res1:            &sample_report.Res1InstanceParam{
+						Value:           "1",
+						Dimensions:      map[string]string{"s": "2"},
+						BoolPrimitive:   "true",
+						DoublePrimitive: "1.2",
+						Int64Primitive:  "54362",
+						StringPrimitive: `"mystring"`,
+						Int64Map:        map[string]string{"a": "1"},
+						TimeStamp:       "request.timestamp",
+						Duration:        "request.duration",
+					},
 				},
 				"bar": &sample_report.InstanceParam{
 					Value:           "2",
@@ -744,6 +842,17 @@ func TestProcessReport(t *testing.T) {
 					Int64Map:        map[string]int64{"a": int64(1)},
 					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
 					Duration:        10 * time.Second,
+					Res1:            &sample_report.Res1{
+						Value:           int64(1),
+						Dimensions:      map[string]interface{}{"s": int64(2)},
+						BoolPrimitive:   true,
+						DoublePrimitive: 1.2,
+						Int64Primitive:  54362,
+						StringPrimitive: "mystring",
+						Int64Map:        map[string]int64{"a": int64(1)},
+						TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+						Duration:        10 * time.Second,
+					},
 				},
 				{
 					Name:            "bar",
