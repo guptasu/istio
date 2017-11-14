@@ -1172,9 +1172,7 @@ func TestProcessCheck(t *testing.T) {
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
-			ev, _ := evaluator.NewILEvaluator(evaluator.DefaultCacheSize, evaluator.DefaultMaxStringTableSizeForPurge)
-			ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
-
+			res, err := SupportedTmplInfo[sample_check.TemplateName].ProcessCheck(context.TODO(), tst.instName, tst.inst, fakeBag{}, newFakeExpr(), *h)
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
 					t.Errorf("ProcessCheckSample got error = %s, want %s", err.Error(), tst.wantError)
@@ -1283,7 +1281,7 @@ func TestProcessQuota(t *testing.T) {
 					Value: "bad.attribute",
 				},
 			},
-			wantError: "unresolved attribute bad.attribute",
+			wantError: "unknown attribute bad.attribute",
 		},
 		{
 			name:     "ProcessError",
@@ -1302,6 +1300,7 @@ func TestProcessQuota(t *testing.T) {
 			h := &tst.hdlr
 			ev, _ := evaluator.NewILEvaluator(evaluator.DefaultCacheSize, evaluator.DefaultMaxStringTableSizeForPurge)
 			ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
+			res, err := SupportedTmplInfo[sample_quota.TemplateName].ProcessQuota(context.TODO(), tst.instName, tst.inst, fakeBag{}, newFakeExpr(), *h, adapter.QuotaArgs{})
 
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
