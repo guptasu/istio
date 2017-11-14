@@ -78,7 +78,7 @@ var (
 				{{range getAllMsgs .}}
 				{{with $msg := .}}
 				var Build{{$msg.Name}} func(cpb *{{$goPkgName}}.{{getResourcMessageInterfaceParamTypeName $msg.Name}}) (*{{$goPkgName}}.{{getResourcMessageTypeName $msg.Name}}, error)
-                _ = Build{{$msg.Name}}
+				_ = Build{{$msg.Name}}
 				{{end}}
 				{{end}}
 
@@ -151,7 +151,7 @@ var (
 						{{end}}
 					{{end}}
 				{{end}}
-                return infrdType, err
+				return infrdType, err
 				}
 				{{end}}
 				{{end}}
@@ -175,7 +175,7 @@ var (
 					{{range getAllMsgs .}}
 					{{with $msg := .}}
 					var Build{{$msg.Name}} func(instName string, md *{{$goPkgName}}.{{getResourcMessageInterfaceParamTypeName $msg.Name}}) (*{{$goPkgName}}.{{getResourcMessageInstanceName $msg.Name}}, error)
-    	            _ = Build{{$msg.Name}}
+					_ = Build{{$msg.Name}}
 					{{end}}
 					{{end}}
 
@@ -269,7 +269,7 @@ var (
 					{{range getAllMsgs .}}
 					{{with $msg := .}}
 					var Build{{$msg.Name}} func(instName string, md *{{$goPkgName}}.{{getResourcMessageInterfaceParamTypeName $msg.Name}}) (*{{$goPkgName}}.{{getResourcMessageInstanceName $msg.Name}}, error)
-    	            _ = Build{{$msg.Name}}
+					_ = Build{{$msg.Name}}
 					{{end}}
 					{{end}}
 
