@@ -56,7 +56,6 @@ var primitiveToValueType = map[string]string{
 }
 
 func containsValueTypeOrResMsg(ti modelgen.TypeInfo) bool {
-	//return ti.IsValueType || ti.IsMap && ti.MapValue.IsValueType
 	return ti.IsValueType || ti.IsResourceMessage || ti.IsMap && (ti.MapValue.IsValueType || ti.MapValue.IsResourceMessage)
 }
 
@@ -117,7 +116,7 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 			},
 			"getBuildTypeFnName": func(goType modelgen.TypeInfo) string {
 				// GoType for a Resource message has a pointer reference. The BuildTypeFnName does not have the "*"
-				// (pointer) in its name.
+				// (pointer) in its name, so we should trim it.
 				return strings.Trim(goType.Name, "*")
 			},
 		}).Parse(tmplPkg.InterfaceTemplate)
