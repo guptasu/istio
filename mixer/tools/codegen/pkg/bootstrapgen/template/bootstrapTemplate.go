@@ -94,14 +94,15 @@ var (
 				{{range $msg.Fields}}
 					{{if containsValueTypeOrResMsg .GoType}}
 						{{if .GoType.IsMap}}
+							{{$typeName := getTypeName .GoType.MapValue}}
 							{{if .GoType.MapValue.IsResourceMessage}}
-								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}Type, len(cpb.{{.GoName}})) {{/*Fix Hack*/}}
+								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getResourcMessageTypeName $typeName}}, len(cpb.{{.GoName}}))
 							{{else}}
-								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{getBuildTypeFnName .GoType.MapValue}}, len(cpb.{{.GoName}}))
+								infrdType.{{.GoName}} = make(map[{{.GoType.MapKey.Name}}]{{$typeName}}, len(cpb.{{.GoName}}))
 							{{end}}
 							for k, v := range cpb.{{.GoName}} {
 							{{if .GoType.MapValue.IsResourceMessage}}
-								if infrdType.{{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(v); err != nil {
+								if infrdType.{{.GoName}}[k], err = {{getBuildFnName $typeName}}(v); err != nil {
 									return nil, err
 								}
 							{{else}}
@@ -113,7 +114,8 @@ var (
 						{{else}}
 							{{if .GoType.IsResourceMessage}}
 								if cpb.{{.GoName}} != nil {
-									if infrdType.{{.GoName}}, err = Build{{getBuildTypeFnName .GoType}}(cpb.{{.GoName}}); err != nil {
+									{{$typeName := getTypeName .GoType}}
+									if infrdType.{{.GoName}}, err = {{getBuildFnName $typeName}}(cpb.{{.GoName}}); err != nil {
 										return nil, err
 									}
 								}
@@ -188,9 +190,10 @@ var (
 						{{range $msg.Fields}}
 							{{if .GoType.IsMap}}
 								{{if .GoType.MapValue.IsResourceMessage}}
-									{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}, len(md.{{.GoName}}))
+									{{$typeName := getTypeName .GoType.MapValue}}
+									{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{$typeName}}, len(md.{{.GoName}}))
 									for k, v := range md.{{.GoName}} {
-										if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(instName, v); err != nil {
+										if {{.GoName}}[k], err = {{getBuildFnName $typeName}}(instName, v); err != nil {
 											return nil, err
 										}
 									}
@@ -199,7 +202,8 @@ var (
 								{{end}}
 							{{else}}
 								{{if .GoType.IsResourceMessage}}
-								{{.GoName}}, err := Build{{getBuildTypeFnName .GoType}}(instName, md.{{.GoName}})
+								{{$typeName := getTypeName .GoType}}
+								{{.GoName}}, err := {{getBuildFnName $typeName}}(instName, md.{{.GoName}})
 								{{else }}
 								{{.GoName}}, err := mapper.Eval(md.{{.GoName}}, attrs)
 								{{end}}
@@ -280,9 +284,10 @@ var (
 					{{range $msg.Fields}}
 						{{if .GoType.IsMap}}
 							{{if .GoType.MapValue.IsResourceMessage}}
-								{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{getBuildTypeFnName .GoType.MapValue}}, len(md.{{.GoName}}))
+								{{$typeName := getTypeName .GoType.MapValue}}
+								{{.GoName}} := make(map[{{.GoType.MapKey.Name}}]*{{$goPkgName}}.{{$typeName}}, len(md.{{.GoName}}))
 								for k, v := range md.{{.GoName}} {
-									if {{.GoName}}[k], err = Build{{getBuildTypeFnName .GoType.MapValue}}(instName, v); err != nil {
+									if {{.GoName}}[k], err = {{getBuildFnName $typeName}}(instName, v); err != nil {
 										return nil, err
 									}
 								}
@@ -291,7 +296,8 @@ var (
 							{{end}}
 						{{else}}
 							{{if .GoType.IsResourceMessage}}
-							{{.GoName}}, err := Build{{getBuildTypeFnName .GoType}}(instName, md.{{.GoName}})
+							{{$typeName := getTypeName .GoType}}
+							{{.GoName}}, err := {{getBuildFnName $typeName}}(instName, md.{{.GoName}})
 							{{else }}
 							{{.GoName}}, err := mapper.Eval(md.{{.GoName}}, attrs)
 							{{end}}

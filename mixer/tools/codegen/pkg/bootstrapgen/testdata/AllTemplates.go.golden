@@ -164,6 +164,7 @@ var (
 					}
 
 					if cpb.Res1 != nil {
+
 						if infrdType.Res1, err = BuildRes1(cpb.Res1); err != nil {
 							return nil, err
 						}
@@ -266,6 +267,7 @@ var (
 					}
 
 					if cpb.Res2 != nil {
+
 						if infrdType.Res2, err = BuildRes2(cpb.Res2); err != nil {
 							return nil, err
 						}
@@ -1013,6 +1015,7 @@ var (
 					}
 
 					if cpb.Res1 != nil {
+
 						if infrdType.Res1, err = BuildRes1(cpb.Res1); err != nil {
 							return nil, err
 						}
@@ -1115,6 +1118,7 @@ var (
 					}
 
 					if cpb.Res2 != nil {
+
 						if infrdType.Res2, err = BuildRes2(cpb.Res2); err != nil {
 							return nil, err
 						}

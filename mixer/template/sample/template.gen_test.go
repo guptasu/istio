@@ -307,7 +307,7 @@ func getExprEvalFunc(err error) func(string) (pb.ValueType, error) {
 func TestInferTypeForSampleReport(t *testing.T) {
 	for _, tst := range []inferTypeTest{
 		{
-			name: "SimpleValid",
+			name: "Valid",
 			ctrCnfg: `
 value: source.int64
 int64Primitive: source.int64
@@ -330,7 +330,7 @@ dimensions:
 			},
 		},
 		{
-			name: "SimpleValidWithSubmsg",
+			name: "ValidWithSubmsg",
 			ctrCnfg: `
 value: source.int64
 int64Primitive: source.int64
@@ -369,7 +369,7 @@ res1:
 			},
 		},
 		{
-			name: "MissingAFieldFromInstanceParam",
+			name: "MissingAField",
 			ctrCnfg: `
 value: source.int64
 # int64Primitive: source.int64 # missing int64Primitive
@@ -388,7 +388,7 @@ dimensions:
 			willPanic:     false,
 		},
 		{
-			name: "MissingAFieldFromInstanceParamSubMsg",
+			name: "MissingAFieldSubMsg",
 			ctrCnfg: `
 value: source.int64
 int64Primitive: source.int64
@@ -415,7 +415,7 @@ res1:
 			willPanic:     false,
 		},
 		{
-			name: "InferredTypeNotMatchStaticTypeFromTemplate",
+			name: "InferredTypeNotMatchStaticType",
 			ctrCnfg: `
 value: source.int64
 int64Primitive: source.int64
@@ -434,7 +434,7 @@ dimensions:
 			willPanic:     false,
 		},
 		{
-			name: "InferredTypeNotMatchStaticTypeFromTemplateSubMsg",
+			name: "InferredTypeNotMatchStaticTypeSubMsg",
 			ctrCnfg: `
 value: source.int64
 int64Primitive: source.int64
@@ -871,7 +871,7 @@ func TestProcessReport(t *testing.T) {
 		wantError    string
 	}{
 		{
-			name: "Simple",
+			name: " Valid",
 			insts: map[string]proto.Message{
 				"foo": &sample_report.InstanceParam{
 					Value:           "1",
@@ -1088,7 +1088,7 @@ func TestProcessCheck(t *testing.T) {
 		wantError       string
 	}{
 		{
-			name:     "Simple",
+			name:     "Valid",
 			instName: "foo",
 			inst: &sample_check.InstanceParam{
 				CheckExpression: `"abcd asd"`,
@@ -1202,7 +1202,7 @@ func TestProcessQuota(t *testing.T) {
 		wantError       string
 	}{
 		{
-			name:     "Simple",
+			name:     "Valid",
 			instName: "foo",
 			inst: &sample_quota.InstanceParam{
 				Dimensions: map[string]string{"a": `"str"`},

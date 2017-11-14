@@ -114,10 +114,13 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 				res = append(res, model.ResourceMessages...)
 				return res
 			},
-			"getBuildTypeFnName": func(goType modelgen.TypeInfo) string {
-				// GoType for a Resource message has a pointer reference. The BuildTypeFnName does not have the "*"
-				// (pointer) in its name, so we should trim it.
+			"getTypeName": func(goType modelgen.TypeInfo) string {
+				// GoType for a Resource message has a pointer reference. Therefore for a raw type name, we should strip
+				// the "*".
 				return strings.Trim(goType.Name, "*")
+			},
+			"getBuildFnName": func(typeName string) string {
+				return "Build" + typeName
 			},
 		}).Parse(tmplPkg.InterfaceTemplate)
 
