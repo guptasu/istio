@@ -26,6 +26,7 @@ option (istio.mixer.v1.template.template_variety) = TEMPLATE_VARIETY_CHECK;
 
 
 
+
 message Type {
   
   
@@ -33,6 +34,9 @@ message Type {
   
   istio.mixer.v1.config.descriptor.ValueType anotherValueType = 7;
 }
+
+
+
 
 message InstanceParam {
   
@@ -56,4 +60,7 @@ message InstanceParam {
   
   string duration = 10;
   
+  
 }
+
+

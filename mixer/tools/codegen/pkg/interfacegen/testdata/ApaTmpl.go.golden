@@ -24,17 +24,16 @@ import (
 )
 
 //
-// Overview of what metric is etc..
+// Overview of what myapa is etc..
 //
-// Additional overview of what metric is etc..
+// Additional overview of what myapa is etc..
 
 // Fully qualified name of the template
 const TemplateName = "myapa"
 
 // Instance is constructed by Mixer for the 'myapa' template.
 //
-// metric template is ..
-// aso it is...
+// myapa template is ..
 type Instance struct {
 	// Name of the instance as specified in configuration.
 	Name string
@@ -53,12 +52,10 @@ type Instance struct {
 
 	Duration time.Duration
 
-	Res3List []*Resource3
-
 	Res3Map map[string]*Resource3
 }
 
-// Output is returned by the attribute producing adapter that handles this template.
+// Output struct is returned by the attribute producing adapters that handle this template.
 type Output struct {
 	Int64Primitive int64
 
@@ -73,8 +70,6 @@ type Output struct {
 	TimeStamp time.Time
 
 	Duration time.Duration
-
-	Res3List []*Resource3
 
 	Res3Map map[string]*Resource3
 }
@@ -91,8 +86,6 @@ type Resource2 struct {
 	Str string
 
 	Res3 *Resource3
-
-	Res3List []*Resource3
 
 	Res3Map map[string]*Resource3
 }
@@ -132,7 +125,7 @@ type HandlerBuilder interface {
 type Handler interface {
 	adapter.Handler
 
-	// HandleMyapa is called by Mixer at request time to deliver instances to
+	// HandleMyApa is called by Mixer at request time to deliver instances to
 	// to an adapter.
-	GenerateMyapaAttributes(context.Context, *Instance) (*Output, error)
+	GenerateMyApaAttributes(context.Context, *Instance) (*Output, error)
 }

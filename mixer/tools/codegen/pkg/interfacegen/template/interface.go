@@ -45,7 +45,7 @@ type Instance struct {
 }
 
 {{if eq .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
-// Output is returned by the attribute producing adapter that handles this template.{{if ne .OutputTemplateMessage.Comment ""}}
+// Output struct is returned by the attribute producing adapters that handle this template.{{if ne .OutputTemplateMessage.Comment ""}}
 //
 {{.OutputTemplateMessage.Comment}}{{end}}
 type Output struct {

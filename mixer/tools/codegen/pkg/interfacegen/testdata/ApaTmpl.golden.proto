@@ -41,16 +41,14 @@ message InstanceParam {
   
   string duration = 7;
   
-  repeated istio.mixer.adapter.myapa.Resource3InstanceParam res3_list = 8;
-  
-  map<string, istio.mixer.adapter.myapa.Resource3InstanceParam> res3_map = 9;
+  map<string, Resource3InstanceParam> res3_map = 8;
   
   
-  // Attribute names to expression mapping. These expressions can use the fields of output object
-  // returned from the attribute producing adapters using $out.<fieldName> notation. For example:
+  // Attribute names to expression mapping. These expressions can use the fields from the output object
+  // returned by the attribute producing adapters using $out.<fieldName> notation. For example:
   // source.ip : $out.source_pod_ip
   // In the above example, source.ip attribute will be added to the existing attribute list and its value will be set to
-  // the value of source_pod_ip field of the output object created by the adapter.
+  // the value of source_pod_ip field of the output returned by the adapter.
   map<string, string> attribute_bindings = 72295728;
   
 }
@@ -60,9 +58,9 @@ message Resource1InstanceParam {
   
   string str = 1;
   
-  istio.mixer.adapter.myapa.Resource1InstanceParam self_ref_res1 = 3;
+  Resource1InstanceParam self_ref_res1 = 3;
   
-  istio.mixer.adapter.myapa.Resource2InstanceParam resRef2 = 2;
+  Resource2InstanceParam resRef2 = 2;
   
 }
 
@@ -70,11 +68,9 @@ message Resource2InstanceParam {
   
   string str = 1;
   
-  istio.mixer.adapter.myapa.Resource3InstanceParam res3 = 2;
+  Resource3InstanceParam res3 = 2;
   
-  repeated istio.mixer.adapter.myapa.Resource3InstanceParam res3_list = 4;
-  
-  map<string, istio.mixer.adapter.myapa.Resource3InstanceParam> res3_map = 5;
+  map<string, Resource3InstanceParam> res3_map = 3;
   
 }
 
