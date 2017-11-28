@@ -125,7 +125,7 @@ func testApaSimpleTemplateFields(msgInfo MessageInfo, t *testing.T) {
 	testField(t, testFileName, msgInfo,
 		"int64Primitive", TypeInfo{Name: "int64"}, "Int64Primitive", TypeInfo{Name: "int64"}, "")
 
-	// No need to test all the fields since the code is the same as any other variety of template.
+	// No need to test all the fields since the code is the same as any other variety of template, which is already testing inside other tests.
 }
 
 func testSimpleTemplateFields(msgInfo MessageInfo, t *testing.T) {
