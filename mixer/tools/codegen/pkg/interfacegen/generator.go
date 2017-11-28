@@ -27,9 +27,10 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"golang.org/x/tools/imports"
 
+	"regexp"
+
 	tmpl "istio.io/istio/mixer/tools/codegen/pkg/interfacegen/template"
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
-	"regexp"
 )
 
 const (
@@ -173,14 +174,14 @@ func trimPackageName(fullName string, pkgName string) string {
 func (g *Generator) getAugmentedProtoContent(model *modelgen.Model) ([]byte, error) {
 	imports := make([]string, 0)
 
-	var stringify func (protoType modelgen.TypeInfo) string
-	stringify = func (protoType modelgen.TypeInfo) string {
+	var stringify func(protoType modelgen.TypeInfo) string
+	stringify = func(protoType modelgen.TypeInfo) string {
 		if protoType.IsMap {
-		return toProtoMap(stringify(*protoType.MapKey), stringify(*protoType.MapValue))
-	}
+			return toProtoMap(stringify(*protoType.MapKey), stringify(*protoType.MapValue))
+		}
 		if protoType.IsResourceMessage {
-		return trimPackageName(protoType.Name, model.PackageName) + resourceMsgInstParamSuffix
-	}
+			return trimPackageName(protoType.Name, model.PackageName) + resourceMsgInstParamSuffix
+		}
 		return "string"
 	}
 
@@ -193,7 +194,7 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model) ([]byte, err
 					return trimPackageName(protoTypeInfo.Name, model.PackageName) + resourceMsgTypeSuffix
 				}
 				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsResourceMessage {
-					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name, model.PackageName) +resourceMsgTypeSuffix)
+					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name, model.PackageName)+resourceMsgTypeSuffix)
 				}
 				return protoTypeInfo.Name
 			},

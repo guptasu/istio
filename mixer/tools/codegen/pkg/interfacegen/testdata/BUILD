@@ -31,10 +31,10 @@ filegroup(
     name = "descriptors",
     testonly = True,
     srcs = [
+        "apa_proto.descriptor_set",
         "check_proto.descriptor_set",
         "quota_proto.descriptor_set",
         "report_proto.descriptor_set",
-        "apa_proto.descriptor_set",
     ],
 )
 
@@ -42,10 +42,10 @@ filegroup(
     name = "generated_files",
     testonly = True,
     srcs = [
-        "check_handler.gen.go",
-        "check_tmpl.proto",
         "apa_handler.gen.go",
         "apa_tmpl.proto",
+        "check_handler.gen.go",
+        "check_tmpl.proto",
         "quota_handler.gen.go",
         "quota_tmpl.proto",
         "report_handler.gen.go",
@@ -57,10 +57,10 @@ filegroup(
     name = "golden_files",
     testonly = True,
     srcs = [
-        "CheckTmpl.go.golden",
-        "CheckTmpl.golden.proto",
         "ApaTmpl.go.golden",
         "ApaTmpl.golden.proto",
+        "CheckTmpl.go.golden",
+        "CheckTmpl.golden.proto",
         "QuotaTmpl.go.golden",
         "QuotaTmpl.golden.proto",
         "ReportTmpl.go.golden",

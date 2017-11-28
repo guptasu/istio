@@ -38,14 +38,14 @@ func TestErrorInTemplate(t *testing.T) {
 		{"testdata/proto2_bad_syntax.descriptor_set", []string{"Proto2BadSyntax.proto:3: Only proto3 template files are allowed."}},
 		{"testdata/unsupported_field_type_primitive.descriptor_set", []string{"unsupported type for field 'o'. " +
 			"Supported types are 'istio.mixer.v1.config.descriptor.ValueType, string, int64, double, bool, other messages " +
-				"defined within the same package, map<string, any of the listed supported types>"}},
+			"defined within the same package, map<string, any of the listed supported types>"}},
 		{"testdata/unsupported_field_type_as_map.descriptor_set", []string{"unsupported type for field 'o'."}},
 		{"testdata/unsupported_field_type_enum.descriptor_set", []string{"unsupported type for field 'o'."}},
 		{"testdata/wrong_pkg_name.descriptor_set", []string{"WrongPkgName.proto:2: the last segment of package " +
 			"name 'foo.badStrNumbersNotAllowed123' must match the reges '^[a-zA-Z]+$'"}},
 		{"testdata/unsupported_valuetype_in_apa.descriptor_set", []string{"testdata/UnsupportedValueTypeInAPA.proto:12: " +
 			"unsupported type for field 'o'. Supported types are 'string, int64, double, bool, other messages defined " +
-				"within the same package, map<string, any of the listed supported types>'.", "testdata/UnsupportedValueTypeInAPA.proto: message 'OutputTemplate' not defined."}},
+			"within the same package, map<string, any of the listed supported types>'.", "testdata/UnsupportedValueTypeInAPA.proto: message 'OutputTemplate' not defined."}},
 	}
 
 	for idx, tt := range tests {
@@ -116,7 +116,6 @@ func TestApaFields(t *testing.T) {
 	testApaSimpleTemplateFields(model.TemplateMessage, t)
 	testApaSimpleTemplateFields(model.OutputTemplateMessage, t)
 }
-
 
 func testApaSimpleTemplateFields(msgInfo MessageInfo, t *testing.T) {
 	testFileName := "testdata/simple_apa_template"
