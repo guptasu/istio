@@ -172,7 +172,7 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 				valueTypeAllowedInFields,
 				&m.OutputTemplateMessage,
 			)
-			m.TemplateMessage.Name = "OutputTemplate"
+			m.OutputTemplateMessage.Name = "OutputTemplate"
 			m.diags = append(m.diags, diags...)
 		}
 	}

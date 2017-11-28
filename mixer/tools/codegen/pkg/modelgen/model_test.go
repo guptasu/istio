@@ -99,36 +99,57 @@ func TestTypeFields(t *testing.T) {
 	model, _ := createTestModel(t,
 		"testdata/simple_template.descriptor_set")
 
-	testCompleteFieldList(model.TemplateMessage, t)
+	testSimpleTemplateFields(model.TemplateMessage, t)
 	var res3MsgInfo MessageInfo
 	for _, j := range model.ResourceMessages {
 		if j.Name == "Resource3" {
 			res3MsgInfo = j
 		}
 	}
-	testCompleteFieldList(res3MsgInfo, t)
+	testSimpleTemplateFields(res3MsgInfo, t)
 }
 
-func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
-	if len(msgInfo.Fields) != 12 {
-		t.Fatalf("len(CreateModel(%s).TypeMessage.Fields) = %v, wanted %d", "testdata/simple_template", len(msgInfo.Fields), 12)
+func TestApaFields(t *testing.T) {
+	model, _ := createTestModel(t,
+		"testdata/simple_apa_template.descriptor_set")
+
+	testApaSimpleTemplateFields(model.TemplateMessage, t)
+	testApaSimpleTemplateFields(model.OutputTemplateMessage, t)
+}
+
+
+func testApaSimpleTemplateFields(msgInfo MessageInfo, t *testing.T) {
+	testFileName := "testdata/simple_apa_template"
+	if len(msgInfo.Fields) != 7 {
+		t.Fatalf("len(CreateModel(%s).TypeMessage.Fields) = %v, wanted %d", testFileName, len(msgInfo.Fields), 12)
 	}
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
+		"int64Primitive", TypeInfo{Name: "int64"}, "Int64Primitive", TypeInfo{Name: "int64"}, "")
+
+	// No need to test all the fields since the code is the same as any other variety of template.
+}
+
+func testSimpleTemplateFields(msgInfo MessageInfo, t *testing.T) {
+	testFileName := "testdata/simple_template"
+	if len(msgInfo.Fields) != 12 {
+		t.Fatalf("len(CreateModel(%s).TypeMessage.Fields) = %v, wanted %d", testFileName, len(msgInfo.Fields), 12)
+	}
+	testField(t, testFileName, msgInfo,
 		"blacklist", TypeInfo{Name: "bool"}, "Blacklist", TypeInfo{Name: "bool"}, "multi line comment line 2")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"fieldInt64", TypeInfo{Name: "int64"},
 		"FieldInt64", TypeInfo{Name: "int64"}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"fieldString", TypeInfo{Name: "string"},
 		"FieldString", TypeInfo{Name: "string"}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"fieldDouble", TypeInfo{Name: "double"},
 		"FieldDouble", TypeInfo{Name: "float64"}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"val",
 		TypeInfo{Name: "istio.mixer.v1.config.descriptor.ValueType", IsValueType: true}, "Val",
 		TypeInfo{Name: "istio_mixer_v1_config_descriptor.ValueType", IsValueType: true}, "single line block comment")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"dimensions",
 		TypeInfo{Name: "map<string, istio.mixer.v1.config.descriptor.ValueType>",
 			IsMap:    true,
@@ -142,7 +163,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "istio_mixer_v1_config_descriptor.ValueType", IsValueType: true},
 		}, "single line comment")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"dimensionsConstInt64Val",
 		TypeInfo{Name: "map<string, int64>",
 			IsMap:    true,
@@ -156,7 +177,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "int64"},
 		}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"dimensionsConstStringVal",
 		TypeInfo{Name: "map<string, string>",
 			IsMap:    true,
@@ -170,7 +191,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "string"},
 		}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"dimensionsConstBoolVal",
 		TypeInfo{Name: "map<string, bool>",
 			IsMap:    true,
@@ -184,7 +205,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "bool"},
 		}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"dimensionsConstDoubleVal",
 		TypeInfo{Name: "map<string, double>",
 			IsMap:    true,
@@ -198,7 +219,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			MapKey:   &TypeInfo{Name: "string"},
 			MapValue: &TypeInfo{Name: "float64"},
 		}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"res3_list",
 		TypeInfo{Name: "repeated foo.bar.Resource3",
 			IsResourceMessage: true,
@@ -210,7 +231,7 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 			IsResourceMessage: true,
 			IsRepeated:        true,
 		}, "")
-	testField(t, msgInfo.Fields,
+	testField(t, testFileName, msgInfo,
 		"res3_map",
 		TypeInfo{Name: "map<string, foo.bar.Resource3>",
 			IsResourceMessage: false,
@@ -228,25 +249,24 @@ func testCompleteFieldList(msgInfo MessageInfo, t *testing.T) {
 		}, "")
 }
 
-func testField(t *testing.T, fields []FieldInfo, protoFldName string, protoFldType TypeInfo,
+func testField(t *testing.T, testFilename string, msgInfo MessageInfo, protoFldName string, protoFldType TypeInfo,
 	goFldName string, goFldType TypeInfo, comment string) {
-	testFilename := "testdata/simple_template.descriptor_set"
 	found := false
-	for _, cf := range fields {
+	for _, cf := range msgInfo.Fields {
 		if cf.ProtoName == protoFldName {
 			found = true
 			if cf.GoName != goFldName ||
 				!reflect.DeepEqual(cf.ProtoType, protoFldType) ||
 				!reflect.DeepEqual(cf.GoType, goFldType) ||
 				!strings.Contains(cf.Comment, comment) {
-				t.Fatalf("Got CreateModel(%s).TemplateMessage.Fields[%s] = \nGoName:%s, ProtoType:%v, GoType:%v, Comment:%s"+
+				t.Fatalf("Got CreateModel(%s).%s.Fields[%s] = \nGoName:%s, ProtoType:%v, GoType:%v, Comment:%s"+
 					";wanted\nGoName:%s, ProtoType:%v, GoType:%v, comment: %s",
-					testFilename, protoFldName, cf.GoName, cf.ProtoType, cf.GoType, cf.Comment, goFldName, protoFldType, goFldType, comment)
+					testFilename, msgInfo.Name, protoFldName, cf.GoName, cf.ProtoType, cf.GoType, cf.Comment, goFldName, protoFldType, goFldType, comment)
 			}
 		}
 	}
 	if !found {
-		t.Fatalf("CreateModel(%s).TemplateMessage = %v, wanted to contain field with name '%s'", testFilename, fields, protoFldName)
+		t.Fatalf("CreateModel(%s).TemplateMessage = %v, wanted to contain field with name '%s'", testFilename, msgInfo.Fields, protoFldName)
 	}
 }
 
