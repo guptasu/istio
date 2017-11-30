@@ -275,7 +275,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*svcctrlreport.InstanceParam), "")
+				instParam := cp.(*svcctrlreport.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -546,7 +548,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*apikey.InstanceParam), "")
+				instParam := cp.(*apikey.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -684,7 +688,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*checknothing.InstanceParam), "")
+				instParam := cp.(*checknothing.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -782,7 +788,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*listentry.InstanceParam), "")
+				instParam := cp.(*listentry.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -930,7 +938,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*logentry.InstanceParam), "")
+				instParam := cp.(*logentry.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -1108,7 +1118,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*metric.InstanceParam), "")
+				instParam := cp.(*metric.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -1249,7 +1261,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*quota.InstanceParam), "")
+				instParam := cp.(*quota.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -1346,7 +1360,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*reportnothing.InstanceParam), "")
+				instParam := cp.(*reportnothing.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -1507,7 +1523,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*tracespan.InstanceParam), "")
+				instParam := cp.(*tracespan.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {

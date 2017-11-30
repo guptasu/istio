@@ -228,7 +228,25 @@ var (
 				{{end}}
 				{{end}}
 
-                return BuildTemplate(cp.(*{{.GoPackageName}}.InstanceParam), "")
+				instParam := cp.(*{{.GoPackageName}}.InstanceParam)
+				{{if eq $varietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
+				const fullOutName = "{{.GoPackageName}}.output."
+				for attr, exp := range instParam.AttributeBindings {
+					expr := strings.Replace(exp, "$out.", fullOutName, -1)
+					t1, err := tEvalFn(expr)
+					if err != nil {
+						return nil, fmt.Errorf("error evaluating AttributeBinding expression '%s' for attribute '%s': %v", expr, attr, err)
+					}
+					t2, err := tEvalFn(attr)
+					if err != nil {
+						return nil, fmt.Errorf("error evaluating AttributeBinding expression for attribute key '%s': %v", attr, err)
+					}
+					if t1 != t2 {
+						return nil, fmt.Errorf("type '%v' for attribute '%s' does not match type '%s' for expression '%s'", t2, attr, t1, expr)
+					}
+				}
+				{{end}}
+				return BuildTemplate(instParam, "")
 			},
 			{{if ne $varietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {

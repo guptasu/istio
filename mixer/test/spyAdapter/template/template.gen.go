@@ -144,7 +144,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*samplereport.InstanceParam), "")
+				instParam := cp.(*samplereport.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {

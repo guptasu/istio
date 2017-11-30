@@ -347,7 +347,25 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*istio_mixer_adapter_sample_myapa.InstanceParam), "")
+				instParam := cp.(*istio_mixer_adapter_sample_myapa.InstanceParam)
+
+				const fullOutName = "istio_mixer_adapter_sample_myapa.output."
+				for attr, exp := range instParam.AttributeBindings {
+					expr := strings.Replace(exp, "$out.", fullOutName, -1)
+					t1, err := tEvalFn(expr)
+					if err != nil {
+						return nil, fmt.Errorf("error evaluating AttributeBinding expression '%s' for attribute '%s': %v", expr, attr, err)
+					}
+					t2, err := tEvalFn(attr)
+					if err != nil {
+						return nil, fmt.Errorf("error evaluating AttributeBinding expression for attribute key '%s': %v", attr, err)
+					}
+					if t1 != t2 {
+						return nil, fmt.Errorf("type '%v' for attribute '%s' does not match type '%s' for expression '%s'", t2, attr, t1, expr)
+					}
+				}
+
+				return BuildTemplate(instParam, "")
 			},
 
 			AttributeManifests: []*istio_mixer_v1_config.AttributeManifest{
@@ -370,20 +388,12 @@ var (
 							ValueType: istio_mixer_v1_config_descriptor.STRING,
 						},
 
-						"istio_mixer_adapter_sample_myapa.output.dimensionsfixedint64valuedtype": {
-							ValueType: istio_mixer_v1_config_descriptor.VALUE_TYPE_UNSPECIFIED,
-						},
-
 						"istio_mixer_adapter_sample_myapa.output.timestamp": {
 							ValueType: istio_mixer_v1_config_descriptor.TIMESTAMP,
 						},
 
 						"istio_mixer_adapter_sample_myapa.output.duration": {
 							ValueType: istio_mixer_v1_config_descriptor.DURATION,
-						},
-
-						"istio_mixer_adapter_sample_myapa.output.res3_map": {
-							ValueType: istio_mixer_v1_config_descriptor.VALUE_TYPE_UNSPECIFIED,
 						},
 					},
 				},
@@ -732,17 +742,11 @@ var (
 							case "stringprimitive":
 								return out.StringPrimitive, true
 
-							case "dimensionsfixedint64valuedtype":
-								return out.DimensionsFixedInt64ValueDType, true
-
 							case "timestamp":
 								return out.TimeStamp, true
 
 							case "duration":
 								return out.Duration, true
-
-							case "res3_map":
-								return out.Res3Map, true
 
 							default:
 								// FIXME : any fields in output (or its references) that are of type
@@ -1026,7 +1030,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*istio_mixer_adapter_sample_check.InstanceParam), "")
+				instParam := cp.(*istio_mixer_adapter_sample_check.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -1537,7 +1543,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*istio_mixer_adapter_sample_quota.InstanceParam), "")
+				instParam := cp.(*istio_mixer_adapter_sample_quota.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
@@ -2114,7 +2122,9 @@ var (
 
 				}
 
-				return BuildTemplate(cp.(*istio_mixer_adapter_sample_report.InstanceParam), "")
+				instParam := cp.(*istio_mixer_adapter_sample_report.InstanceParam)
+
+				return BuildTemplate(instParam, "")
 			},
 
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
