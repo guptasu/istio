@@ -20,6 +20,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
+	"strings"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/glog"
@@ -28,6 +30,7 @@ import (
 	adptTmpl "istio.io/api/mixer/v1/template"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
+	"istio.io/istio/mixer/pkg/config/proto"
 	"istio.io/istio/mixer/pkg/expr"
 	"istio.io/istio/mixer/pkg/template"
 
@@ -52,7 +55,55 @@ import (
 	"time"
 )
 
+var _ net.IP
+var _ istio_mixer_v1_config.AttributeManifest
+var _ = strings.Reader{}
+
 const emptyQuotes = "\"\""
+
+type wrapperAttr struct {
+	get         getFn
+	names       namesFn
+	done        doneFn
+	debugString debugStringFn
+}
+
+type (
+	getFn         func(name string) (value interface{}, found bool)
+	namesFn       func() []string
+	doneFn        func()
+	debugStringFn func() string
+)
+
+func newWrapperAttrBag(get getFn, names namesFn, done doneFn, debugString debugStringFn) attribute.Bag {
+	return &wrapperAttr{
+		debugString: debugString,
+		done:        done,
+		get:         get,
+		names:       names,
+	}
+}
+
+// Get returns an attribute value.
+func (w *wrapperAttr) Get(name string) (value interface{}, found bool) {
+	return w.get(name)
+}
+
+// Names returns the names of all the attributes known to this bag.
+func (w *wrapperAttr) Names() []string {
+	return w.names()
+}
+
+// Done indicates the bag can be reclaimed.
+func (w *wrapperAttr) Done() {
+	w.done()
+}
+
+// DebugString provides a dump of an attribute Bag that avoids affecting the
+// calculation of referenced attributes.
+func (w *wrapperAttr) DebugString() string {
+	return w.debugString()
+}
 
 var (
 	SupportedTmplInfo = map[string]template.Info{
@@ -77,12 +128,17 @@ var (
 				var BuildTemplate func(param *svcctrlreport.InstanceParam,
 					path string) (*svcctrlreport.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *svcctrlreport.InstanceParam,
 					path string) (*svcctrlreport.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &svcctrlreport.Type{}
+
 					var err error = nil
 
 					if param.ApiVersion == "" || param.ApiVersion == emptyQuotes {
@@ -216,10 +272,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*svcctrlreport.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(svcctrlreport.HandlerBuilder)
@@ -237,6 +295,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *svcctrlreport.InstanceParam, path string) (
 					*svcctrlreport.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *svcctrlreport.InstanceParam, path string) (
@@ -420,12 +479,17 @@ var (
 				var BuildTemplate func(param *apikey.InstanceParam,
 					path string) (*apikey.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *apikey.InstanceParam,
 					path string) (*apikey.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &apikey.Type{}
+
 					var err error = nil
 
 					if param.Api == "" || param.Api == emptyQuotes {
@@ -479,10 +543,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*apikey.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(apikey.HandlerBuilder)
@@ -501,6 +567,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *apikey.InstanceParam, path string) (
 					*apikey.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *apikey.InstanceParam, path string) (
@@ -568,7 +635,8 @@ var (
 					}, nil
 				}
 
-				instance, err := BuildTemplate(instName, inst.(*apikey.InstanceParam), "")
+				instParam := inst.(*apikey.InstanceParam)
+				instance, err := BuildTemplate(instName, instParam, "")
 				if err != nil {
 
 					return adapter.CheckResult{}, err
@@ -599,19 +667,26 @@ var (
 				var BuildTemplate func(param *checknothing.InstanceParam,
 					path string) (*checknothing.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *checknothing.InstanceParam,
 					path string) (*checknothing.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &checknothing.Type{}
+
 					var err error = nil
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*checknothing.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(checknothing.HandlerBuilder)
@@ -630,6 +705,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *checknothing.InstanceParam, path string) (
 					*checknothing.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *checknothing.InstanceParam, path string) (
@@ -647,7 +723,8 @@ var (
 					}, nil
 				}
 
-				instance, err := BuildTemplate(instName, inst.(*checknothing.InstanceParam), "")
+				instParam := inst.(*checknothing.InstanceParam)
+				instance, err := BuildTemplate(instName, instParam, "")
 				if err != nil {
 
 					return adapter.CheckResult{}, err
@@ -678,12 +755,17 @@ var (
 				var BuildTemplate func(param *listentry.InstanceParam,
 					path string) (*listentry.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *listentry.InstanceParam,
 					path string) (*listentry.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &listentry.Type{}
+
 					var err error = nil
 
 					if param.Value == "" || param.Value == emptyQuotes {
@@ -697,10 +779,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*listentry.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(listentry.HandlerBuilder)
@@ -719,6 +803,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *listentry.InstanceParam, path string) (
 					*listentry.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *listentry.InstanceParam, path string) (
@@ -746,7 +831,8 @@ var (
 					}, nil
 				}
 
-				instance, err := BuildTemplate(instName, inst.(*listentry.InstanceParam), "")
+				instParam := inst.(*listentry.InstanceParam)
+				instance, err := BuildTemplate(instName, instParam, "")
 				if err != nil {
 
 					return adapter.CheckResult{}, err
@@ -777,12 +863,17 @@ var (
 				var BuildTemplate func(param *logentry.InstanceParam,
 					path string) (*logentry.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *logentry.InstanceParam,
 					path string) (*logentry.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &logentry.Type{}
+
 					var err error = nil
 
 					infrdType.Variables = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(param.Variables))
@@ -836,10 +927,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*logentry.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(logentry.HandlerBuilder)
@@ -857,6 +950,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *logentry.InstanceParam, path string) (
 					*logentry.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *logentry.InstanceParam, path string) (
@@ -960,12 +1054,17 @@ var (
 				var BuildTemplate func(param *metric.InstanceParam,
 					path string) (*metric.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *metric.InstanceParam,
 					path string) (*metric.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &metric.Type{}
+
 					var err error = nil
 
 					if param.Value == "" || param.Value == emptyQuotes {
@@ -1006,10 +1105,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*metric.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(metric.HandlerBuilder)
@@ -1027,6 +1128,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *metric.InstanceParam, path string) (
 					*metric.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *metric.InstanceParam, path string) (
@@ -1120,12 +1222,17 @@ var (
 				var BuildTemplate func(param *quota.InstanceParam,
 					path string) (*quota.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *quota.InstanceParam,
 					path string) (*quota.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &quota.Type{}
+
 					var err error = nil
 
 					infrdType.Dimensions = make(map[string]istio_mixer_v1_config_descriptor.ValueType, len(param.Dimensions))
@@ -1139,10 +1246,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*quota.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(quota.HandlerBuilder)
@@ -1161,6 +1270,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *quota.InstanceParam, path string) (
 					*quota.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *quota.InstanceParam, path string) (
@@ -1188,7 +1298,8 @@ var (
 					}, nil
 				}
 
-				instance, err := BuildTemplate(instName, inst.(*quota.InstanceParam), "")
+				instParam := inst.(*quota.InstanceParam)
+				instance, err := BuildTemplate(instName, instParam, "")
 				if err != nil {
 					return adapter.QuotaResult{}, err
 
@@ -1218,19 +1329,26 @@ var (
 				var BuildTemplate func(param *reportnothing.InstanceParam,
 					path string) (*reportnothing.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *reportnothing.InstanceParam,
 					path string) (*reportnothing.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &reportnothing.Type{}
+
 					var err error = nil
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*reportnothing.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(reportnothing.HandlerBuilder)
@@ -1248,6 +1366,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *reportnothing.InstanceParam, path string) (
 					*reportnothing.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *reportnothing.InstanceParam, path string) (
@@ -1301,12 +1420,17 @@ var (
 				var BuildTemplate func(param *tracespan.InstanceParam,
 					path string) (*tracespan.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *tracespan.InstanceParam,
 					path string) (*tracespan.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &tracespan.Type{}
+
 					var err error = nil
 
 					if param.TraceId == "" || param.TraceId == emptyQuotes {
@@ -1380,10 +1504,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*tracespan.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(tracespan.HandlerBuilder)
@@ -1401,6 +1527,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *tracespan.InstanceParam, path string) (
 					*tracespan.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *tracespan.InstanceParam, path string) (

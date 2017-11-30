@@ -32,6 +32,7 @@ import (
 	"istio.io/api/mixer/v1/config/descriptor"
 	tmplPkg "istio.io/istio/mixer/tools/codegen/pkg/bootstrapgen/template"
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
+	"errors"
 )
 
 // Generator creates a Go file that will be build inside mixer framework. The generated file contains all the
@@ -77,7 +78,12 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 	tmpl, err := template.New("MixerBootstrap").Funcs(
 		template.FuncMap{
 			"getValueType": func(goType modelgen.TypeInfo) string {
-				return primitiveToValueType[goType.Name]
+				if v, ok := primitiveToValueType[goType.Name]; ok {
+					return v
+				} else {
+					return fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.VALUE_TYPE_UNSPECIFIED.String()
+				}
+
 			},
 			"containsValueTypeOrResMsg": containsValueTypeOrResMsg,
 			"reportTypeUsed": func(ti modelgen.TypeInfo) string {
@@ -123,6 +129,9 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 			"getBuildFnName": func(typeName string) string {
 				return "Build" + typeName
 			},
+			"tolower": func(n string) string {
+				return strings.ToLower(n)
+			},
 		}).Parse(tmplPkg.InterfaceTemplate)
 
 	if err != nil {
@@ -166,9 +175,13 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 		return fmt.Errorf("cannot execute the template with the given data: %v", err)
 	}
 	bytesWithImpts := bytes.Replace(buf.Bytes(), []byte("$$additional_imports$$"), []byte(strings.Join(imprts, "\n")), 1)
+
+	f, err := os.Create(g.OutFilePath)
 	fmtd, err := format.Source(bytesWithImpts)
 	if err != nil {
-		return fmt.Errorf("could not format generated code: %v. Source code is %s", err, buf.String())
+		s := fmt.Sprintf("could not format generated code: %v. Source code is %s", err, buf.String())
+		f.WriteString(s)
+		return errors.New(s)
 	}
 
 	imports.LocalPrefix = "istio.io"
@@ -178,7 +191,7 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 		return fmt.Errorf("could not fix imports for generated code: %v", err)
 	}
 
-	f, err := os.Create(g.OutFilePath)
+
 	if err != nil {
 		return err
 	}

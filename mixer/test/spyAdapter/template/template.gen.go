@@ -20,6 +20,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
+	"strings"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/glog"
@@ -28,13 +30,62 @@ import (
 	adptTmpl "istio.io/api/mixer/v1/template"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
+	"istio.io/istio/mixer/pkg/config/proto"
 	"istio.io/istio/mixer/pkg/expr"
 	"istio.io/istio/mixer/pkg/template"
 
 	"istio.io/istio/mixer/test/spyAdapter/template/report"
 )
 
+var _ net.IP
+var _ istio_mixer_v1_config.AttributeManifest
+var _ = strings.Reader{}
+
 const emptyQuotes = "\"\""
+
+type wrapperAttr struct {
+	get         getFn
+	names       namesFn
+	done        doneFn
+	debugString debugStringFn
+}
+
+type (
+	getFn         func(name string) (value interface{}, found bool)
+	namesFn       func() []string
+	doneFn        func()
+	debugStringFn func() string
+)
+
+func newWrapperAttrBag(get getFn, names namesFn, done doneFn, debugString debugStringFn) attribute.Bag {
+	return &wrapperAttr{
+		debugString: debugString,
+		done:        done,
+		get:         get,
+		names:       names,
+	}
+}
+
+// Get returns an attribute value.
+func (w *wrapperAttr) Get(name string) (value interface{}, found bool) {
+	return w.get(name)
+}
+
+// Names returns the names of all the attributes known to this bag.
+func (w *wrapperAttr) Names() []string {
+	return w.names()
+}
+
+// Done indicates the bag can be reclaimed.
+func (w *wrapperAttr) Done() {
+	w.done()
+}
+
+// DebugString provides a dump of an attribute Bag that avoids affecting the
+// calculation of referenced attributes.
+func (w *wrapperAttr) DebugString() string {
+	return w.debugString()
+}
 
 var (
 	SupportedTmplInfo = map[string]template.Info{
@@ -59,12 +110,17 @@ var (
 				var BuildTemplate func(param *samplereport.InstanceParam,
 					path string) (*samplereport.Type, error)
 
+				_ = BuildTemplate
+
 				BuildTemplate = func(param *samplereport.InstanceParam,
 					path string) (*samplereport.Type, error) {
+
 					if param == nil {
 						return nil, nil
 					}
+
 					infrdType := &samplereport.Type{}
+
 					var err error = nil
 
 					if param.Value == "" || param.Value == emptyQuotes {
@@ -85,10 +141,12 @@ var (
 					}
 
 					return infrdType, err
+
 				}
 
 				return BuildTemplate(cp.(*samplereport.InstanceParam), "")
 			},
+
 			SetType: func(types map[string]proto.Message, builder adapter.HandlerBuilder) {
 				// Mixer framework should have ensured the type safety.
 				castedBuilder := builder.(samplereport.HandlerBuilder)
@@ -106,6 +164,7 @@ var (
 				var BuildTemplate func(instName string,
 					param *samplereport.InstanceParam, path string) (
 					*samplereport.Instance, error)
+				_ = BuildTemplate
 
 				BuildTemplate = func(instName string,
 					param *samplereport.InstanceParam, path string) (

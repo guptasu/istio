@@ -10,11 +10,13 @@ mixer_supported_template_library(
         "//mixer/template/sample/report:go_default_library_proto.descriptor_set": "istio.io/istio/mixer/template/sample/report",
         "//mixer/template/sample/check:go_default_library_proto.descriptor_set": "istio.io/istio/mixer/template/sample/check",
         "//mixer/template/sample/quota:go_default_library_proto.descriptor_set": "istio.io/istio/mixer/template/sample/quota",
+        "//mixer/template/sample/apa:go_default_library_proto.descriptor_set": "istio.io/istio/mixer/template/sample/apa",
     },
     deps = [
         "//mixer/template/sample/check:go_default_library",
         "//mixer/template/sample/quota:go_default_library",
         "//mixer/template/sample/report:go_default_library",
+        "//mixer/template/sample/apa:go_default_library",
     ],
 )
 
@@ -33,6 +35,7 @@ go_test(
         "//mixer/template/sample/check:go_default_library",
         "//mixer/template/sample/quota:go_default_library",
         "//mixer/template/sample/report:go_default_library",
+        "//mixer/template/sample/apa:go_default_library",
         "@com_github_davecgh_go_spew//spew:go_default_library",
         "@com_github_ghodss_yaml//:go_default_library",
         "@com_github_gogo_protobuf//proto:go_default_library",

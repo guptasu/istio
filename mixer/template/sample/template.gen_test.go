@@ -33,10 +33,10 @@ import (
 	adpTmpl "istio.io/api/mixer/v1/template"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
-	"istio.io/istio/mixer/pkg/config/descriptor"
 	"istio.io/istio/mixer/pkg/config/proto"
 	"istio.io/istio/mixer/pkg/expr"
 	"istio.io/istio/mixer/pkg/il/evaluator"
+	"istio.io/istio/mixer/template/sample/apa"
 	sample_check "istio.io/istio/mixer/template/sample/check"
 	sample_quota "istio.io/istio/mixer/template/sample/quota"
 	sample_report "istio.io/istio/mixer/template/sample/report"
@@ -72,6 +72,28 @@ func (h *fakeReportHandler) SetReportTypes(t map[string]*sample_report.Type) {
 }
 func (h *fakeReportHandler) Validate() *adapter.ConfigErrors     { return nil }
 func (h *fakeReportHandler) SetAdapterConfig(cfg adapter.Config) {}
+
+type fakeMyApaHandler struct {
+	adapter.Handler
+	retOutput     *istio_mixer_adapter_sample_myapa.Output
+	retError      error
+	cnfgCallInput interface{}
+	procCallInput interface{}
+}
+
+var _ istio_mixer_adapter_sample_myapa.Handler = &fakeMyApaHandler{}
+
+func (h *fakeMyApaHandler) Close() error { return nil }
+func (h *fakeMyApaHandler) GenerateMyApaAttributes(ctx context.Context, instance *istio_mixer_adapter_sample_myapa.Instance) (*istio_mixer_adapter_sample_myapa.Output, error) {
+	h.procCallInput = instance
+	return h.retOutput, h.retError
+}
+
+func (h *fakeMyApaHandler) Build(context.Context, adapter.Env) (adapter.Handler, error) {
+	return nil, nil
+}
+func (h *fakeMyApaHandler) Validate() *adapter.ConfigErrors     { return nil }
+func (h *fakeMyApaHandler) SetAdapterConfig(cfg adapter.Config) {}
 
 type fakeCheckHandler struct {
 	adapter.Handler
@@ -788,11 +810,12 @@ func TestSetType(t *testing.T) {
 }
 
 type fakeExpr struct {
+	extraAttrManifest []*istio_mixer_v1_config.AttributeManifest
 }
 
 // newFakeExpr returns the basic
-func newFakeExpr() *fakeExpr {
-	return &fakeExpr{}
+func newFakeExpr(extraAttrManifest []*istio_mixer_v1_config.AttributeManifest) *fakeExpr {
+	return &fakeExpr{extraAttrManifest: extraAttrManifest}
 }
 
 // Eval evaluates given expression using the attribute bag
@@ -818,7 +841,7 @@ func (e *fakeExpr) Eval(mapExpression string, attrs attribute.Bag) (interface{},
 		return time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC), nil
 	}
 	ev, _ := evaluator.NewILEvaluator(1024, 1024)
-	ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
+	ev.ChangeVocabulary(createAttributeDescriptorFinder(e.extraAttrManifest))
 	return ev.Eval(expr2, attrs)
 }
 
@@ -843,11 +866,30 @@ var baseConfig = istio_mixer_v1_config.GlobalConfig{
 	},
 }
 
-// EvalString evaluates given expression using the attribute bag to a string
-func (e *fakeExpr) EvalString(ex string, attrs attribute.Bag) (string, error) {
-	ev, _ := evaluator.NewILEvaluator(1024, 1024)
-	ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
-	return ev.EvalString(ex, attrs)
+// attributeFinder exposes expr.AttributeDescriptorFinder
+type attributeFinder struct {
+	attrs map[string]*istio_mixer_v1_config.AttributeManifest_AttributeInfo
+}
+
+// GetAttribute finds an attribute by name.
+// This function is only called when a new handler is instantiated.
+func (a attributeFinder) GetAttribute(name string) *istio_mixer_v1_config.AttributeManifest_AttributeInfo {
+	return a.attrs[name]
+}
+
+func createAttributeDescriptorFinder(extraAttrManifest []*istio_mixer_v1_config.AttributeManifest) expr.AttributeDescriptorFinder {
+	attrs := make(map[string]*istio_mixer_v1_config.AttributeManifest_AttributeInfo)
+	for _, m := range baseConfig.Manifests {
+		for an, at := range m.Attributes {
+			attrs[an] = at
+		}
+	}
+	for _, m := range extraAttrManifest {
+		for an, at := range m.Attributes {
+			attrs[an] = at
+		}
+	}
+	return &attributeFinder{attrs: attrs}
 }
 
 // EvalPredicate evaluates given predicate using the attribute bag
@@ -1116,7 +1158,7 @@ func TestProcessReport(t *testing.T) {
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
-			err := SupportedTmplInfo[sample_report.TemplateName].ProcessReport(context.TODO(), tst.insts, fakeBag{}, newFakeExpr(), *h)
+			err := SupportedTmplInfo[sample_report.TemplateName].ProcessReport(context.TODO(), tst.insts, fakeBag{}, newFakeExpr(nil), *h)
 
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
@@ -1230,7 +1272,7 @@ func TestProcessCheck(t *testing.T) {
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
-			res, err := SupportedTmplInfo[sample_check.TemplateName].ProcessCheck(context.TODO(), tst.instName, tst.inst, fakeBag{}, newFakeExpr(), *h)
+			res, err := SupportedTmplInfo[sample_check.TemplateName].ProcessCheck(context.TODO(), tst.instName, tst.inst, fakeBag{}, newFakeExpr(nil), *h)
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
 					t.Errorf("ProcessCheckSample got error = %s, want %s", err.Error(), tst.wantError)
@@ -1356,10 +1398,8 @@ func TestProcessQuota(t *testing.T) {
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
-			ev, _ := evaluator.NewILEvaluator(evaluator.DefaultCacheSize, evaluator.DefaultMaxStringTableSizeForPurge)
-			ev.ChangeVocabulary(descriptor.NewFinder(&baseConfig))
 			res, err := SupportedTmplInfo[sample_quota.TemplateName].ProcessQuota(context.TODO(), tst.instName,
-				tst.inst, fakeBag{}, newFakeExpr(), *h, adapter.QuotaArgs{})
+				tst.inst, fakeBag{}, newFakeExpr(nil), *h, adapter.QuotaArgs{})
 
 			if tst.wantError != "" {
 				if !strings.Contains(err.Error(), tst.wantError) {
@@ -1373,6 +1413,85 @@ func TestProcessQuota(t *testing.T) {
 				}
 				if !reflect.DeepEqual(tst.wantQuotaResult, res) {
 					t.Errorf("ProcessQuotaSample result = %v want %v", res, spew.Sdump(tst.wantQuotaResult))
+				}
+			}
+		})
+	}
+}
+
+func TestProcessApa(t *testing.T) {
+	for _, tst := range []struct {
+		name         string
+		instName     string
+		instParam    proto.Message
+		hdlr         adapter.Handler
+		wantOutAttrs map[string]interface{}
+		wantError    string
+	}{
+		{
+			name:     "Valid",
+			instName: "foo",
+			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam{
+				BoolPrimitive:                  "true",
+				DoublePrimitive:                "1.2",
+				Int64Primitive:                 "54362",
+				StringPrimitive:                `"mystring"`,
+				TimeStamp:                      "request.timestamp",
+				Duration:                       "request.duration",
+				DimensionsFixedInt64ValueDType: map[string]string{"a": "1"},
+				AttributeBindings: map[string]string{
+					"source.myint64Primitive":  "$out.int64Primitive",
+					"source.myboolPrimitive":   "$out.boolPrimitive",
+					"source.mydoublePrimitive": "$out.doublePrimitive",
+					"source.mystring":          "$out.stringPrimitive",
+					"source.mytimeStamp":       "$out.timeStamp",
+					"source.myduration":        "$out.duration",
+				},
+			},
+			hdlr: &fakeMyApaHandler{
+				retOutput: &istio_mixer_adapter_sample_myapa.Output{
+					BoolPrimitive:   true,
+					DoublePrimitive: 1237,
+					StringPrimitive: "1237",
+					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+					Duration:        10 * time.Second,
+					Int64Primitive:  1237,
+				},
+			},
+			wantOutAttrs: map[string]interface{}{
+				"source.mystring":          "1237",
+				"source.mytimeStamp":       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+				"source.myduration":        10 * time.Second,
+				"source.myint64Primitive":  int64(1237),
+				"source.myboolPrimitive":   true,
+				"source.mydoublePrimitive": float64(1237),
+			},
+		},
+	} {
+		t.Run(tst.name, func(t *testing.T) {
+			h := &tst.hdlr
+			returnAttr, err := SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].ProcessGenAttrs(
+				context.TODO(),
+				tst.instName,
+				tst.instParam,
+				fakeBag{},
+				newFakeExpr(SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].AttributeManifests),
+				*h)
+			if tst.wantError != "" {
+				if !strings.Contains(err.Error(), tst.wantError) {
+					t.Errorf("TestProcessApa got error = %s, want %s", err.Error(), tst.wantError)
+				}
+			} else {
+				//v := (*h).(*fakeMyApaHandler).procCallInput
+				if len(returnAttr.Names()) != len(tst.wantOutAttrs) {
+					t.Fatalf("Apa handler "+
+						"return attrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
+				}
+				for k, v := range tst.wantOutAttrs {
+					if x, _ := returnAttr.Get(k); x != v {
+						t.Errorf("Apa handler "+
+							"return attattrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
+					}
 				}
 			}
 		})
