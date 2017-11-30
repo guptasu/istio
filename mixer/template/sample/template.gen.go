@@ -354,35 +354,35 @@ var (
 				{
 					Attributes: map[string]*istio_mixer_v1_config.AttributeManifest_AttributeInfo{
 
-						"istio_mixer_adapter_sample_myapa.int64primitive": {
+						"istio_mixer_adapter_sample_myapa.output.int64primitive": {
 							ValueType: istio_mixer_v1_config_descriptor.INT64,
 						},
 
-						"istio_mixer_adapter_sample_myapa.boolprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.boolprimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.BOOL,
 						},
 
-						"istio_mixer_adapter_sample_myapa.doubleprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.doubleprimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.DOUBLE,
 						},
 
-						"istio_mixer_adapter_sample_myapa.stringprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.stringprimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.STRING,
 						},
 
-						"istio_mixer_adapter_sample_myapa.dimensionsfixedint64valuedtype": {
+						"istio_mixer_adapter_sample_myapa.output.dimensionsfixedint64valuedtype": {
 							ValueType: istio_mixer_v1_config_descriptor.VALUE_TYPE_UNSPECIFIED,
 						},
 
-						"istio_mixer_adapter_sample_myapa.timestamp": {
+						"istio_mixer_adapter_sample_myapa.output.timestamp": {
 							ValueType: istio_mixer_v1_config_descriptor.TIMESTAMP,
 						},
 
-						"istio_mixer_adapter_sample_myapa.duration": {
+						"istio_mixer_adapter_sample_myapa.output.duration": {
 							ValueType: istio_mixer_v1_config_descriptor.DURATION,
 						},
 
-						"istio_mixer_adapter_sample_myapa.res3_map": {
+						"istio_mixer_adapter_sample_myapa.output.res3_map": {
 							ValueType: istio_mixer_v1_config_descriptor.VALUE_TYPE_UNSPECIFIED,
 						},
 					},
