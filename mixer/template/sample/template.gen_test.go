@@ -867,6 +867,21 @@ var baseConfig = istio_mixer_v1_config.GlobalConfig{
 				"source.bool": {
 					ValueType: pb.BOOL,
 				},
+				"source.double": {
+					ValueType: pb.DOUBLE,
+				},
+				"source.string": {
+					ValueType: pb.STRING,
+				},
+				"source.timestamp": {
+					ValueType: pb.TIMESTAMP,
+				},
+				"source.duration": {
+					ValueType: pb.DURATION,
+				},
+				"source.ip": {
+					ValueType: pb.IP_ADDRESS,
+				},
 			},
 		},
 	},
@@ -1430,7 +1445,6 @@ func TestProcessQuota(t *testing.T) {
 	}
 }
 
-
 func TestInferTypeForApa(t *testing.T) {
 	for _, tst := range []inferTypeTest{
 		{
@@ -1446,216 +1460,101 @@ dimensionsFixedInt64ValueDType:
 timeStamp: source.timestamp
 duration: source.duration
 attribute_bindings:
-  source.ip: $out.int64Primitive
+  source.int64: $out.int64Primitive
+  source.bool: $out.boolPrimitive
+  source.double: $out.doublePrimitive
+  source.string: $out.stringPrimitive
+  source.timestamp: $out.timeStamp
+  source.duration: $out.duration
 `,
 			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
 			typeEvalError: nil,
 			wantErr:       "",
 			willPanic:     false,
-			//wantType: &sample_report.Type{
-			//	Value:      pb.INT64,
-			//	Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
-			//},
 		},
-//		{
-//			name: "ValidWithSubmsg",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//res1:
-//  value: source.int64
-//  int64Primitive: source.int64
-//  boolPrimitive: source.bool
-//  doublePrimitive: source.double
-//  stringPrimitive: source.string
-//  timeStamp: source.timestamp
-//  duration: source.duration
-//  dimensions:
-//    source: source.string
-//    target: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "",
-//			willPanic:     false,
-//			wantType: &sample_report.Type{
-//				Value:      pb.INT64,
-//				Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
-//				Res1: &sample_report.Res1Type{
-//					Value:      pb.INT64,
-//					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
-//					Res2Map:    map[string]*sample_report.Res2Type{},
-//				},
-//			},
-//		},
-//		{
-//			name: "MissingAField",
-//			ctrCnfg: `
-//value: source.int64
-//# int64Primitive: source.int64 # missing int64Primitive
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "expression for field 'Int64Primitive' cannot be empty",
-//			willPanic:     false,
-//		},
-//		{
-//			name: "MissingAFieldSubMsg",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//res1:
-//  value: source.int64
-//  # int64Primitive: source.int64 # missing int64Primitive
-//  boolPrimitive: source.bool
-//  doublePrimitive: source.double
-//  stringPrimitive: source.string
-//  timeStamp: source.timestamp
-//  duration: source.duration
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "expression for field 'Res1.Int64Primitive' cannot be empty",
-//			willPanic:     false,
-//		},
-//		{
-//			name: "InferredTypeNotMatchStaticType",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.double # Double does not match string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "error type checking for field 'StringPrimitive': Evaluated expression type DOUBLE want STRING",
-//			willPanic:     false,
-//		},
-//		{
-//			name: "InferredTypeNotMatchStaticTypeSubMsg",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//res1:
-//  value: source.int64
-//  int64Primitive: source.int64
-//  boolPrimitive: source.bool
-//  doublePrimitive: source.double
-//  stringPrimitive: source.double # Double does not match string
-//  timeStamp: source.timestamp
-//  duration: source.duration
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "error type checking for field 'Res1.StringPrimitive': Evaluated expression type DOUBLE want STRING",
-//			willPanic:     false,
-//		},
-//		{
-//			name: "EmptyString",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: '""'
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "expression for field 'StringPrimitive' cannot be empty",
-//			willPanic:     false,
-//		},
-//
-//		{
-//			name: "EmptyStringSubMsg",
-//			ctrCnfg: `
-//value: source.int64
-//int64Primitive: source.int64
-//boolPrimitive: source.bool
-//doublePrimitive: source.double
-//stringPrimitive: source.string
-//timeStamp: source.timestamp
-//duration: source.duration
-//dimensions:
-//  source: source.string
-//  target: source.string
-//res1:
-//  value: source.int64
-//  int64Primitive: source.int64
-//  boolPrimitive: source.bool
-//  doublePrimitive: source.double
-//  stringPrimitive: '""'
-//  timeStamp: source.timestamp
-//  duration: source.duration
-//  dimensions:
-//    source: source.string
-//    target: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: nil,
-//			wantErr:       "expression for field 'Res1.StringPrimitive' cannot be empty",
-//			willPanic:     false,
-//		},
-//		{
-//			name:      "NotValidInstanceParam",
-//			ctrCnfg:   ``,
-//			cstrParam: &empty.Empty{}, // cnstr type mismatch
-//			wantErr:   "is not of type",
-//			willPanic: true,
-//		},
-//		{
-//			name: "ErrorFromTypeEvaluator",
-//			ctrCnfg: `
-//value: response.int64
-//dimensions:
-//  source: source.string
-//`,
-//			cstrParam:     &sample_report.InstanceParam{},
-//			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
-//			wantErr:       "some expression x.y.z is invalid",
-//		},
+		{
+			name: "InferredTypeNotMatchStaticType",
+			instYamlCfg: `
+int64Primitive: source.timeStamp
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+dimensionsFixedInt64ValueDType:
+ d1: source.int64
+ d1: source.int64
+timeStamp: source.timestamp
+duration: source.duration
+attribute_bindings:
+  source.int64: $out.int64Primitive
+`,
+			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "type checking for field 'Int64Primitive': Evaluated expression type VALUE_TYPE_UNSPECIFIED want INT64",
+			willPanic:     false,
+		},
+		{
+			name: "InferredTypeNotMatchInAttrBinding",
+			instYamlCfg: `
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+dimensionsFixedInt64ValueDType:
+ d1: source.int64
+ d1: source.int64
+timeStamp: source.timestamp
+duration: source.duration
+attribute_bindings:
+  source.int64: $out.timeStamp
+`,
+			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
+			typeEvalError: nil,
+			wantErr: "type 'INT64' for attribute 'source.int64' does not match type 'TIMESTAMP' for expression " +
+				"'istio_mixer_adapter_sample_myapa.output.timeStamp'",
+			willPanic: false,
+		},
+		{
+			name: "InferredTypeAttrNotFoundInAttrBinding",
+			instYamlCfg: `
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+dimensionsFixedInt64ValueDType:
+ d1: source.int64
+ d1: source.int64
+timeStamp: source.timestamp
+duration: source.duration
+attribute_bindings:
+  source.notfound: $out.timeStamp
+`,
+			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
+			typeEvalError: nil,
+			wantErr: "type 'VALUE_TYPE_UNSPECIFIED' for attribute 'source.notfound' does not match type 'TIMESTAMP' " +
+				"for expression 'istio_mixer_adapter_sample_myapa.output.timeStamp'",
+			willPanic: false,
+		},
+		{
+			name: "InferredTypeAttrNotFoundInAttrBindingOutExpr",
+			instYamlCfg: `
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+dimensionsFixedInt64ValueDType:
+ d1: source.int64
+ d1: source.int64
+timeStamp: source.timestamp
+duration: source.duration
+attribute_bindings:
+  source.int64: $out.notfound
+`,
+			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
+			typeEvalError: nil,
+			wantErr: "type 'INT64' for attribute 'source.int64' does not match type 'VALUE_TYPE_UNSPECIFIED' for " +
+				"expression 'istio_mixer_adapter_sample_myapa.output.notfound'",
+			willPanic: false,
+		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
@@ -1673,7 +1572,7 @@ attribute_bindings:
 				}
 			}()
 			ex := newFakeExpr(SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].AttributeManifests)
-			cv, cerr := SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].InferType(cp.(proto.Message), func (s string) (pb.ValueType, error) {
+			cv, cerr := SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].InferType(cp.(proto.Message), func(s string) (pb.ValueType, error) {
 				return ex.EvalType(s, createAttributeDescriptorFinder(SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].AttributeManifests))
 			})
 			if tst.wantErr == "" {
@@ -1697,6 +1596,7 @@ func TestProcessApa(t *testing.T) {
 		name         string
 		instName     string
 		instParam    proto.Message
+		wantInstance interface{}
 		hdlr         adapter.Handler
 		wantOutAttrs map[string]interface{}
 		wantError    string
@@ -1712,6 +1612,16 @@ func TestProcessApa(t *testing.T) {
 				TimeStamp:                      "request.timestamp",
 				Duration:                       "request.duration",
 				DimensionsFixedInt64ValueDType: map[string]string{"a": "1"},
+				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3InstanceParam{
+					"source2": {
+						BoolPrimitive:   "true",
+						DoublePrimitive: "1.2",
+						Int64Primitive:  "54362",
+						StringPrimitive: `"mystring"`,
+						TimeStamp:       "request.timestamp",
+						Duration:        "request.duration",
+					},
+				},
 				AttributeBindings: map[string]string{
 					"source.myint64Primitive":  "$out.int64Primitive",
 					"source.myboolPrimitive":   "$out.boolPrimitive",
@@ -1739,6 +1649,27 @@ func TestProcessApa(t *testing.T) {
 				"source.myboolPrimitive":   true,
 				"source.mydoublePrimitive": float64(1237),
 			},
+			wantInstance: &istio_mixer_adapter_sample_myapa.Instance{
+				Name:                           "foo",
+				BoolPrimitive:                  true,
+				DoublePrimitive:                1.2,
+				Int64Primitive:                 54362,
+				StringPrimitive:                "mystring",
+				TimeStamp:                      time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+				Duration:                       10 * time.Second,
+				DimensionsFixedInt64ValueDType: map[string]int64{"a": int64(1)},
+				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3{
+					"source2": {
+						BoolPrimitive:                  true,
+						DoublePrimitive:                1.2,
+						Int64Primitive:                 54362,
+						StringPrimitive:                "mystring",
+						TimeStamp:                      time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+						Duration:                       10 * time.Second,
+						DimensionsFixedInt64ValueDType: map[string]int64{},
+					},
+				},
+			},
 		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
@@ -1755,7 +1686,12 @@ func TestProcessApa(t *testing.T) {
 					t.Errorf("TestProcessApa got error = %s, want %s", err.Error(), tst.wantError)
 				}
 			} else {
-				//v := (*h).(*fakeMyApaHandler).procCallInput
+				v := (*h).(*fakeMyApaHandler).procCallInput
+				if !reflect.DeepEqual(v, tst.wantInstance) {
+					t.Errorf("Apa handler "+
+						"invoked value = %v want %v", spew.Sdump(v), spew.Sdump(tst.wantInstance))
+				}
+
 				if len(returnAttr.Names()) != len(tst.wantOutAttrs) {
 					t.Fatalf("Apa handler "+
 						"return attrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))

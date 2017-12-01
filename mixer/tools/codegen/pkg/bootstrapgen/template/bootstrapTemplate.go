@@ -242,7 +242,9 @@ var (
 						return nil, fmt.Errorf("error evaluating AttributeBinding expression for attribute key '%s': %v", attr, err)
 					}
 					if t1 != t2 {
-						return nil, fmt.Errorf("type '%v' for attribute '%s' does not match type '%s' for expression '%s'", t2, attr, t1, expr)
+						return nil, fmt.Errorf(
+						"error evaluating AttributeBinding: type '%v' for attribute '%s' does not match type '%s' for expression '%s'",
+							t2, attr, t1, expr)
 					}
 				}
 				{{end}}
