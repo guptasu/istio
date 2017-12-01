@@ -267,7 +267,7 @@ var (
 				{
 					Attributes: map[string]*istio_mixer_v1_config.AttributeManifest_AttributeInfo{
 						{{range .OutputTemplateMessage.Fields}}
-						"{{$goPkgName}}.output.{{tolower .ProtoName}}": {
+						"{{$goPkgName}}.output.{{.ProtoName}}": {
 							ValueType: {{getValueType .GoType}},
 						},
 						{{end}}
@@ -402,7 +402,7 @@ var (
 							if len(field) != len(name) {
 								switch field {
 									{{range .OutputTemplateMessage.Fields}}
-									case "{{tolower .ProtoName}}":
+									case "{{.ProtoName}}":
 										return out.{{.GoName}}, true
 									{{end}}
 									default:

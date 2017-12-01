@@ -129,9 +129,6 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 			"getBuildFnName": func(typeName string) string {
 				return "Build" + typeName
 			},
-			"tolower": func(n string) string {
-				return strings.ToLower(n)
-			},
 		}).Parse(tmplPkg.InterfaceTemplate)
 
 	if err != nil {

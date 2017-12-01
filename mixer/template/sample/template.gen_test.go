@@ -292,7 +292,7 @@ func TestBuilderSupportsTemplate(t *testing.T) {
 
 type inferTypeTest struct {
 	name          string
-	ctrCnfg       string
+	instYamlCfg   string
 	cstrParam     interface{}
 	typeEvalError error
 	wantErr       string
@@ -330,7 +330,7 @@ func TestInferTypeForSampleReport(t *testing.T) {
 	for _, tst := range []inferTypeTest{
 		{
 			name: "Valid",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -353,7 +353,7 @@ dimensions:
 		},
 		{
 			name: "ValidWithSubmsg",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -392,7 +392,7 @@ res1:
 		},
 		{
 			name: "MissingAField",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 # int64Primitive: source.int64 # missing int64Primitive
 boolPrimitive: source.bool
@@ -411,7 +411,7 @@ dimensions:
 		},
 		{
 			name: "MissingAFieldSubMsg",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -438,7 +438,7 @@ res1:
 		},
 		{
 			name: "InferredTypeNotMatchStaticType",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -457,7 +457,7 @@ dimensions:
 		},
 		{
 			name: "InferredTypeNotMatchStaticTypeSubMsg",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -484,7 +484,7 @@ res1:
 		},
 		{
 			name: "EmptyString",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -504,7 +504,7 @@ dimensions:
 
 		{
 			name: "EmptyStringSubMsg",
-			ctrCnfg: `
+			instYamlCfg: `
 value: source.int64
 int64Primitive: source.int64
 boolPrimitive: source.bool
@@ -533,15 +533,15 @@ res1:
 			willPanic:     false,
 		},
 		{
-			name:      "NotValidInstanceParam",
-			ctrCnfg:   ``,
-			cstrParam: &empty.Empty{}, // cnstr type mismatch
-			wantErr:   "is not of type",
-			willPanic: true,
+			name:        "NotValidInstanceParam",
+			instYamlCfg: ``,
+			cstrParam:   &empty.Empty{}, // cnstr type mismatch
+			wantErr:     "is not of type",
+			willPanic:   true,
 		},
 		{
 			name: "ErrorFromTypeEvaluator",
-			ctrCnfg: `
+			instYamlCfg: `
 value: response.int64
 dimensions:
   source: source.string
@@ -553,7 +553,7 @@ dimensions:
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			err := fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.instYamlCfg, cp)
 			if err != nil {
 				t.Fatalf("cannot load yaml %v", err)
 			}
@@ -588,7 +588,7 @@ func TestInferTypeForSampleCheck(t *testing.T) {
 	for _, tst := range []inferTypeTest{
 		{
 			name: "SimpleValid",
-			ctrCnfg: `
+			instYamlCfg: `
 check_expression: source.string
 timeStamp: source.timestamp
 duration: source.duration
@@ -629,15 +629,15 @@ res1:
 			},
 		},
 		{
-			name:      "NotValidInstanceParam",
-			ctrCnfg:   ``,
-			cstrParam: &empty.Empty{}, // cnstr type mismatch
-			willPanic: true,
+			name:        "NotValidInstanceParam",
+			instYamlCfg: ``,
+			cstrParam:   &empty.Empty{}, // cnstr type mismatch
+			willPanic:   true,
 		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			err := fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.instYamlCfg, cp)
 			if err != nil {
 				t.Fatalf("cannot load yaml %v", err)
 			}
@@ -675,7 +675,7 @@ func TestInferTypeForSampleQuota(t *testing.T) {
 	for _, tst := range []inferTypeTest{
 		{
 			name: "SimpleValid",
-			ctrCnfg: `
+			instYamlCfg: `
 timeStamp: source.timestamp
 duration: source.duration
 dimensions:
@@ -706,15 +706,15 @@ res1:
 			},
 		},
 		{
-			name:      "NotValidInstanceParam",
-			ctrCnfg:   ``,
-			cstrParam: &empty.Empty{}, // cnstr type mismatch
-			wantErr:   "is not of type",
-			willPanic: true,
+			name:        "NotValidInstanceParam",
+			instYamlCfg: ``,
+			cstrParam:   &empty.Empty{}, // cnstr type mismatch
+			wantErr:     "is not of type",
+			willPanic:   true,
 		},
 		{
 			name: "ErrorFromTypeEvaluator",
-			ctrCnfg: `
+			instYamlCfg: `
 timeStamp: source.timestamp
 duration: source.duration
 dimensions:
@@ -727,7 +727,7 @@ dimensions:
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			cp := tst.cstrParam
-			err := fillProto(tst.ctrCnfg, cp)
+			err := fillProto(tst.instYamlCfg, cp)
 			if err != nil {
 				t.Fatalf("cannot load yaml %v", err)
 			}
@@ -820,7 +820,7 @@ func newFakeExpr(extraAttrManifest []*istio_mixer_v1_config.AttributeManifest) *
 
 // Eval evaluates given expression using the attribute bag
 func (e *fakeExpr) Eval(mapExpression string, attrs attribute.Bag) (interface{}, error) {
-	expr2 := strings.ToLower(mapExpression)
+	expr2 := mapExpression
 
 	if strings.HasSuffix(expr2, "string") {
 		return "", nil
@@ -861,6 +861,12 @@ var baseConfig = istio_mixer_v1_config.GlobalConfig{
 				"int64.absent": {
 					ValueType: pb.INT64,
 				},
+				"source.int64": {
+					ValueType: pb.INT64,
+				},
+				"source.bool": {
+					ValueType: pb.BOOL,
+				},
 			},
 		},
 	},
@@ -897,8 +903,13 @@ func (e *fakeExpr) EvalPredicate(mapExpression string, attrs attribute.Bag) (boo
 	return true, nil
 }
 
-func (e *fakeExpr) EvalType(string, expr.AttributeDescriptorFinder) (pb.ValueType, error) {
-	return pb.VALUE_TYPE_UNSPECIFIED, nil
+func (e *fakeExpr) EvalType(s string, af expr.AttributeDescriptorFinder) (pb.ValueType, error) {
+	//return pb.VALUE_TYPE_UNSPECIFIED, nil
+	if i := af.GetAttribute(s); i != nil {
+		return i.ValueType, nil
+	} else {
+		return pb.VALUE_TYPE_UNSPECIFIED, nil
+	}
 }
 func (e *fakeExpr) AssertType(string, expr.AttributeDescriptorFinder, pb.ValueType) error {
 	return nil
@@ -1413,6 +1424,268 @@ func TestProcessQuota(t *testing.T) {
 				}
 				if !reflect.DeepEqual(tst.wantQuotaResult, res) {
 					t.Errorf("ProcessQuotaSample result = %v want %v", res, spew.Sdump(tst.wantQuotaResult))
+				}
+			}
+		})
+	}
+}
+
+
+func TestInferTypeForApa(t *testing.T) {
+	for _, tst := range []inferTypeTest{
+		{
+			name: "Valid",
+			instYamlCfg: `
+int64Primitive: source.int64
+boolPrimitive: source.bool
+doublePrimitive: source.double
+stringPrimitive: source.string
+dimensionsFixedInt64ValueDType:
+ d1: source.int64
+ d1: source.int64
+timeStamp: source.timestamp
+duration: source.duration
+attribute_bindings:
+  source.ip: $out.int64Primitive
+`,
+			cstrParam:     &istio_mixer_adapter_sample_myapa.InstanceParam{},
+			typeEvalError: nil,
+			wantErr:       "",
+			willPanic:     false,
+			//wantType: &sample_report.Type{
+			//	Value:      pb.INT64,
+			//	Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+			//},
+		},
+//		{
+//			name: "ValidWithSubmsg",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//res1:
+//  value: source.int64
+//  int64Primitive: source.int64
+//  boolPrimitive: source.bool
+//  doublePrimitive: source.double
+//  stringPrimitive: source.string
+//  timeStamp: source.timestamp
+//  duration: source.duration
+//  dimensions:
+//    source: source.string
+//    target: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "",
+//			willPanic:     false,
+//			wantType: &sample_report.Type{
+//				Value:      pb.INT64,
+//				Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+//				Res1: &sample_report.Res1Type{
+//					Value:      pb.INT64,
+//					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+//					Res2Map:    map[string]*sample_report.Res2Type{},
+//				},
+//			},
+//		},
+//		{
+//			name: "MissingAField",
+//			ctrCnfg: `
+//value: source.int64
+//# int64Primitive: source.int64 # missing int64Primitive
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "expression for field 'Int64Primitive' cannot be empty",
+//			willPanic:     false,
+//		},
+//		{
+//			name: "MissingAFieldSubMsg",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//res1:
+//  value: source.int64
+//  # int64Primitive: source.int64 # missing int64Primitive
+//  boolPrimitive: source.bool
+//  doublePrimitive: source.double
+//  stringPrimitive: source.string
+//  timeStamp: source.timestamp
+//  duration: source.duration
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "expression for field 'Res1.Int64Primitive' cannot be empty",
+//			willPanic:     false,
+//		},
+//		{
+//			name: "InferredTypeNotMatchStaticType",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.double # Double does not match string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "error type checking for field 'StringPrimitive': Evaluated expression type DOUBLE want STRING",
+//			willPanic:     false,
+//		},
+//		{
+//			name: "InferredTypeNotMatchStaticTypeSubMsg",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//res1:
+//  value: source.int64
+//  int64Primitive: source.int64
+//  boolPrimitive: source.bool
+//  doublePrimitive: source.double
+//  stringPrimitive: source.double # Double does not match string
+//  timeStamp: source.timestamp
+//  duration: source.duration
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "error type checking for field 'Res1.StringPrimitive': Evaluated expression type DOUBLE want STRING",
+//			willPanic:     false,
+//		},
+//		{
+//			name: "EmptyString",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: '""'
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "expression for field 'StringPrimitive' cannot be empty",
+//			willPanic:     false,
+//		},
+//
+//		{
+//			name: "EmptyStringSubMsg",
+//			ctrCnfg: `
+//value: source.int64
+//int64Primitive: source.int64
+//boolPrimitive: source.bool
+//doublePrimitive: source.double
+//stringPrimitive: source.string
+//timeStamp: source.timestamp
+//duration: source.duration
+//dimensions:
+//  source: source.string
+//  target: source.string
+//res1:
+//  value: source.int64
+//  int64Primitive: source.int64
+//  boolPrimitive: source.bool
+//  doublePrimitive: source.double
+//  stringPrimitive: '""'
+//  timeStamp: source.timestamp
+//  duration: source.duration
+//  dimensions:
+//    source: source.string
+//    target: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: nil,
+//			wantErr:       "expression for field 'Res1.StringPrimitive' cannot be empty",
+//			willPanic:     false,
+//		},
+//		{
+//			name:      "NotValidInstanceParam",
+//			ctrCnfg:   ``,
+//			cstrParam: &empty.Empty{}, // cnstr type mismatch
+//			wantErr:   "is not of type",
+//			willPanic: true,
+//		},
+//		{
+//			name: "ErrorFromTypeEvaluator",
+//			ctrCnfg: `
+//value: response.int64
+//dimensions:
+//  source: source.string
+//`,
+//			cstrParam:     &sample_report.InstanceParam{},
+//			typeEvalError: fmt.Errorf("some expression x.y.z is invalid"),
+//			wantErr:       "some expression x.y.z is invalid",
+//		},
+	} {
+		t.Run(tst.name, func(t *testing.T) {
+			cp := tst.cstrParam
+			err := fillProto(tst.instYamlCfg, cp)
+			if err != nil {
+				t.Fatalf("cannot load yaml %v", err)
+			}
+			_ = getExprEvalFunc(tst.typeEvalError)
+			defer func() {
+				r := recover()
+				if tst.willPanic && r == nil {
+					t.Errorf("Expected to recover from panic for %s, but recover was nil.", tst.name)
+				} else if !tst.willPanic && r != nil {
+					t.Errorf("got panic %v, expected success.", r)
+				}
+			}()
+			ex := newFakeExpr(SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].AttributeManifests)
+			cv, cerr := SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].InferType(cp.(proto.Message), func (s string) (pb.ValueType, error) {
+				return ex.EvalType(s, createAttributeDescriptorFinder(SupportedTmplInfo[istio_mixer_adapter_sample_myapa.TemplateName].AttributeManifests))
+			})
+			if tst.wantErr == "" {
+				if cerr != nil {
+					t.Errorf("got err %v\nwant <nil>", cerr)
+				}
+				if cv != nil {
+					t.Errorf("cv should be nil, there should be no type for apa instances")
+				}
+			} else {
+				if cerr == nil || !strings.Contains(cerr.Error(), tst.wantErr) {
+					t.Errorf("got error %v\nwant %v", cerr, tst.wantErr)
 				}
 			}
 		})

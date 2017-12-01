@@ -372,23 +372,23 @@ var (
 				{
 					Attributes: map[string]*istio_mixer_v1_config.AttributeManifest_AttributeInfo{
 
-						"istio_mixer_adapter_sample_myapa.output.int64primitive": {
+						"istio_mixer_adapter_sample_myapa.output.int64Primitive": {
 							ValueType: istio_mixer_v1_config_descriptor.INT64,
 						},
 
-						"istio_mixer_adapter_sample_myapa.output.boolprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.boolPrimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.BOOL,
 						},
 
-						"istio_mixer_adapter_sample_myapa.output.doubleprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.doublePrimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.DOUBLE,
 						},
 
-						"istio_mixer_adapter_sample_myapa.output.stringprimitive": {
+						"istio_mixer_adapter_sample_myapa.output.stringPrimitive": {
 							ValueType: istio_mixer_v1_config_descriptor.STRING,
 						},
 
-						"istio_mixer_adapter_sample_myapa.output.timestamp": {
+						"istio_mixer_adapter_sample_myapa.output.timeStamp": {
 							ValueType: istio_mixer_v1_config_descriptor.TIMESTAMP,
 						},
 
@@ -730,19 +730,19 @@ var (
 						if len(field) != len(name) {
 							switch field {
 
-							case "int64primitive":
+							case "int64Primitive":
 								return out.Int64Primitive, true
 
-							case "boolprimitive":
+							case "boolPrimitive":
 								return out.BoolPrimitive, true
 
-							case "doubleprimitive":
+							case "doublePrimitive":
 								return out.DoublePrimitive, true
 
-							case "stringprimitive":
+							case "stringPrimitive":
 								return out.StringPrimitive, true
 
-							case "timestamp":
+							case "timeStamp":
 								return out.TimeStamp, true
 
 							case "duration":
