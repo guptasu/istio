@@ -29,8 +29,6 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"golang.org/x/tools/imports"
 
-	"errors"
-
 	"istio.io/api/mixer/v1/config/descriptor"
 	tmplPkg "istio.io/istio/mixer/tools/codegen/pkg/bootstrapgen/template"
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
@@ -174,12 +172,9 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 	}
 	bytesWithImpts := bytes.Replace(buf.Bytes(), []byte("$$additional_imports$$"), []byte(strings.Join(imprts, "\n")), 1)
 
-	f, err := os.Create(g.OutFilePath)
 	fmtd, err := format.Source(bytesWithImpts)
 	if err != nil {
-		s := fmt.Sprintf("could not format generated code: %v. Source code is %s", err, buf.String())
-		f.WriteString(s)
-		return errors.New(s)
+		return fmt.Errorf("could not format generated code: %v. Source code is %s", err, buf.String())
 	}
 
 	imports.LocalPrefix = "istio.io"
@@ -189,6 +184,7 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 		return fmt.Errorf("could not fix imports for generated code: %v", err)
 	}
 
+	f, err := os.Create(g.OutFilePath)
 	if err != nil {
 		return err
 	}
