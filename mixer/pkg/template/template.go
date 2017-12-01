@@ -25,8 +25,8 @@ import (
 	adptTmpl "istio.io/api/mixer/v1/template"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
-	"istio.io/istio/mixer/pkg/expr"
 	"istio.io/istio/mixer/pkg/config/proto"
+	"istio.io/istio/mixer/pkg/expr"
 )
 
 type (
@@ -82,7 +82,7 @@ type (
 		ProcessQuota            ProcessQuotaFn
 		ProcessGenAttrs         ProcessGenerateAttributesFn
 
-		AttributeManifests      []*istio_mixer_v1_config.AttributeManifest
+		AttributeManifests []*istio_mixer_v1_config.AttributeManifest
 	}
 
 	// templateRepo implements Repository

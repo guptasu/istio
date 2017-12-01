@@ -185,9 +185,9 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 			// We can easily check this by checked if the type is not ValueType or ResourceMessage or a map<string, !string>
 			for _, field := range m.OutputTemplateMessage.Fields {
 				if !isPrimitiveValueType(field.ProtoType) {
-					m.addError(templateProto.GetName(), unknownLine, "message 'OutputTemplate' field '%s' is of type '%s'." +
-						" Only supported types in OutputTemplate message are : [string, int64, double, bool, " +
-							"google.protobuf.Duration, google.protobuf.TimeStamp, map<string, string>]", field.ProtoName, field.ProtoType.Name)
+					m.addError(templateProto.GetName(), unknownLine, "message 'OutputTemplate' field '%s' is of type '%s'."+
+						" Only supported types in OutputTemplate message are : [string, int64, double, bool, "+
+						"google.protobuf.Duration, google.protobuf.TimeStamp, map<string, string>]", field.ProtoName, field.ProtoType.Name)
 				}
 			}
 			m.OutputTemplateMessage.Name = "OutputTemplate"

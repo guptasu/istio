@@ -44,7 +44,7 @@ func TestGenerator_Generate(t *testing.T) {
 			"testdata/report2_proto.descriptor_set": "istio.io/istio/mixer/template/metric",
 			"testdata/quota_proto.descriptor_set":   "istio.io/istio/mixer/template/quota",
 			"testdata/report1_proto.descriptor_set": "istio.io/istio/mixer/template/log",
-			"testdata/apa_proto.descriptor_set": "istio.io/istio/mixer/template/apa"},
+			"testdata/apa_proto.descriptor_set":     "istio.io/istio/mixer/template/apa"},
 			"testdata/AllTemplates.go.golden"},
 	}
 	for _, v := range tests {

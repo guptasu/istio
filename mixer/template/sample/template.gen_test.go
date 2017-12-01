@@ -36,7 +36,7 @@ import (
 	"istio.io/istio/mixer/pkg/config/proto"
 	"istio.io/istio/mixer/pkg/expr"
 	"istio.io/istio/mixer/pkg/il/evaluator"
-	"istio.io/istio/mixer/template/sample/apa"
+	istio_mixer_adapter_sample_myapa "istio.io/istio/mixer/template/sample/apa"
 	sample_check "istio.io/istio/mixer/template/sample/check"
 	sample_quota "istio.io/istio/mixer/template/sample/quota"
 	sample_report "istio.io/istio/mixer/template/sample/report"
@@ -1674,8 +1674,8 @@ func TestProcessApa(t *testing.T) {
 		{
 			name:     "EvalError",
 			instName: "foo",
-			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam {
-				Int64Primitive:                 "bad.attribute",
+			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam{
+				Int64Primitive: "bad.attribute",
 			},
 			wantError: "unknown attribute bad.attribute",
 		},
@@ -1709,7 +1709,7 @@ func TestProcessApa(t *testing.T) {
 					"source.myduration":        "$out.duration",
 				},
 			},
-			hdlr: &fakeMyApaHandler {
+			hdlr: &fakeMyApaHandler{
 				retError: fmt.Errorf("some error"),
 			},
 			wantError: "some error",

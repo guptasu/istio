@@ -9,7 +9,6 @@ mixer_proto_library(
     protos = ["CheckTmpl.proto"],
 )
 
-
 mixer_proto_library(
     name = "apa",
     testonly = True,

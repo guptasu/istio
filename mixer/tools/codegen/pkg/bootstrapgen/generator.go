@@ -29,10 +29,11 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"golang.org/x/tools/imports"
 
+	"errors"
+
 	"istio.io/api/mixer/v1/config/descriptor"
 	tmplPkg "istio.io/istio/mixer/tools/codegen/pkg/bootstrapgen/template"
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
-	"errors"
 )
 
 // Generator creates a Go file that will be build inside mixer framework. The generated file contains all the
@@ -187,7 +188,6 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 	if err != nil {
 		return fmt.Errorf("could not fix imports for generated code: %v", err)
 	}
-
 
 	if err != nil {
 		return err
