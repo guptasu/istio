@@ -288,7 +288,7 @@ var (
 				ProcessQuota: func(ctx context.Context, instName string, inst proto.Message, attrs attribute.Bag,
 				 mapper expr.Evaluator, handler adapter.Handler, args adapter.QuotaArgs) (adapter.QuotaResult, error) {
 			{{end}}
-				{{if eq .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
+			{{if eq .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
 				ProcessGenAttrs: func(ctx context.Context, instName string, inst proto.Message, attrs attribute.Bag,
 				mapper expr.Evaluator, handler adapter.Handler) (*attribute.MutableBag, error) {
 			{{end}}
@@ -408,27 +408,18 @@ var (
 										return out.{{.GoName}}, true
 									{{end}}
 									default:
-									// FIXME : any fields in output (or its references) that are of type
-									// map<string, non string fields> are not supported yet
 									return nil, false
 								}
 
 							}
 							return attrs.Get(name)
 						},
-						func() []string {
-							return attrs.Names()
-						},
-						func() {
-							attrs.Done()
-						},
-						func() string {
-							return attrs.DebugString()
-						},
+						func() []string {return attrs.Names()},
+						func() {attrs.Done()},
+						func() string {return attrs.DebugString()},
 					)
 
 					resultBag := attribute.GetMutableBag(nil)
-					// TODO validate the content of AttributeBindings during inferType function.
 					for attrName, outExpr := range instParam.AttributeBindings {
 						ex := strings.Replace(outExpr, "$out.", fullOutName, -1)
 						val, err := mapper.Eval(ex, abag)
