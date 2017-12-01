@@ -1671,6 +1671,49 @@ func TestProcessApa(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:     "EvalError",
+			instName: "foo",
+			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam {
+				Int64Primitive:                 "bad.attribute",
+			},
+			wantError: "unknown attribute bad.attribute",
+		},
+		{
+			name:     "ProcessError",
+			instName: "foo",
+			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam{
+				BoolPrimitive:                  "true",
+				DoublePrimitive:                "1.2",
+				Int64Primitive:                 "54362",
+				StringPrimitive:                `"mystring"`,
+				TimeStamp:                      "request.timestamp",
+				Duration:                       "request.duration",
+				DimensionsFixedInt64ValueDType: map[string]string{"a": "1"},
+				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3InstanceParam{
+					"source2": {
+						BoolPrimitive:   "true",
+						DoublePrimitive: "1.2",
+						Int64Primitive:  "54362",
+						StringPrimitive: `"mystring"`,
+						TimeStamp:       "request.timestamp",
+						Duration:        "request.duration",
+					},
+				},
+				AttributeBindings: map[string]string{
+					"source.myint64Primitive":  "$out.int64Primitive",
+					"source.myboolPrimitive":   "$out.boolPrimitive",
+					"source.mydoublePrimitive": "$out.doublePrimitive",
+					"source.mystring":          "$out.stringPrimitive",
+					"source.mytimeStamp":       "$out.timeStamp",
+					"source.myduration":        "$out.duration",
+				},
+			},
+			hdlr: &fakeMyApaHandler {
+				retError: fmt.Errorf("some error"),
+			},
+			wantError: "some error",
+		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
