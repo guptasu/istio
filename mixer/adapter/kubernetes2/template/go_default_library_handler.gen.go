@@ -68,12 +68,12 @@ type Instance struct {
 
 	DestinationUid string
 
-	DestinationIp string
+	DestinationIp net.IP
 }
 
 // Output struct is returned by the attribute producing adapters that handle this template.
 type Output struct {
-	SourcePodIp string
+	SourcePodIp net.IP
 
 	SourceLabels map[string]string
 
@@ -83,7 +83,7 @@ type Output struct {
 
 	SourceServiceAccountName string
 
-	DestinationPodIp string
+	DestinationPodIp net.IP
 
 	DestinationLabels map[string]string
 

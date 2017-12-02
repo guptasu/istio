@@ -52,17 +52,25 @@ option (istio.mixer.v1.template.template_variety) = TEMPLATE_VARIETY_ATTRIBUTE_G
 // ```
 message Template {
     string source_uid = 1;
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes source_ip = 2;
     string destination_uid = 3;
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes destination_ip = 4;
 }
 
 message OutputTemplate {
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes source_pod_ip = 1;
     map<string, string> source_labels = 2;
     string source_namespace = 3;
     string source_service = 4;
     string source_service_account_name = 5;
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes destination_pod_ip = 6;
     map<string, string> destination_labels = 7;
     string destination_mamespace = 8;

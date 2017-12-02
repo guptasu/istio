@@ -25,7 +25,9 @@ import (
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"istio.io/istio/mixer/adapter/kubernetes/config"
+	"context"
+
+	"istio.io/istio/mixer/adapter/kubernetes2/config"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/adapter/test"
 )
@@ -65,33 +67,8 @@ func fakePodCache(path string, empty time.Duration, e adapter.Env) (cacheControl
 func TestBuilder(t *testing.T) {
 	b := newBuilder(fakePodCache)
 
-	// setup a check that the stopChan is appropriately closed
-	closed := make(chan struct{})
-	go func() {
-		closed <- <-b.stopChan
-	}()
-
-	if b.Name() == "" {
-		t.Error("Name() => all builders need names")
-	}
-
-	if b.Description() == "" {
-		t.Errorf("Description() => builder '%s' doesn't provide a valid description", b.Name())
-	}
-
-	c := b.DefaultConfig()
-	if err := b.ValidateConfig(c); err != nil {
-		t.Errorf("ValidateConfig() => builder '%s' can't validate its default configuration: %v", b.Name(), err)
-	}
-
-	if err := b.Close(); err != nil {
-		t.Errorf("Close() => builder '%s' fails to close when used with its default configuration: %v", b.Name(), err)
-	}
-
-	select {
-	case <-closed:
-	case <-time.After(500 * time.Millisecond): // set a small deadline for this check
-		t.Error("Close() should have closed the stopChan, but this wait timed out.")
+	if err := b.Validate(); err != nil {
+		t.Errorf("ValidateConfig() => builder can't validate its default configuration: %v", err)
 	}
 }
 
@@ -112,8 +89,10 @@ func TestBuilder_ValidateConfigErrors(t *testing.T) {
 	}
 
 	b := newBuilder(fakePodCache)
+
 	for _, v := range tests {
-		err := b.ValidateConfig(v.conf)
+		b.SetAdapterConfig(v.conf)
+		err := b.Validate()
 		if err == nil {
 			t.Fatalf("Expected config to fail validation: %#v", v.conf)
 		}
@@ -137,7 +116,8 @@ func TestBuilder_BuildAttributesGenerator(t *testing.T) {
 	for _, v := range tests {
 		t.Run(v.name, func(t *testing.T) {
 			b := newBuilder(v.testFn)
-			_, err := b.BuildAttributesGenerator(test.NewEnv(t), v.conf)
+			b.SetAdapterConfig(v.conf)
+			_, err := b.Build(context.Background(), test.NewEnv(t))
 			if err == nil && v.wantErr {
 				t.Fatal("Expected error building adapter")
 			}
@@ -170,25 +150,19 @@ func TestBuilder_BuildAttributesGeneratorWithEnvVar(t *testing.T) {
 	for _, v := range tests {
 		t.Run(v.name, func(t *testing.T) {
 			b := newBuilder(v.testFn)
-			_, err := b.BuildAttributesGenerator(test.NewEnv(t), v.conf)
+			b.SetAdapterConfig(v.conf)
+			h, err := b.Build(context.Background(), test.NewEnv(t))
 			if err == nil && v.wantErr {
 				t.Fatal("Expected error building adapter")
 			}
 			if err != nil && !v.wantErr {
 				t.Fatalf("Got error, wanted none: %v", err)
 			}
-			got := b.pods.(*fakeCache).path
+			got := h.(*handler).pods.(*fakeCache).path
 			if got != wantPath {
 				t.Errorf("Bad kubeconfig path; got %s, want %s", got, wantPath)
 			}
 		})
-	}
-}
-
-func TestKubegen_Close(t *testing.T) {
-	v := kubegen{}
-	if err := v.Close(); err != nil {
-		t.Errorf("Unexpected error: %v", err)
 	}
 }
 
@@ -382,7 +356,7 @@ func TestKubegen_Generate(t *testing.T) {
 	for _, v := range tests {
 		t.Run(v.name, func(t *testing.T) {
 
-			kg := &kubegen{log: test.NewEnv(t).Logger(), params: v.params, pods: fakeCache{pods: pods}}
+			kg := &handler{log: test.NewEnv(t).Logger(), params: v.params, pods: fakeCache{pods: pods}}
 
 			got, err := kg.Generate(v.inputs)
 			if err != nil {

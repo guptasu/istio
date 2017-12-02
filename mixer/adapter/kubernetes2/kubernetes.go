@@ -25,7 +25,6 @@ import (
 	"net"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"k8s.io/api/core/v1"
@@ -35,23 +34,22 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"istio.io/istio/mixer/adapter/kubernetes/config"
+	"context"
+
+	"istio.io/istio/mixer/adapter/kubernetes2/config"
 	"istio.io/istio/mixer/pkg/adapter"
 )
 
 type (
 	builder struct {
-		adapter.DefaultBuilder
-		sync.Mutex
-
-		stopChan             chan struct{}
-		pods                 cacheController
+		adapterConfig        *config.Params
 		newCacheControllerFn controllerFactoryFn
 		needsCacheInit       bool
 	}
-	kubegen struct {
-		log    adapter.Logger
+
+	handler struct {
 		pods   cacheController
+		log    adapter.Logger
 		params config.Params
 	}
 
@@ -59,96 +57,27 @@ type (
 	controllerFactoryFn func(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error)
 )
 
-const (
-	// adapter vals
-	name = "kubernetes"
-	desc = "Provides platform specific functionality for the kubernetes environment"
+var _ adapter_template_kubernetes.Handler = &handler{}
 
-	// parsing
-	kubePrefix = "kubernetes://"
-
-	// input/output naming
-	sourceUID         = "sourceUID"
-	destinationUID    = "destinationUID"
-	originUID         = "originUID"
-	sourceIP          = "sourceIP"
-	destinationIP     = "destinationIP"
-	originIP          = "originIP"
-	sourcePrefix      = "source"
-	destinationPrefix = "destination"
-	originPrefix      = "origin"
-	labelsVal         = "Labels"
-	podNameVal        = "PodName"
-	podIPVal          = "PodIP"
-	hostIPVal         = "HostIP"
-	namespaceVal      = "Namespace"
-	serviceAccountVal = "ServiceAccountName"
-	serviceVal        = "Service"
-
-	// value extraction
-	clusterDomain                      = "svc.cluster.local"
-	podServiceLabel                    = "app"
-	istioPodServiceLabel               = "istio"
-	lookupIngressSourceAndOriginValues = false
-	istioIngressSvc                    = "ingress.istio-system.svc.cluster.local"
-
-	// cache invaliation
-	// TODO: determine a reasonable default
-	defaultRefreshPeriod = 5 * time.Minute
-)
-
-var (
-	conf = &config.Params{
-		KubeconfigPath:                        "",
-		CacheRefreshDuration:                  defaultRefreshPeriod,
-		SourceUidInputName:                    sourceUID,
-		DestinationUidInputName:               destinationUID,
-		OriginUidInputName:                    originUID,
-		SourceIpInputName:                     sourceIP,
-		DestinationIpInputName:                destinationIP,
-		OriginIpInputName:                     originIP,
-		ClusterDomainName:                     clusterDomain,
-		PodLabelForService:                    podServiceLabel,
-		PodLabelForIstioComponentService:      istioPodServiceLabel,
-		SourcePrefix:                          sourcePrefix,
-		DestinationPrefix:                     destinationPrefix,
-		OriginPrefix:                          originPrefix,
-		LabelsValueName:                       labelsVal,
-		PodNameValueName:                      podNameVal,
-		PodIpValueName:                        podIPVal,
-		HostIpValueName:                       hostIPVal,
-		NamespaceValueName:                    namespaceVal,
-		ServiceAccountValueName:               serviceAccountVal,
-		ServiceValueName:                      serviceVal,
-		FullyQualifiedIstioIngressServiceName: istioIngressSvc,
-		LookupIngressSourceAndOriginValues:    lookupIngressSourceAndOriginValues,
-	}
-)
-
-// Register records the builders exposed by this adapter.
-func Register(r adapter.Registrar) {
-	r.RegisterAttributesGeneratorBuilder(newBuilder(newCacheFromConfig))
-}
-
-func newBuilder(cacheFactory controllerFactoryFn) *builder {
-	stopChan := make(chan struct{})
-	return &builder{
-		adapter.NewDefaultBuilder(name, desc, conf),
-		sync.Mutex{},
-		stopChan,
-		nil,
-		cacheFactory,
-		true,
-	}
-}
-
-func (b *builder) Close() error {
-	close(b.stopChan)
+func (h *handler) Close() error {
 	return nil
 }
 
-func (*builder) ValidateConfig(c adapter.Config) (ce *adapter.ConfigErrors) {
-	params := c.(*config.Params)
+func (h *handler) GenerateKubernetesAttributes(context.Context, *adapter_template_kubernetes.Instance) (*adapter_template_kubernetes.Output, error) {
+	return nil, nil
+}
+
+var _ adapter_template_kubernetes.HandlerBuilder = &builder{}
+
+// SetAdapterConfig gives the builder the adapter-level configuration state.
+func (b *builder) SetAdapterConfig(c adapter.Config) {
+	b.adapterConfig = c.(*config.Params)
+}
+
+// Validate is responsible for ensuring that all the configuration state given to the builder is
+// correct. The Build method is only invoked when Validate has returned success.
+func (b *builder) Validate() (ce *adapter.ConfigErrors) {
+	params := b.adapterConfig
 	if len(params.SourceUidInputName) == 0 {
 		ce = ce.Appendf("sourceUidInputName", "field must be populated")
 	}
@@ -214,10 +143,16 @@ func (*builder) ValidateConfig(c adapter.Config) (ce *adapter.ConfigErrors) {
 	return
 }
 
-func (b *builder) BuildAttributesGenerator(env adapter.Env, c adapter.Config) (adapter.AttributesGenerator, error) {
-	paramsProto := c.(*config.Params)
-	b.Lock()
-	defer b.Unlock()
+// Build must return a handler that implements all the template-specific runtime request serving
+// interfaces that the Builder was configured for.
+// This means the Handler returned by the Build method must implement all the runtime interfaces for all the
+// template the Adapter supports.
+// If the returned Handler fails to implement the required interface that builder was registered for, Mixer will
+// report an error and stop serving runtime traffic to the particular Handler.
+func (b *builder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, error) {
+	paramsProto := b.adapterConfig
+	stopChan := make(chan struct{})
+	var pods cacheController = nil
 	if b.needsCacheInit {
 		refresh := paramsProto.CacheRefreshDuration
 		path, exists := os.LookupEnv("KUBECONFIG")
@@ -228,15 +163,15 @@ func (b *builder) BuildAttributesGenerator(env adapter.Env, c adapter.Config) (a
 		if err != nil {
 			return nil, err
 		}
-		b.pods = controller
-		env.ScheduleDaemon(func() { b.pods.Run(b.stopChan) })
+		pods = controller
+		env.ScheduleDaemon(func() { pods.Run(stopChan) })
 		// ensure that any request is only handled after
 		// a sync has occurred
 		if env.Logger().VerbosityLevel(debugVerbosityLevel) {
 			env.Logger().Infof("Waiting for kubernetes cache sync...")
 		}
-		if success := cache.WaitForCacheSync(b.stopChan, b.pods.HasSynced); !success {
-			b.stopChan <- struct{}{}
+		if success := cache.WaitForCacheSync(stopChan, pods.HasSynced); !success {
+			stopChan <- struct{}{}
 			return nil, errors.New("cache sync failure")
 		}
 		if env.Logger().VerbosityLevel(debugVerbosityLevel) {
@@ -244,39 +179,15 @@ func (b *builder) BuildAttributesGenerator(env adapter.Env, c adapter.Config) (a
 		}
 		b.needsCacheInit = false
 	}
-	kg := &kubegen{
+	kg := &handler{
 		log:    env.Logger(),
-		pods:   b.pods,
+		pods:   pods,
 		params: *paramsProto,
 	}
 	return kg, nil
 }
 
-func newCacheFromConfig(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error) {
-	if env.Logger().VerbosityLevel(debugVerbosityLevel) {
-		env.Logger().Infof("getting kubeconfig from: %#v", kubeconfigPath)
-	}
-	config, err := getRESTConfig(kubeconfigPath)
-	if err != nil || config == nil {
-		return nil, fmt.Errorf("could not retrieve kubeconfig: %v", err)
-	}
-	if env.Logger().VerbosityLevel(debugVerbosityLevel) {
-		env.Logger().Infof("getting k8s client from config")
-	}
-	clientset, err := k8s.NewForConfig(config)
-	if err != nil {
-		return nil, fmt.Errorf("could not create clientset for k8s: %v", err)
-	}
-	return newCacheController(clientset, refreshDuration, env), nil
-}
-
-func getRESTConfig(kubeconfigPath string) (*rest.Config, error) {
-	return clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-}
-
-func (k *kubegen) Close() error { return nil }
-
-func (k *kubegen) Generate(inputs map[string]interface{}) (map[string]interface{}, error) {
+func (k *handler) Generate(inputs map[string]interface{}) (map[string]interface{}, error) {
 	values := make(map[string]interface{})
 	if id, found := serviceIdentifier(inputs, k.params.DestinationUidInputName, k.params.DestinationIpInputName); found && len(id) > 0 {
 		k.addValues(values, id, k.params.DestinationPrefix)
@@ -293,7 +204,7 @@ func (k *kubegen) Generate(inputs map[string]interface{}) (map[string]interface{
 	return values, nil
 }
 
-func (k *kubegen) addValues(vals map[string]interface{}, uid, valPrefix string) {
+func (k *handler) addValues(vals map[string]interface{}, uid, valPrefix string) {
 	podKey := keyFromUID(uid)
 	pod, found := k.pods.GetPod(podKey)
 	if !found {
@@ -305,54 +216,32 @@ func (k *kubegen) addValues(vals map[string]interface{}, uid, valPrefix string) 
 	addPodValues(vals, valPrefix, k.params, pod)
 }
 
-func (k *kubegen) skipIngressLookups(values map[string]interface{}) bool {
+func (k *handler) skipIngressLookups(values map[string]interface{}) bool {
 	destSvcParam := k.params.DestinationPrefix + k.params.ServiceValueName
 	return !k.params.LookupIngressSourceAndOriginValues && values[destSvcParam] == k.params.FullyQualifiedIstioIngressServiceName
 }
 
-func keyFromUID(uid string) string {
-	if ip := net.ParseIP(uid); ip != nil {
-		return uid
+func newBuilder(cacheFactory controllerFactoryFn) *builder {
+	return &builder{
+		newCacheControllerFn: cacheFactory,
+		needsCacheInit:       true,
+		adapterConfig:        conf,
 	}
-	fullname := strings.TrimPrefix(uid, kubePrefix)
-	if strings.Contains(fullname, ".") {
-		parts := strings.Split(fullname, ".")
-		if len(parts) == 2 {
-			return key(parts[1], parts[0])
-		}
-	}
-	return fullname
+	return &builder{}
 }
 
-func addPodValues(m map[string]interface{}, prefix string, params config.Params, p *v1.Pod) {
-	if len(p.Labels) > 0 {
-		m[valueName(prefix, params.LabelsValueName)] = p.Labels
-	}
-	if len(p.Name) > 0 {
-		m[valueName(prefix, params.PodNameValueName)] = p.Name
-	}
-	if len(p.Namespace) > 0 {
-		m[valueName(prefix, params.NamespaceValueName)] = p.Namespace
-	}
-	if len(p.Spec.ServiceAccountName) > 0 {
-		m[valueName(prefix, params.ServiceAccountValueName)] = p.Spec.ServiceAccountName
-	}
-	if len(p.Status.PodIP) > 0 {
-		m[valueName(prefix, params.PodIpValueName)] = net.ParseIP(p.Status.PodIP)
-	}
-	if len(p.Status.HostIP) > 0 {
-		m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
-	}
-	if app, found := p.Labels[params.PodLabelForService]; found {
-		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-		if err == nil {
-			m[valueName(prefix, params.ServiceValueName)] = n
-		}
-	} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
-		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-		if err == nil {
-			m[valueName(prefix, params.ServiceValueName)] = n
-		}
+// GetInfo returns the Info associated with this adapter implementation.
+func GetInfo() adapter.Info {
+	return adapter.Info{
+		Name:        "KubernetesAttributeGenerator",
+		Impl:        "istio.io/istio/mixer/adapter/kubernetes",
+		Description: "Generate kubernetes attributes",
+		SupportedTemplates: []string{
+			adapter_template_kubernetes.TemplateName,
+		},
+		DefaultConfig: conf,
+
+		NewBuilder: func() adapter.HandlerBuilder { return newBuilder(newCacheFromConfig) },
 	}
 }
 
@@ -425,4 +314,138 @@ func serviceIdentifier(inputs map[string]interface{}, keys ...string) (string, b
 		}
 	}
 	return "", false
+}
+
+func keyFromUID(uid string) string {
+	if ip := net.ParseIP(uid); ip != nil {
+		return uid
+	}
+	fullname := strings.TrimPrefix(uid, kubePrefix)
+	if strings.Contains(fullname, ".") {
+		parts := strings.Split(fullname, ".")
+		if len(parts) == 2 {
+			return key(parts[1], parts[0])
+		}
+	}
+	return fullname
+}
+
+func addPodValues(m map[string]interface{}, prefix string, params config.Params, p *v1.Pod) {
+	if len(p.Labels) > 0 {
+		m[valueName(prefix, params.LabelsValueName)] = p.Labels
+	}
+	if len(p.Name) > 0 {
+		m[valueName(prefix, params.PodNameValueName)] = p.Name
+	}
+	if len(p.Namespace) > 0 {
+		m[valueName(prefix, params.NamespaceValueName)] = p.Namespace
+	}
+	if len(p.Spec.ServiceAccountName) > 0 {
+		m[valueName(prefix, params.ServiceAccountValueName)] = p.Spec.ServiceAccountName
+	}
+	if len(p.Status.PodIP) > 0 {
+		m[valueName(prefix, params.PodIpValueName)] = net.ParseIP(p.Status.PodIP)
+	}
+	if len(p.Status.HostIP) > 0 {
+		m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
+	}
+	if app, found := p.Labels[params.PodLabelForService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			m[valueName(prefix, params.ServiceValueName)] = n
+		}
+	} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			m[valueName(prefix, params.ServiceValueName)] = n
+		}
+	}
+}
+
+const (
+	// adapter vals
+	name = "kubernetes"
+	desc = "Provides platform specific functionality for the kubernetes environment"
+
+	// parsing
+	kubePrefix = "kubernetes://"
+
+	// input/output naming
+	sourceUID         = "sourceUID"
+	destinationUID    = "destinationUID"
+	originUID         = "originUID"
+	sourceIP          = "sourceIP"
+	destinationIP     = "destinationIP"
+	originIP          = "originIP"
+	sourcePrefix      = "source"
+	destinationPrefix = "destination"
+	originPrefix      = "origin"
+	labelsVal         = "Labels"
+	podNameVal        = "PodName"
+	podIPVal          = "PodIP"
+	hostIPVal         = "HostIP"
+	namespaceVal      = "Namespace"
+	serviceAccountVal = "ServiceAccountName"
+	serviceVal        = "Service"
+
+	// value extraction
+	clusterDomain                      = "svc.cluster.local"
+	podServiceLabel                    = "app"
+	istioPodServiceLabel               = "istio"
+	lookupIngressSourceAndOriginValues = false
+	istioIngressSvc                    = "ingress.istio-system.svc.cluster.local"
+
+	// cache invaliation
+	// TODO: determine a reasonable default
+	defaultRefreshPeriod = 5 * time.Minute
+)
+
+var (
+	conf = &config.Params{
+		KubeconfigPath:                        "",
+		CacheRefreshDuration:                  defaultRefreshPeriod,
+		SourceUidInputName:                    sourceUID,
+		DestinationUidInputName:               destinationUID,
+		OriginUidInputName:                    originUID,
+		SourceIpInputName:                     sourceIP,
+		DestinationIpInputName:                destinationIP,
+		OriginIpInputName:                     originIP,
+		ClusterDomainName:                     clusterDomain,
+		PodLabelForService:                    podServiceLabel,
+		PodLabelForIstioComponentService:      istioPodServiceLabel,
+		SourcePrefix:                          sourcePrefix,
+		DestinationPrefix:                     destinationPrefix,
+		OriginPrefix:                          originPrefix,
+		LabelsValueName:                       labelsVal,
+		PodNameValueName:                      podNameVal,
+		PodIpValueName:                        podIPVal,
+		HostIpValueName:                       hostIPVal,
+		NamespaceValueName:                    namespaceVal,
+		ServiceAccountValueName:               serviceAccountVal,
+		ServiceValueName:                      serviceVal,
+		FullyQualifiedIstioIngressServiceName: istioIngressSvc,
+		LookupIngressSourceAndOriginValues:    lookupIngressSourceAndOriginValues,
+	}
+)
+
+func newCacheFromConfig(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error) {
+	if env.Logger().VerbosityLevel(debugVerbosityLevel) {
+		env.Logger().Infof("getting kubeconfig from: %#v", kubeconfigPath)
+	}
+	config, err := getRESTConfig(kubeconfigPath)
+	if err != nil || config == nil {
+		return nil, fmt.Errorf("could not retrieve kubeconfig: %v", err)
+	}
+	if env.Logger().VerbosityLevel(debugVerbosityLevel) {
+		env.Logger().Infof("getting k8s client from config")
+	}
+	clientset, err := k8s.NewForConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("could not create clientset for k8s: %v", err)
+	}
+	return newCacheController(clientset, refreshDuration, env), nil
+}
+
+func getRESTConfig(kubeconfigPath string) (*rest.Config, error) {
+	return clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 }
