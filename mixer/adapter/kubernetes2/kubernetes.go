@@ -38,6 +38,7 @@ import (
 
 	"istio.io/istio/mixer/adapter/kubernetes2/config"
 	"istio.io/istio/mixer/pkg/adapter"
+	adapter_template_kubernetes "istio.io/istio/mixer/adapter/kubernetes2/template"
 )
 
 type (
@@ -57,7 +58,7 @@ type (
 	controllerFactoryFn func(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error)
 )
 
-var _ adapter_template_kubernetes.Handler = &handler{}
+var _  adapter_template_kubernetes.Handler = &handler{}
 
 func (h *handler) Close() error {
 	return nil
