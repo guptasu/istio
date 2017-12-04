@@ -37,8 +37,8 @@ import (
 	"context"
 
 	"istio.io/istio/mixer/adapter/kubernetes2/config"
-	"istio.io/istio/mixer/pkg/adapter"
 	adapter_template_kubernetes "istio.io/istio/mixer/adapter/kubernetes2/template"
+	"istio.io/istio/mixer/pkg/adapter"
 )
 
 type (
@@ -58,7 +58,7 @@ type (
 	controllerFactoryFn func(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error)
 )
 
-var _  adapter_template_kubernetes.Handler = &handler{}
+var _ adapter_template_kubernetes.Handler = &handler{}
 
 func (h *handler) Close() error {
 	return nil
@@ -189,23 +189,92 @@ func (b *builder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, 
 }
 
 func (k *handler) Generate(inputs map[string]interface{}) (map[string]interface{}, error) {
+
 	values := make(map[string]interface{})
 	if id, found := serviceIdentifier(inputs, k.params.DestinationUidInputName, k.params.DestinationIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.DestinationPrefix)
+		k.addValues(values, id, k.params.DestinationPrefix, nil)
 	}
 	if k.skipIngressLookups(values) {
 		return values, nil
 	}
 	if id, found := serviceIdentifier(inputs, k.params.SourceUidInputName, k.params.SourceIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.SourcePrefix)
+		k.addValues(values, id, k.params.SourcePrefix, nil)
 	}
 	if id, found := serviceIdentifier(inputs, k.params.OriginUidInputName, k.params.OriginIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.OriginPrefix)
+		k.addValues(values, id, k.params.OriginPrefix, nil)
 	}
 	return values, nil
 }
+func (k *handler) Generate2(inputs map[string]interface{}) (*adapter_template_kubernetes.Output, error) {
 
-func (k *handler) addValues(vals map[string]interface{}, uid, valPrefix string) {
+	values := make(map[string]interface{})
+
+	var inst *adapter_template_kubernetes.Instance
+	var out *adapter_template_kubernetes.Output
+
+	if inst.DestinationUid != "" {
+		k.addValues(values, inst.DestinationUid, k.params.DestinationPrefix, out)
+	} else if inst.DestinationIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.DestinationIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				k.addValues(values, ip.String(), k.params.DestinationPrefix, out)
+			}
+		}
+	}
+
+	//if id, found := serviceIdentifier(inputs, k.params.DestinationUidInputName, k.params.DestinationIpInputName); found && len(id) > 0 {
+	//	k.addValues(values, id, k.params.DestinationPrefix)
+	//}
+	//if k.skipIngressLookups(values) {
+	//	return values, nil
+	//}
+
+	if k.skipIngressLookups2(out) {
+		return out, nil
+	}
+
+	//if id, found := serviceIdentifier(inputs, k.params.SourceUidInputName, k.params.SourceIpInputName); found && len(id) > 0 {
+	//	k.addValues(values, id, k.params.SourcePrefix)
+	//}
+
+	if inst.SourceUid != "" {
+		k.addValues(values, inst.SourceUid, k.params.SourcePrefix, out)
+	} else if inst.SourceIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.SourceIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				k.addValues(values, ip.String(), k.params.SourcePrefix, out)
+			}
+		}
+	}
+
+	//if id, found := serviceIdentifier(inputs, k.params.OriginUidInputName, k.params.OriginIpInputName); found && len(id) > 0 {
+	//	k.addValues(values, id, k.params.OriginPrefix)
+	//}
+	if inst.OriginUid != "" {
+		k.addValues(values, inst.OriginUid, k.params.OriginPrefix, out)
+	} else if inst.OriginIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.OriginIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				k.addValues(values, ip.String(), k.params.OriginPrefix, out)
+			}
+		}
+	}
+	return out, nil
+}
+
+func (k *handler) addValues(vals map[string]interface{}, uid, valPrefix string, output *adapter_template_kubernetes.Output) {
 	podKey := keyFromUID(uid)
 	pod, found := k.pods.GetPod(podKey)
 	if !found {
@@ -214,12 +283,16 @@ func (k *handler) addValues(vals map[string]interface{}, uid, valPrefix string) 
 		}
 		return
 	}
-	addPodValues(vals, valPrefix, k.params, pod)
+	addPodValues(vals, valPrefix, k.params, pod, output)
 }
 
 func (k *handler) skipIngressLookups(values map[string]interface{}) bool {
 	destSvcParam := k.params.DestinationPrefix + k.params.ServiceValueName
 	return !k.params.LookupIngressSourceAndOriginValues && values[destSvcParam] == k.params.FullyQualifiedIstioIngressServiceName
+}
+
+func (k *handler) skipIngressLookups2(out *adapter_template_kubernetes.Output) bool {
+	return !k.params.LookupIngressSourceAndOriginValues && out.DestinationService == k.params.FullyQualifiedIstioIngressServiceName
 }
 
 func newBuilder(cacheFactory controllerFactoryFn) *builder {
@@ -331,7 +404,73 @@ func keyFromUID(uid string) string {
 	return fullname
 }
 
-func addPodValues(m map[string]interface{}, prefix string, params config.Params, p *v1.Pod) {
+func addPodValues(m map[string]interface{}, prefix string, params config.Params, p *v1.Pod, o *adapter_template_kubernetes.Output) {
+	if o != nil {
+		if prefix == "source" {
+			if len(p.Labels) > 0 {
+				o.SourceLabels = p.Labels
+			}
+			if len(p.Name) > 0 {
+				//m[valueName(prefix, params.PodNameValueName)] = p.Name
+			}
+			if len(p.Namespace) > 0 {
+				o.SourceNamespace = p.Namespace
+			}
+			if len(p.Spec.ServiceAccountName) > 0 {
+				o.SourceServiceAccountName = p.Spec.ServiceAccountName
+			}
+			if len(p.Status.PodIP) > 0 {
+				o.SourcePodIp = net.ParseIP(p.Status.PodIP)
+			}
+			if len(p.Status.HostIP) > 0 {
+				//m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
+			}
+			if app, found := p.Labels[params.PodLabelForService]; found {
+				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+				if err == nil {
+					o.SourceService = n
+				}
+			} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
+				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+				if err == nil {
+					o.SourceService = n
+				}
+			}
+		} else if prefix == "destination" {
+			if len(p.Labels) > 0 {
+				o.DestinationLabels = p.Labels
+			}
+			if len(p.Name) > 0 {
+				//m[valueName(prefix, params.PodNameValueName)] = p.Name
+			}
+			if len(p.Namespace) > 0 {
+				o.DestinationNamespace = p.Namespace
+			}
+			if len(p.Spec.ServiceAccountName) > 0 {
+				o.DestinationServiceAccountName = p.Spec.ServiceAccountName
+			}
+			if len(p.Status.PodIP) > 0 {
+				o.DestinationPodIp = net.ParseIP(p.Status.PodIP)
+			}
+			if len(p.Status.HostIP) > 0 {
+				//m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
+			}
+			if app, found := p.Labels[params.PodLabelForService]; found {
+				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+				if err == nil {
+					o.DestinationService = n
+				}
+			} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
+				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+				if err == nil {
+					o.DestinationService = n
+				}
+			}
+
+		} else if prefix == "origin" {
+
+		}
+	}
 	if len(p.Labels) > 0 {
 		m[valueName(prefix, params.LabelsValueName)] = p.Labels
 	}

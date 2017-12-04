@@ -59,6 +59,11 @@ message Template {
     // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
     // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes destination_ip = 4;
+
+    string origin_uid = 5;
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
+    repeated bytes origin_ip = 6;
 }
 
 message OutputTemplate {
@@ -73,7 +78,7 @@ message OutputTemplate {
     // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes destination_pod_ip = 6;
     map<string, string> destination_labels = 7;
-    string destination_mamespace = 8;
+    string destination_namespace = 8;
     string destination_service = 9;
     string destination_service_account_name = 10;
 }

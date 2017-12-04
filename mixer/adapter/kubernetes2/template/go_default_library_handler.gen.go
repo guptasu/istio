@@ -64,15 +64,28 @@ type Instance struct {
 
 	SourceUid string
 
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
 	SourceIp net.IP
 
 	DestinationUid string
 
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
 	DestinationIp net.IP
+
+	OriginUid string
+
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
+	OriginIp net.IP
 }
 
 // Output struct is returned by the attribute producing adapters that handle this template.
 type Output struct {
+
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
 	SourcePodIp net.IP
 
 	SourceLabels map[string]string
@@ -83,11 +96,13 @@ type Output struct {
 
 	SourceServiceAccountName string
 
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
 	DestinationPodIp net.IP
 
 	DestinationLabels map[string]string
 
-	DestinationMamespace string
+	DestinationNamespace string
 
 	DestinationService string
 
