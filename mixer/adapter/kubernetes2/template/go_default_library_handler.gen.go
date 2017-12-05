@@ -18,7 +18,6 @@ package adapter_template_kubernetes
 
 import (
 	"context"
-	"net"
 
 	"istio.io/istio/mixer/pkg/adapter"
 )
@@ -66,19 +65,19 @@ type Instance struct {
 
 	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
 	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-	SourceIp net.IP
+	SourceIp []byte
 
 	DestinationUid string
 
 	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
 	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-	DestinationIp net.IP
+	DestinationIp []byte
 
 	OriginUid string
 
 	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
 	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-	OriginIp net.IP
+	OriginIp []byte
 }
 
 // Output struct is returned by the attribute producing adapters that handle this template.
@@ -86,7 +85,9 @@ type Output struct {
 
 	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
 	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-	SourcePodIp net.IP
+	SourcePodIp []byte
+
+	SourcePodName string
 
 	SourceLabels map[string]string
 
@@ -96,9 +97,13 @@ type Output struct {
 
 	SourceServiceAccountName string
 
+	SourceHostIp []byte
+
 	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
 	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-	DestinationPodIp net.IP
+	DestinationPodIp []byte
+
+	DestinationPodName string
 
 	DestinationLabels map[string]string
 
@@ -107,6 +112,24 @@ type Output struct {
 	DestinationService string
 
 	DestinationServiceAccountName string
+
+	DestinationHostIp []byte
+
+	// This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+	// Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
+	OriginPodIp []byte
+
+	OriginPodName string
+
+	OriginLabels map[string]string
+
+	OriginNamespace string
+
+	OriginService string
+
+	OriginServiceAccountName string
+
+	OriginHostIp []byte
 }
 
 // HandlerBuilder must be implemented by adapters if they want to

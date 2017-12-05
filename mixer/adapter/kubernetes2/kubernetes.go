@@ -37,8 +37,36 @@ import (
 	"context"
 
 	"istio.io/istio/mixer/adapter/kubernetes2/config"
-	adapter_template_kubernetes "istio.io/istio/mixer/adapter/kubernetes2/template"
+	kubernetes_apa_tmpl "istio.io/istio/mixer/adapter/kubernetes2/template"
 	"istio.io/istio/mixer/pkg/adapter"
+)
+
+const (
+	// parsing
+	kubePrefix = "kubernetes://"
+
+	// value extraction
+	clusterDomain                      = "svc.cluster.local"
+	podServiceLabel                    = "app"
+	istioPodServiceLabel               = "istio"
+	lookupIngressSourceAndOriginValues = false
+	istioIngressSvc                    = "ingress.istio-system.svc.cluster.local"
+
+	// cache invalidation
+	// TODO: determine a reasonable default
+	defaultRefreshPeriod = 5 * time.Minute
+)
+
+var (
+	conf = &config.Params{
+		KubeconfigPath:                        "",
+		CacheRefreshDuration:                  defaultRefreshPeriod,
+		PodLabelForService:                    podServiceLabel,
+		PodLabelForIstioComponentService:      istioPodServiceLabel,
+		FullyQualifiedIstioIngressServiceName: istioIngressSvc,
+		LookupIngressSourceAndOriginValues:    lookupIngressSourceAndOriginValues,
+		ClusterDomainName:                     clusterDomain,
+	}
 )
 
 type (
@@ -51,24 +79,82 @@ type (
 	handler struct {
 		pods   cacheController
 		log    adapter.Logger
-		params config.Params
+		params *config.Params
 	}
 
 	// used strictly for testing purposes
 	controllerFactoryFn func(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error)
 )
 
-var _ adapter_template_kubernetes.Handler = &handler{}
+// compile-time validation
+var _ kubernetes_apa_tmpl.Handler = &handler{}
+var _ kubernetes_apa_tmpl.HandlerBuilder = &builder{}
+
+func (h *handler) GenerateKubernetesAttributes(ctx context.Context, inst *kubernetes_apa_tmpl.Instance) (*kubernetes_apa_tmpl.Output, error) {
+	out := &kubernetes_apa_tmpl.Output{}
+	if inst.DestinationUid != "" {
+		if p, found := h.findPod(inst.DestinationUid); found {
+			fillDestinationAttrs(p, out, h.params)
+		}
+	} else if inst.DestinationIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.DestinationIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				if p, found := h.findPod(ip.String()); found {
+					fillDestinationAttrs(p, out, h.params)
+				}
+			}
+		}
+	}
+
+	if h.skipIngressLookups(out) {
+		return out, nil
+	}
+
+	if inst.SourceUid != "" {
+		if p, found := h.findPod(inst.SourceUid); found {
+			fillSourceAttrs(p, out, h.params)
+		}
+	} else if inst.SourceIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.SourceIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				if p, found := h.findPod(ip.String()); found {
+					fillSourceAttrs(p, out, h.params)
+				}
+			}
+		}
+	}
+
+	if inst.OriginUid != "" {
+		if p, found := h.findPod(inst.OriginUid); found {
+			fillOriginAttrs(p, out, h.params)
+		}
+	} else if inst.OriginIp != nil {
+		// TODO: update when support for golang net.IP is added to attribute.Bag
+		var iface interface{} = inst.OriginIp
+		rawIP := iface.([]uint8)
+		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
+			ip := net.IP(rawIP)
+			if !ip.IsUnspecified() {
+				if p, found := h.findPod(ip.String()); found {
+					fillOriginAttrs(p, out, h.params)
+				}
+			}
+		}
+	}
+	return out, nil
+}
 
 func (h *handler) Close() error {
 	return nil
 }
-
-func (h *handler) GenerateKubernetesAttributes(context.Context, *adapter_template_kubernetes.Instance) (*adapter_template_kubernetes.Output, error) {
-	return nil, nil
-}
-
-var _ adapter_template_kubernetes.HandlerBuilder = &builder{}
 
 // SetAdapterConfig gives the builder the adapter-level configuration state.
 func (b *builder) SetAdapterConfig(c adapter.Config) {
@@ -79,54 +165,6 @@ func (b *builder) SetAdapterConfig(c adapter.Config) {
 // correct. The Build method is only invoked when Validate has returned success.
 func (b *builder) Validate() (ce *adapter.ConfigErrors) {
 	params := b.adapterConfig
-	if len(params.SourceUidInputName) == 0 {
-		ce = ce.Appendf("sourceUidInputName", "field must be populated")
-	}
-	if len(params.DestinationUidInputName) == 0 {
-		ce = ce.Appendf("destinationUidInputName", "field must be populated")
-	}
-	if len(params.OriginUidInputName) == 0 {
-		ce = ce.Appendf("originUidInputName", "field must be populated")
-	}
-	if len(params.SourceIpInputName) == 0 {
-		ce = ce.Appendf("sourceIpInputName", "field must be populated")
-	}
-	if len(params.DestinationIpInputName) == 0 {
-		ce = ce.Appendf("destinationIpInputName", "field must be populated")
-	}
-	if len(params.OriginIpInputName) == 0 {
-		ce = ce.Appendf("originIpInputName", "field must be populated")
-	}
-	if len(params.SourcePrefix) == 0 {
-		ce = ce.Appendf("sourcePrefix", "field must be populated")
-	}
-	if len(params.DestinationPrefix) == 0 {
-		ce = ce.Appendf("destinationPrefix", "field must be populated")
-	}
-	if len(params.OriginPrefix) == 0 {
-		ce = ce.Appendf("originPrefix", "field must be populated")
-	}
-	if len(params.LabelsValueName) == 0 {
-		ce = ce.Appendf("labelsValueName", "field must be populated")
-	}
-	if len(params.PodIpValueName) == 0 {
-		ce = ce.Appendf("podIpValueName", "field must be populated")
-	}
-	if len(params.PodNameValueName) == 0 {
-		ce = ce.Appendf("podNameValueName", "field must be populated")
-	}
-	if len(params.HostIpValueName) == 0 {
-		ce = ce.Appendf("hostIpValueName", "field must be populated")
-	}
-	if len(params.NamespaceValueName) == 0 {
-		ce = ce.Appendf("namespaceValueName", "field must be populated")
-	}
-	if len(params.ServiceAccountValueName) == 0 {
-		ce = ce.Appendf("serviceAccountValueName", "field must be populated")
-	}
-	if len(params.ServiceValueName) == 0 {
-		ce = ce.Appendf("serviceValueName", "field must be populated")
-	}
 	if len(params.PodLabelForService) == 0 {
 		ce = ce.Appendf("podLabelForService", "field must be populated")
 	}
@@ -183,116 +221,22 @@ func (b *builder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, 
 	kg := &handler{
 		log:    env.Logger(),
 		pods:   pods,
-		params: *paramsProto,
+		params: paramsProto,
 	}
 	return kg, nil
 }
 
-func (k *handler) Generate(inputs map[string]interface{}) (map[string]interface{}, error) {
-
-	values := make(map[string]interface{})
-	if id, found := serviceIdentifier(inputs, k.params.DestinationUidInputName, k.params.DestinationIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.DestinationPrefix, nil)
-	}
-	if k.skipIngressLookups(values) {
-		return values, nil
-	}
-	if id, found := serviceIdentifier(inputs, k.params.SourceUidInputName, k.params.SourceIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.SourcePrefix, nil)
-	}
-	if id, found := serviceIdentifier(inputs, k.params.OriginUidInputName, k.params.OriginIpInputName); found && len(id) > 0 {
-		k.addValues(values, id, k.params.OriginPrefix, nil)
-	}
-	return values, nil
-}
-func (k *handler) Generate2(inputs map[string]interface{}) (*adapter_template_kubernetes.Output, error) {
-
-	values := make(map[string]interface{})
-
-	var inst *adapter_template_kubernetes.Instance
-	var out *adapter_template_kubernetes.Output
-
-	if inst.DestinationUid != "" {
-		k.addValues(values, inst.DestinationUid, k.params.DestinationPrefix, out)
-	} else if inst.DestinationIp != nil {
-		// TODO: update when support for golang net.IP is added to attribute.Bag
-		var iface interface{} = inst.DestinationIp
-		rawIP := iface.([]uint8)
-		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
-			ip := net.IP(rawIP)
-			if !ip.IsUnspecified() {
-				k.addValues(values, ip.String(), k.params.DestinationPrefix, out)
-			}
-		}
-	}
-
-	//if id, found := serviceIdentifier(inputs, k.params.DestinationUidInputName, k.params.DestinationIpInputName); found && len(id) > 0 {
-	//	k.addValues(values, id, k.params.DestinationPrefix)
-	//}
-	//if k.skipIngressLookups(values) {
-	//	return values, nil
-	//}
-
-	if k.skipIngressLookups2(out) {
-		return out, nil
-	}
-
-	//if id, found := serviceIdentifier(inputs, k.params.SourceUidInputName, k.params.SourceIpInputName); found && len(id) > 0 {
-	//	k.addValues(values, id, k.params.SourcePrefix)
-	//}
-
-	if inst.SourceUid != "" {
-		k.addValues(values, inst.SourceUid, k.params.SourcePrefix, out)
-	} else if inst.SourceIp != nil {
-		// TODO: update when support for golang net.IP is added to attribute.Bag
-		var iface interface{} = inst.SourceIp
-		rawIP := iface.([]uint8)
-		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
-			ip := net.IP(rawIP)
-			if !ip.IsUnspecified() {
-				k.addValues(values, ip.String(), k.params.SourcePrefix, out)
-			}
-		}
-	}
-
-	//if id, found := serviceIdentifier(inputs, k.params.OriginUidInputName, k.params.OriginIpInputName); found && len(id) > 0 {
-	//	k.addValues(values, id, k.params.OriginPrefix)
-	//}
-	if inst.OriginUid != "" {
-		k.addValues(values, inst.OriginUid, k.params.OriginPrefix, out)
-	} else if inst.OriginIp != nil {
-		// TODO: update when support for golang net.IP is added to attribute.Bag
-		var iface interface{} = inst.OriginIp
-		rawIP := iface.([]uint8)
-		if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
-			ip := net.IP(rawIP)
-			if !ip.IsUnspecified() {
-				k.addValues(values, ip.String(), k.params.OriginPrefix, out)
-			}
-		}
-	}
-	return out, nil
-}
-
-func (k *handler) addValues(vals map[string]interface{}, uid, valPrefix string, output *adapter_template_kubernetes.Output) {
+func (h *handler) findPod(uid string) (*v1.Pod, bool) {
 	podKey := keyFromUID(uid)
-	pod, found := k.pods.GetPod(podKey)
-	if !found {
-		if k.log.VerbosityLevel(debugVerbosityLevel) {
-			k.log.Infof("could not find pod for (uid: %s, key: %s)", uid, podKey)
-		}
-		return
+	pod, found := h.pods.GetPod(podKey)
+	if !found && h.log.VerbosityLevel(debugVerbosityLevel) {
+		h.log.Infof("could not find pod for (uid: %s, key: %s)", uid, podKey)
 	}
-	addPodValues(vals, valPrefix, k.params, pod, output)
+	return pod, found
 }
 
-func (k *handler) skipIngressLookups(values map[string]interface{}) bool {
-	destSvcParam := k.params.DestinationPrefix + k.params.ServiceValueName
-	return !k.params.LookupIngressSourceAndOriginValues && values[destSvcParam] == k.params.FullyQualifiedIstioIngressServiceName
-}
-
-func (k *handler) skipIngressLookups2(out *adapter_template_kubernetes.Output) bool {
-	return !k.params.LookupIngressSourceAndOriginValues && out.DestinationService == k.params.FullyQualifiedIstioIngressServiceName
+func (h *handler) skipIngressLookups(out *kubernetes_apa_tmpl.Output) bool {
+	return !h.params.LookupIngressSourceAndOriginValues && out.DestinationService == h.params.FullyQualifiedIstioIngressServiceName
 }
 
 func newBuilder(cacheFactory controllerFactoryFn) *builder {
@@ -309,9 +253,9 @@ func GetInfo() adapter.Info {
 	return adapter.Info{
 		Name:        "KubernetesAttributeGenerator",
 		Impl:        "istio.io/istio/mixer/adapter/kubernetes",
-		Description: "Generate kubernetes attributes",
+		Description: "Provides platform specific functionality for the kubernetes environment",
 		SupportedTemplates: []string{
-			adapter_template_kubernetes.TemplateName,
+			kubernetes_apa_tmpl.TemplateName,
 		},
 		DefaultConfig: conf,
 
@@ -369,27 +313,6 @@ func canonicalName(service, namespace, clusterDomain string) (string, error) {
 	return s, nil
 }
 
-func serviceIdentifier(inputs map[string]interface{}, keys ...string) (string, bool) {
-	for _, key := range keys {
-		if id, found := inputs[key]; found {
-			switch id.(type) {
-			// TODO: update when support for golang net.IP is added to attribute.Bag
-			case []uint8:
-				rawIP := id.([]uint8)
-				if len(rawIP) == net.IPv4len || len(rawIP) == net.IPv6len {
-					ip := net.IP(rawIP)
-					if !ip.IsUnspecified() {
-						return ip.String(), true
-					}
-				}
-			case string:
-				return id.(string), true
-			}
-		}
-	}
-	return "", false
-}
-
 func keyFromUID(uid string) string {
 	if ip := net.ParseIP(uid); ip != nil {
 		return uid
@@ -404,169 +327,101 @@ func keyFromUID(uid string) string {
 	return fullname
 }
 
-func addPodValues(m map[string]interface{}, prefix string, params config.Params, p *v1.Pod, o *adapter_template_kubernetes.Output) {
-	if o != nil {
-		if prefix == "source" {
-			if len(p.Labels) > 0 {
-				o.SourceLabels = p.Labels
-			}
-			if len(p.Name) > 0 {
-				//m[valueName(prefix, params.PodNameValueName)] = p.Name
-			}
-			if len(p.Namespace) > 0 {
-				o.SourceNamespace = p.Namespace
-			}
-			if len(p.Spec.ServiceAccountName) > 0 {
-				o.SourceServiceAccountName = p.Spec.ServiceAccountName
-			}
-			if len(p.Status.PodIP) > 0 {
-				o.SourcePodIp = net.ParseIP(p.Status.PodIP)
-			}
-			if len(p.Status.HostIP) > 0 {
-				//m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
-			}
-			if app, found := p.Labels[params.PodLabelForService]; found {
-				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-				if err == nil {
-					o.SourceService = n
-				}
-			} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
-				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-				if err == nil {
-					o.SourceService = n
-				}
-			}
-		} else if prefix == "destination" {
-			if len(p.Labels) > 0 {
-				o.DestinationLabels = p.Labels
-			}
-			if len(p.Name) > 0 {
-				//m[valueName(prefix, params.PodNameValueName)] = p.Name
-			}
-			if len(p.Namespace) > 0 {
-				o.DestinationNamespace = p.Namespace
-			}
-			if len(p.Spec.ServiceAccountName) > 0 {
-				o.DestinationServiceAccountName = p.Spec.ServiceAccountName
-			}
-			if len(p.Status.PodIP) > 0 {
-				o.DestinationPodIp = net.ParseIP(p.Status.PodIP)
-			}
-			if len(p.Status.HostIP) > 0 {
-				//m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
-			}
-			if app, found := p.Labels[params.PodLabelForService]; found {
-				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-				if err == nil {
-					o.DestinationService = n
-				}
-			} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
-				n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
-				if err == nil {
-					o.DestinationService = n
-				}
-			}
-
-		} else if prefix == "origin" {
-
-		}
-	}
+func fillOriginAttrs(p *v1.Pod, o *kubernetes_apa_tmpl.Output, params *config.Params) {
 	if len(p.Labels) > 0 {
-		m[valueName(prefix, params.LabelsValueName)] = p.Labels
+		o.OriginLabels = p.Labels
 	}
 	if len(p.Name) > 0 {
-		m[valueName(prefix, params.PodNameValueName)] = p.Name
+		o.OriginPodName = p.Name
 	}
 	if len(p.Namespace) > 0 {
-		m[valueName(prefix, params.NamespaceValueName)] = p.Namespace
+		o.OriginNamespace = p.Namespace
 	}
 	if len(p.Spec.ServiceAccountName) > 0 {
-		m[valueName(prefix, params.ServiceAccountValueName)] = p.Spec.ServiceAccountName
+		o.OriginServiceAccountName = p.Spec.ServiceAccountName
 	}
 	if len(p.Status.PodIP) > 0 {
-		m[valueName(prefix, params.PodIpValueName)] = net.ParseIP(p.Status.PodIP)
+		o.OriginPodIp = net.ParseIP(p.Status.PodIP)
 	}
 	if len(p.Status.HostIP) > 0 {
-		m[valueName(prefix, params.HostIpValueName)] = net.ParseIP(p.Status.HostIP)
+		o.OriginHostIp = net.ParseIP(p.Status.HostIP)
 	}
 	if app, found := p.Labels[params.PodLabelForService]; found {
 		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
 		if err == nil {
-			m[valueName(prefix, params.ServiceValueName)] = n
+			o.OriginService = n
 		}
 	} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
 		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
 		if err == nil {
-			m[valueName(prefix, params.ServiceValueName)] = n
+			o.OriginService = n
 		}
 	}
 }
 
-const (
-	// adapter vals
-	name = "kubernetes"
-	desc = "Provides platform specific functionality for the kubernetes environment"
-
-	// parsing
-	kubePrefix = "kubernetes://"
-
-	// input/output naming
-	sourceUID         = "sourceUID"
-	destinationUID    = "destinationUID"
-	originUID         = "originUID"
-	sourceIP          = "sourceIP"
-	destinationIP     = "destinationIP"
-	originIP          = "originIP"
-	sourcePrefix      = "source"
-	destinationPrefix = "destination"
-	originPrefix      = "origin"
-	labelsVal         = "Labels"
-	podNameVal        = "PodName"
-	podIPVal          = "PodIP"
-	hostIPVal         = "HostIP"
-	namespaceVal      = "Namespace"
-	serviceAccountVal = "ServiceAccountName"
-	serviceVal        = "Service"
-
-	// value extraction
-	clusterDomain                      = "svc.cluster.local"
-	podServiceLabel                    = "app"
-	istioPodServiceLabel               = "istio"
-	lookupIngressSourceAndOriginValues = false
-	istioIngressSvc                    = "ingress.istio-system.svc.cluster.local"
-
-	// cache invaliation
-	// TODO: determine a reasonable default
-	defaultRefreshPeriod = 5 * time.Minute
-)
-
-var (
-	conf = &config.Params{
-		KubeconfigPath:                        "",
-		CacheRefreshDuration:                  defaultRefreshPeriod,
-		SourceUidInputName:                    sourceUID,
-		DestinationUidInputName:               destinationUID,
-		OriginUidInputName:                    originUID,
-		SourceIpInputName:                     sourceIP,
-		DestinationIpInputName:                destinationIP,
-		OriginIpInputName:                     originIP,
-		ClusterDomainName:                     clusterDomain,
-		PodLabelForService:                    podServiceLabel,
-		PodLabelForIstioComponentService:      istioPodServiceLabel,
-		SourcePrefix:                          sourcePrefix,
-		DestinationPrefix:                     destinationPrefix,
-		OriginPrefix:                          originPrefix,
-		LabelsValueName:                       labelsVal,
-		PodNameValueName:                      podNameVal,
-		PodIpValueName:                        podIPVal,
-		HostIpValueName:                       hostIPVal,
-		NamespaceValueName:                    namespaceVal,
-		ServiceAccountValueName:               serviceAccountVal,
-		ServiceValueName:                      serviceVal,
-		FullyQualifiedIstioIngressServiceName: istioIngressSvc,
-		LookupIngressSourceAndOriginValues:    lookupIngressSourceAndOriginValues,
+func fillDestinationAttrs(p *v1.Pod, o *kubernetes_apa_tmpl.Output, params *config.Params) {
+	if len(p.Labels) > 0 {
+		o.DestinationLabels = p.Labels
 	}
-)
+	if len(p.Name) > 0 {
+		o.DestinationPodName = p.Name
+	}
+	if len(p.Namespace) > 0 {
+		o.DestinationNamespace = p.Namespace
+	}
+	if len(p.Spec.ServiceAccountName) > 0 {
+		o.DestinationServiceAccountName = p.Spec.ServiceAccountName
+	}
+	if len(p.Status.PodIP) > 0 {
+		o.DestinationPodIp = net.ParseIP(p.Status.PodIP)
+	}
+	if len(p.Status.HostIP) > 0 {
+		o.DestinationHostIp = net.ParseIP(p.Status.HostIP)
+	}
+	if app, found := p.Labels[params.PodLabelForService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			o.DestinationService = n
+		}
+	} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			o.DestinationService = n
+		}
+	}
+}
+
+func fillSourceAttrs(p *v1.Pod, o *kubernetes_apa_tmpl.Output, params *config.Params) {
+	if len(p.Labels) > 0 {
+		o.SourceLabels = p.Labels
+	}
+	if len(p.Name) > 0 {
+		o.SourcePodName = p.Name
+	}
+	if len(p.Namespace) > 0 {
+		o.SourceNamespace = p.Namespace
+	}
+	if len(p.Spec.ServiceAccountName) > 0 {
+		o.SourceServiceAccountName = p.Spec.ServiceAccountName
+	}
+	if len(p.Status.PodIP) > 0 {
+		o.SourcePodIp = net.ParseIP(p.Status.PodIP)
+	}
+	if len(p.Status.HostIP) > 0 {
+		o.SourceHostIp = net.ParseIP(p.Status.HostIP)
+	}
+	if app, found := p.Labels[params.PodLabelForService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			o.SourceService = n
+		}
+	} else if app, found := p.Labels[params.PodLabelForIstioComponentService]; found {
+		n, err := canonicalName(app, p.Namespace, params.ClusterDomainName)
+		if err == nil {
+			o.SourceService = n
+		}
+	}
+}
 
 func newCacheFromConfig(kubeconfigPath string, refreshDuration time.Duration, env adapter.Env) (cacheController, error) {
 	if env.Logger().VerbosityLevel(debugVerbosityLevel) {

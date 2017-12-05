@@ -70,15 +70,30 @@ message OutputTemplate {
     // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
     // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
     repeated bytes source_pod_ip = 1;
-    map<string, string> source_labels = 2;
-    string source_namespace = 3;
-    string source_service = 4;
-    string source_service_account_name = 5;
+    string source_pod_name = 2;
+    map<string, string> source_labels = 3;
+    string source_namespace = 4;
+    string source_service = 5;
+    string source_service_account_name = 6;
+    repeated bytes source_host_ip = 7;
+
     // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
     // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
-    repeated bytes destination_pod_ip = 6;
-    map<string, string> destination_labels = 7;
-    string destination_namespace = 8;
-    string destination_service = 9;
-    string destination_service_account_name = 10;
+    repeated bytes destination_pod_ip = 8;
+    string destination_pod_name = 9;
+    map<string, string> destination_labels = 10;
+    string destination_namespace = 11;
+    string destination_service = 12;
+    string destination_service_account_name = 13;
+    repeated bytes destination_host_ip = 14;
+
+    // This is temporary, DO NOT USE repeated bytes for IP_ADDRESS.
+    // Before we release APA adapters, we need to introduce special types for representing IP_ADDPRESS
+    repeated bytes origin_pod_ip = 15;
+    string origin_pod_name = 16;
+    map<string, string> origin_labels = 17;
+    string origin_namespace = 18;
+    string origin_service = 19;
+    string origin_service_account_name = 20;
+    repeated bytes origin_host_ip = 21;
 }

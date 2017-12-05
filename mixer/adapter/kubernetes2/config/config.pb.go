@@ -72,104 +72,31 @@ type Params struct {
 	//
 	// Default: 5 minutes
 	CacheRefreshDuration time.Duration `protobuf:"bytes,2,opt,name=cache_refresh_duration,json=cacheRefreshDuration,stdduration" json:"cache_refresh_duration"`
-	// Configures how the UID for the source pod for traffic is identified
-	// in the input map.
-	//
-	// Default: sourceUID
-	SourceUidInputName string `protobuf:"bytes,3,opt,name=source_uid_input_name,json=sourceUidInputName,proto3" json:"source_uid_input_name,omitempty"`
-	// Configures how the UID for the destination pod for traffic is identified
-	// in the input map.
-	//
-	// Default: destinationUID
-	DestinationUidInputName string `protobuf:"bytes,4,opt,name=destination_uid_input_name,json=destinationUidInputName,proto3" json:"destination_uid_input_name,omitempty"`
-	// Configures how the UID for the origin pod for traffic is identified
-	// in the input map.
-	//
-	// Default: originUID
-	OriginUidInputName string `protobuf:"bytes,5,opt,name=origin_uid_input_name,json=originUidInputName,proto3" json:"origin_uid_input_name,omitempty"`
-	// Configures how the IP for the source pod for traffic is identified
-	// in the input map.
-	//
-	// Default: sourceIP
-	SourceIpInputName string `protobuf:"bytes,20,opt,name=source_ip_input_name,json=sourceIpInputName,proto3" json:"source_ip_input_name,omitempty"`
-	// Configures how the IP for the destination pod for traffic is identified
-	// in the input map.
-	//
-	// Default: destinationIP
-	DestinationIpInputName string `protobuf:"bytes,21,opt,name=destination_ip_input_name,json=destinationIpInputName,proto3" json:"destination_ip_input_name,omitempty"`
-	// Configures how the IP for the origin pod for traffic is identified
-	// in the input map.
-	//
-	// Default: originIP
-	OriginIpInputName string `protobuf:"bytes,23,opt,name=origin_ip_input_name,json=originIpInputName,proto3" json:"origin_ip_input_name,omitempty"`
 	// Configures the cluster domain name to use for service name normalization.
 	//
 	// Default: svc.cluster.local
-	ClusterDomainName string `protobuf:"bytes,18,opt,name=cluster_domain_name,json=clusterDomainName,proto3" json:"cluster_domain_name,omitempty"`
+	ClusterDomainName string `protobuf:"bytes,3,opt,name=cluster_domain_name,json=clusterDomainName,proto3" json:"cluster_domain_name,omitempty"`
 	// In order to extract the service associated with a source, destination, or
 	// origin, this adapter relies on pod labels. In particular, it looks for
 	// the value of a specific label, as specified by this parameter.
 	//
 	// Default: app
-	PodLabelForService string `protobuf:"bytes,6,opt,name=pod_label_for_service,json=podLabelForService,proto3" json:"pod_label_for_service,omitempty"`
+	PodLabelForService string `protobuf:"bytes,4,opt,name=pod_label_for_service,json=podLabelForService,proto3" json:"pod_label_for_service,omitempty"`
 	// In order to extract the service associated with a source, destination, or
 	// origin, this adapter relies on pod labels. In particular, it looks for
 	// the value of a specific label for istio component services, as specified
 	// by this parameter.
 	//
 	// Default: istio
-	PodLabelForIstioComponentService string `protobuf:"bytes,19,opt,name=pod_label_for_istio_component_service,json=podLabelForIstioComponentService,proto3" json:"pod_label_for_istio_component_service,omitempty"`
-	// The prefix used for source pod output value names.
-	//
-	// Default: source
-	SourcePrefix string `protobuf:"bytes,7,opt,name=source_prefix,json=sourcePrefix,proto3" json:"source_prefix,omitempty"`
-	// The prefix used for destination pod output value names.
-	//
-	// Default: destination
-	DestinationPrefix string `protobuf:"bytes,8,opt,name=destination_prefix,json=destinationPrefix,proto3" json:"destination_prefix,omitempty"`
-	// The prefix used for origin pod output value names.
-	//
-	// Default: origin
-	OriginPrefix string `protobuf:"bytes,9,opt,name=origin_prefix,json=originPrefix,proto3" json:"origin_prefix,omitempty"`
-	// The value name for the pod labels output value.
-	//
-	// Default: Labels
-	LabelsValueName string `protobuf:"bytes,10,opt,name=labels_value_name,json=labelsValueName,proto3" json:"labels_value_name,omitempty"`
-	// The value name for the pod name output value.
-	//
-	// Default: PodName
-	PodNameValueName string `protobuf:"bytes,11,opt,name=pod_name_value_name,json=podNameValueName,proto3" json:"pod_name_value_name,omitempty"`
-	// The value name for the pod ip address output value.
-	//
-	// Default: PodIP
-	PodIpValueName string `protobuf:"bytes,12,opt,name=pod_ip_value_name,json=podIpValueName,proto3" json:"pod_ip_value_name,omitempty"`
-	// The value name for the pod host ip address output value.
-	//
-	// Default: HostIP
-	HostIpValueName string `protobuf:"bytes,13,opt,name=host_ip_value_name,json=hostIpValueName,proto3" json:"host_ip_value_name,omitempty"`
-	// The value name for the pod namespace output value.
-	//
-	// Default: Namespace
-	NamespaceValueName string `protobuf:"bytes,14,opt,name=namespace_value_name,json=namespaceValueName,proto3" json:"namespace_value_name,omitempty"`
-	// The value name for the pod service account name output value.
-	//
-	// Default: ServiceAccountName
-	ServiceAccountValueName string `protobuf:"bytes,15,opt,name=service_account_value_name,json=serviceAccountValueName,proto3" json:"service_account_value_name,omitempty"`
-	// The value name for the service output value.
-	//
-	// Default: Service
-	ServiceValueName string `protobuf:"bytes,16,opt,name=service_value_name,json=serviceValueName,proto3" json:"service_value_name,omitempty"`
-	// Whether or not to execute source and origin value lookup
-	// for Mixer requests when Istio ingress is the destination
-	// service.
+	PodLabelForIstioComponentService string `protobuf:"bytes,5,opt,name=pod_label_for_istio_component_service,json=podLabelForIstioComponentService,proto3" json:"pod_label_for_istio_component_service,omitempty"`
 	//
 	// Default: false
-	LookupIngressSourceAndOriginValues bool `protobuf:"varint,24,opt,name=lookup_ingress_source_and_origin_values,json=lookupIngressSourceAndOriginValues,proto3" json:"lookup_ingress_source_and_origin_values,omitempty"`
+	LookupIngressSourceAndOriginValues bool `protobuf:"varint,6,opt,name=lookup_ingress_source_and_origin_values,json=lookupIngressSourceAndOriginValues,proto3" json:"lookup_ingress_source_and_origin_values,omitempty"`
 	// Istio ingress service string. This is used to identify the
 	// ingress service in requests.
 	//
 	// Default: "ingress.istio-system.svc.cluster.local"
-	FullyQualifiedIstioIngressServiceName string `protobuf:"bytes,25,opt,name=fully_qualified_istio_ingress_service_name,json=fullyQualifiedIstioIngressServiceName,proto3" json:"fully_qualified_istio_ingress_service_name,omitempty"`
+	FullyQualifiedIstioIngressServiceName string `protobuf:"bytes,7,opt,name=fully_qualified_istio_ingress_service_name,json=fullyQualifiedIstioIngressServiceName,proto3" json:"fully_qualified_istio_ingress_service_name,omitempty"`
 }
 
 func (m *Params) Reset()                    { *m = Params{} }
@@ -208,136 +135,26 @@ func (m *Params) MarshalTo(dAtA []byte) (int, error) {
 		return 0, err
 	}
 	i += n1
-	if len(m.SourceUidInputName) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.SourceUidInputName)))
-		i += copy(dAtA[i:], m.SourceUidInputName)
-	}
-	if len(m.DestinationUidInputName) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.DestinationUidInputName)))
-		i += copy(dAtA[i:], m.DestinationUidInputName)
-	}
-	if len(m.OriginUidInputName) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.OriginUidInputName)))
-		i += copy(dAtA[i:], m.OriginUidInputName)
-	}
-	if len(m.PodLabelForService) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.PodLabelForService)))
-		i += copy(dAtA[i:], m.PodLabelForService)
-	}
-	if len(m.SourcePrefix) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.SourcePrefix)))
-		i += copy(dAtA[i:], m.SourcePrefix)
-	}
-	if len(m.DestinationPrefix) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.DestinationPrefix)))
-		i += copy(dAtA[i:], m.DestinationPrefix)
-	}
-	if len(m.OriginPrefix) > 0 {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.OriginPrefix)))
-		i += copy(dAtA[i:], m.OriginPrefix)
-	}
-	if len(m.LabelsValueName) > 0 {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.LabelsValueName)))
-		i += copy(dAtA[i:], m.LabelsValueName)
-	}
-	if len(m.PodNameValueName) > 0 {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.PodNameValueName)))
-		i += copy(dAtA[i:], m.PodNameValueName)
-	}
-	if len(m.PodIpValueName) > 0 {
-		dAtA[i] = 0x62
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.PodIpValueName)))
-		i += copy(dAtA[i:], m.PodIpValueName)
-	}
-	if len(m.HostIpValueName) > 0 {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.HostIpValueName)))
-		i += copy(dAtA[i:], m.HostIpValueName)
-	}
-	if len(m.NamespaceValueName) > 0 {
-		dAtA[i] = 0x72
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.NamespaceValueName)))
-		i += copy(dAtA[i:], m.NamespaceValueName)
-	}
-	if len(m.ServiceAccountValueName) > 0 {
-		dAtA[i] = 0x7a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.ServiceAccountValueName)))
-		i += copy(dAtA[i:], m.ServiceAccountValueName)
-	}
-	if len(m.ServiceValueName) > 0 {
-		dAtA[i] = 0x82
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.ServiceValueName)))
-		i += copy(dAtA[i:], m.ServiceValueName)
-	}
 	if len(m.ClusterDomainName) > 0 {
-		dAtA[i] = 0x92
-		i++
-		dAtA[i] = 0x1
+		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintConfig(dAtA, i, uint64(len(m.ClusterDomainName)))
 		i += copy(dAtA[i:], m.ClusterDomainName)
 	}
-	if len(m.PodLabelForIstioComponentService) > 0 {
-		dAtA[i] = 0x9a
+	if len(m.PodLabelForService) > 0 {
+		dAtA[i] = 0x22
 		i++
-		dAtA[i] = 0x1
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.PodLabelForService)))
+		i += copy(dAtA[i:], m.PodLabelForService)
+	}
+	if len(m.PodLabelForIstioComponentService) > 0 {
+		dAtA[i] = 0x2a
 		i++
 		i = encodeVarintConfig(dAtA, i, uint64(len(m.PodLabelForIstioComponentService)))
 		i += copy(dAtA[i:], m.PodLabelForIstioComponentService)
 	}
-	if len(m.SourceIpInputName) > 0 {
-		dAtA[i] = 0xa2
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.SourceIpInputName)))
-		i += copy(dAtA[i:], m.SourceIpInputName)
-	}
-	if len(m.DestinationIpInputName) > 0 {
-		dAtA[i] = 0xaa
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.DestinationIpInputName)))
-		i += copy(dAtA[i:], m.DestinationIpInputName)
-	}
-	if len(m.OriginIpInputName) > 0 {
-		dAtA[i] = 0xba
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.OriginIpInputName)))
-		i += copy(dAtA[i:], m.OriginIpInputName)
-	}
 	if m.LookupIngressSourceAndOriginValues {
-		dAtA[i] = 0xc0
-		i++
-		dAtA[i] = 0x1
+		dAtA[i] = 0x30
 		i++
 		if m.LookupIngressSourceAndOriginValues {
 			dAtA[i] = 1
@@ -347,9 +164,7 @@ func (m *Params) MarshalTo(dAtA []byte) (int, error) {
 		i++
 	}
 	if len(m.FullyQualifiedIstioIngressServiceName) > 0 {
-		dAtA[i] = 0xca
-		i++
-		dAtA[i] = 0x1
+		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintConfig(dAtA, i, uint64(len(m.FullyQualifiedIstioIngressServiceName)))
 		i += copy(dAtA[i:], m.FullyQualifiedIstioIngressServiceName)
@@ -375,15 +190,7 @@ func (m *Params) Size() (n int) {
 	}
 	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.CacheRefreshDuration)
 	n += 1 + l + sovConfig(uint64(l))
-	l = len(m.SourceUidInputName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.DestinationUidInputName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.OriginUidInputName)
+	l = len(m.ClusterDomainName)
 	if l > 0 {
 		n += 1 + l + sovConfig(uint64(l))
 	}
@@ -391,72 +198,16 @@ func (m *Params) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovConfig(uint64(l))
 	}
-	l = len(m.SourcePrefix)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.DestinationPrefix)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.OriginPrefix)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.LabelsValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.PodNameValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.PodIpValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.HostIpValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.NamespaceValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.ServiceAccountValueName)
-	if l > 0 {
-		n += 1 + l + sovConfig(uint64(l))
-	}
-	l = len(m.ServiceValueName)
-	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
-	}
-	l = len(m.ClusterDomainName)
-	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
-	}
 	l = len(m.PodLabelForIstioComponentService)
 	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
-	}
-	l = len(m.SourceIpInputName)
-	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
-	}
-	l = len(m.DestinationIpInputName)
-	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
-	}
-	l = len(m.OriginIpInputName)
-	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
+		n += 1 + l + sovConfig(uint64(l))
 	}
 	if m.LookupIngressSourceAndOriginValues {
-		n += 3
+		n += 2
 	}
 	l = len(m.FullyQualifiedIstioIngressServiceName)
 	if l > 0 {
-		n += 2 + l + sovConfig(uint64(l))
+		n += 1 + l + sovConfig(uint64(l))
 	}
 	return n
 }
@@ -481,25 +232,9 @@ func (this *Params) String() string {
 	s := strings.Join([]string{`&Params{`,
 		`KubeconfigPath:` + fmt.Sprintf("%v", this.KubeconfigPath) + `,`,
 		`CacheRefreshDuration:` + strings.Replace(strings.Replace(this.CacheRefreshDuration.String(), "Duration", "google_protobuf1.Duration", 1), `&`, ``, 1) + `,`,
-		`SourceUidInputName:` + fmt.Sprintf("%v", this.SourceUidInputName) + `,`,
-		`DestinationUidInputName:` + fmt.Sprintf("%v", this.DestinationUidInputName) + `,`,
-		`OriginUidInputName:` + fmt.Sprintf("%v", this.OriginUidInputName) + `,`,
-		`PodLabelForService:` + fmt.Sprintf("%v", this.PodLabelForService) + `,`,
-		`SourcePrefix:` + fmt.Sprintf("%v", this.SourcePrefix) + `,`,
-		`DestinationPrefix:` + fmt.Sprintf("%v", this.DestinationPrefix) + `,`,
-		`OriginPrefix:` + fmt.Sprintf("%v", this.OriginPrefix) + `,`,
-		`LabelsValueName:` + fmt.Sprintf("%v", this.LabelsValueName) + `,`,
-		`PodNameValueName:` + fmt.Sprintf("%v", this.PodNameValueName) + `,`,
-		`PodIpValueName:` + fmt.Sprintf("%v", this.PodIpValueName) + `,`,
-		`HostIpValueName:` + fmt.Sprintf("%v", this.HostIpValueName) + `,`,
-		`NamespaceValueName:` + fmt.Sprintf("%v", this.NamespaceValueName) + `,`,
-		`ServiceAccountValueName:` + fmt.Sprintf("%v", this.ServiceAccountValueName) + `,`,
-		`ServiceValueName:` + fmt.Sprintf("%v", this.ServiceValueName) + `,`,
 		`ClusterDomainName:` + fmt.Sprintf("%v", this.ClusterDomainName) + `,`,
+		`PodLabelForService:` + fmt.Sprintf("%v", this.PodLabelForService) + `,`,
 		`PodLabelForIstioComponentService:` + fmt.Sprintf("%v", this.PodLabelForIstioComponentService) + `,`,
-		`SourceIpInputName:` + fmt.Sprintf("%v", this.SourceIpInputName) + `,`,
-		`DestinationIpInputName:` + fmt.Sprintf("%v", this.DestinationIpInputName) + `,`,
-		`OriginIpInputName:` + fmt.Sprintf("%v", this.OriginIpInputName) + `,`,
 		`LookupIngressSourceAndOriginValues:` + fmt.Sprintf("%v", this.LookupIngressSourceAndOriginValues) + `,`,
 		`FullyQualifiedIstioIngressServiceName:` + fmt.Sprintf("%v", this.FullyQualifiedIstioIngressServiceName) + `,`,
 		`}`,
@@ -604,7 +339,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SourceUidInputName", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ClusterDomainName", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -629,67 +364,9 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SourceUidInputName = string(dAtA[iNdEx:postIndex])
+			m.ClusterDomainName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DestinationUidInputName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DestinationUidInputName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginUidInputName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OriginUidInputName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PodLabelForService", wireType)
 			}
@@ -718,326 +395,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.PodLabelForService = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SourcePrefix", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SourcePrefix = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DestinationPrefix", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DestinationPrefix = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginPrefix", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OriginPrefix = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LabelsValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.LabelsValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PodNameValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PodNameValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PodIpValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PodIpValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 13:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HostIpValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.HostIpValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 14:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NamespaceValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.NamespaceValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 15:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ServiceAccountValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ServiceAccountValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 16:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ServiceValueName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ServiceValueName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 18:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClusterDomainName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClusterDomainName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 19:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PodLabelForIstioComponentService", wireType)
 			}
@@ -1066,94 +424,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.PodLabelForIstioComponentService = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 20:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SourceIpInputName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SourceIpInputName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 21:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DestinationIpInputName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DestinationIpInputName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 23:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginIpInputName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConfig
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConfig
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OriginIpInputName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 24:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LookupIngressSourceAndOriginValues", wireType)
 			}
@@ -1173,7 +444,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.LookupIngressSourceAndOriginValues = bool(v != 0)
-		case 25:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FullyQualifiedIstioIngressServiceName", wireType)
 			}
@@ -1331,51 +602,35 @@ var (
 func init() { proto.RegisterFile("mixer/adapter/kubernetes2/config/config.proto", fileDescriptorConfig) }
 
 var fileDescriptorConfig = []byte{
-	// 729 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x94, 0xcd, 0x4e, 0xdb, 0x4a,
-	0x1c, 0xc5, 0xed, 0x7b, 0xb9, 0xb9, 0x61, 0xf8, 0x8c, 0x09, 0x90, 0x64, 0x61, 0x22, 0x10, 0x82,
-	0xcb, 0x2d, 0x71, 0xa1, 0x9b, 0x56, 0xac, 0xa0, 0xa8, 0x52, 0xaa, 0xaa, 0xd0, 0xa0, 0x56, 0xa2,
-	0x9b, 0xd1, 0xc4, 0x9e, 0x24, 0x23, 0x1c, 0xcf, 0x74, 0xc6, 0x46, 0x74, 0xd7, 0x47, 0xe8, 0xb2,
-	0x8f, 0xd0, 0x47, 0x61, 0xc9, 0xb2, 0xab, 0xb6, 0x49, 0x37, 0x5d, 0xf2, 0x06, 0xad, 0x3c, 0xff,
-	0x31, 0x76, 0xe8, 0x0a, 0x32, 0xe7, 0x77, 0xfe, 0x1f, 0x33, 0x47, 0x46, 0xbb, 0x43, 0x76, 0x45,
-	0xa5, 0x47, 0x02, 0x22, 0x62, 0x2a, 0xbd, 0x8b, 0xa4, 0x4b, 0x65, 0x44, 0x63, 0xaa, 0xf6, 0x3d,
-	0x9f, 0x47, 0x3d, 0xd6, 0x37, 0x7f, 0x5a, 0x42, 0xf2, 0x98, 0x3b, 0x75, 0x03, 0xb6, 0x72, 0xb0,
-	0x05, 0x40, 0xa3, 0xda, 0xe7, 0x7d, 0xae, 0x29, 0x2f, 0xfd, 0x0f, 0x0c, 0x0d, 0xb7, 0xcf, 0x79,
-	0x3f, 0xa4, 0x9e, 0xfe, 0xd5, 0x4d, 0x7a, 0x5e, 0x90, 0x48, 0x12, 0x33, 0x1e, 0x81, 0xbe, 0xfe,
-	0x6b, 0x1a, 0x95, 0x4e, 0x89, 0x24, 0x43, 0xe5, 0x6c, 0xa1, 0x85, 0xb4, 0x2a, 0x94, 0xc3, 0x82,
-	0xc4, 0x83, 0x9a, 0xdd, 0xb4, 0xb7, 0xa7, 0x3b, 0xf3, 0xf9, 0xf1, 0x29, 0x89, 0x07, 0xce, 0x39,
-	0x5a, 0xf1, 0x89, 0x3f, 0xa0, 0x58, 0xd2, 0x9e, 0xa4, 0x6a, 0x80, 0xb3, 0x9a, 0xb5, 0xbf, 0x9a,
-	0xf6, 0xf6, 0xcc, 0x7e, 0xbd, 0x05, 0x4d, 0x5b, 0x59, 0xd3, 0xd6, 0xb1, 0x01, 0x8e, 0xca, 0xd7,
-	0x5f, 0xd7, 0xac, 0x4f, 0xdf, 0xd6, 0xec, 0x4e, 0x55, 0x97, 0xe8, 0x40, 0x85, 0x4c, 0x77, 0xf6,
-	0xd0, 0xb2, 0xe2, 0x89, 0xf4, 0x29, 0x4e, 0x58, 0x80, 0x59, 0x24, 0x92, 0x18, 0x47, 0x64, 0x48,
-	0x6b, 0x7f, 0xeb, 0x49, 0x1c, 0x10, 0x5f, 0xb3, 0xa0, 0x9d, 0x4a, 0x2f, 0xc9, 0x90, 0x3a, 0x07,
-	0xa8, 0x11, 0x50, 0x15, 0xb3, 0x48, 0x57, 0xb8, 0xef, 0x9b, 0xd2, 0xbe, 0xd5, 0x02, 0x31, 0x61,
-	0xde, 0x43, 0xcb, 0x5c, 0xb2, 0x3e, 0xfb, 0xc3, 0xf7, 0x0f, 0xf4, 0x03, 0xf1, 0xbe, 0x45, 0xf0,
-	0x00, 0x87, 0xa4, 0x4b, 0x43, 0xdc, 0xe3, 0x12, 0x2b, 0x2a, 0x2f, 0x99, 0x4f, 0x6b, 0x25, 0xb0,
-	0x08, 0x1e, 0xbc, 0x48, 0xb5, 0x67, 0x5c, 0x9e, 0x81, 0xe2, 0x6c, 0xa0, 0x39, 0xb3, 0x95, 0x90,
-	0xb4, 0xc7, 0xae, 0x6a, 0xff, 0x6a, 0x74, 0x16, 0x0e, 0x4f, 0xf5, 0x99, 0xb3, 0x8b, 0x9c, 0xe2,
-	0x1e, 0x86, 0x2c, 0x6b, 0xb2, 0x52, 0x50, 0x0c, 0xbe, 0x81, 0xe6, 0xcc, 0xe4, 0x86, 0x9c, 0x86,
-	0x9a, 0x70, 0x68, 0xa0, 0x1d, 0x54, 0xd1, 0x73, 0x2a, 0x7c, 0x49, 0xc2, 0x84, 0xc2, 0x6a, 0x48,
-	0x83, 0x0b, 0x20, 0xbc, 0x49, 0xcf, 0xf5, 0x5e, 0xbb, 0x68, 0x29, 0xdd, 0x2b, 0x45, 0x8a, 0xf4,
-	0x8c, 0xa6, 0x17, 0x05, 0x0f, 0x52, 0x2a, 0xc7, 0xff, 0x43, 0x95, 0x14, 0x67, 0xa2, 0x08, 0xcf,
-	0x42, 0x5e, 0x04, 0x0f, 0xda, 0x22, 0x47, 0xff, 0x47, 0xce, 0x80, 0xab, 0xf8, 0x1e, 0x3b, 0x07,
-	0x63, 0xa4, 0x4a, 0x11, 0x7e, 0x88, 0xaa, 0xa9, 0xac, 0x04, 0xf1, 0x27, 0xe6, 0x98, 0x87, 0xdb,
-	0xbd, 0xd3, 0x72, 0xc7, 0x01, 0x6a, 0x98, 0x27, 0xc0, 0xc4, 0xf7, 0x79, 0x12, 0xc5, 0x45, 0xdf,
-	0x02, 0x04, 0xc0, 0x10, 0x87, 0x00, 0xe4, 0xe6, 0x07, 0xc8, 0xc9, 0xcc, 0x05, 0xd3, 0x22, 0x2c,
-	0x6d, 0x94, 0x9c, 0x6e, 0xa1, 0x25, 0x3f, 0x4c, 0x54, 0x4c, 0x25, 0x0e, 0xf8, 0x90, 0xb0, 0x08,
-	0x70, 0x07, 0x1e, 0xc9, 0x48, 0xc7, 0x5a, 0xd1, 0xfc, 0x09, 0xda, 0x9c, 0xcc, 0x0a, 0x53, 0x31,
-	0xe3, 0xd8, 0xe7, 0x43, 0xc1, 0x23, 0x1a, 0xc5, 0x77, 0xd9, 0x59, 0xd2, 0x15, 0x9a, 0x85, 0xec,
-	0xb4, 0x53, 0xf2, 0x69, 0x06, 0x66, 0x49, 0xf2, 0x50, 0xd5, 0x24, 0x89, 0x89, 0x62, 0x5c, 0xab,
-	0x30, 0x01, 0x68, 0x6d, 0x91, 0xa7, 0xf5, 0x09, 0xaa, 0x17, 0x53, 0x35, 0xe9, 0x5a, 0xd6, 0xae,
-	0x95, 0x02, 0x50, 0xb4, 0x7a, 0xa8, 0x6a, 0x12, 0x36, 0xe9, 0x5a, 0x85, 0x5e, 0xa0, 0x15, 0x0d,
-	0x67, 0x68, 0x2b, 0xe4, 0xfc, 0x22, 0x49, 0xe9, 0xbe, 0xa4, 0x4a, 0x61, 0x33, 0x2b, 0x89, 0x02,
-	0x6c, 0x4a, 0xe9, 0x4b, 0x56, 0xb5, 0x5a, 0xd3, 0xde, 0x2e, 0x77, 0xd6, 0x01, 0x6f, 0x03, 0x7d,
-	0xa6, 0xe1, 0xc3, 0x28, 0x38, 0xd1, 0xa8, 0xbe, 0x75, 0xe5, 0x9c, 0xa3, 0x9d, 0x5e, 0x12, 0x86,
-	0xef, 0xf1, 0xbb, 0x84, 0x84, 0xac, 0xc7, 0x68, 0x60, 0x2e, 0xf1, 0xae, 0x87, 0x79, 0x3e, 0x3d,
-	0x5b, 0x5d, 0xcf, 0xb6, 0xa9, 0x1d, 0xaf, 0x32, 0x83, 0xbe, 0xca, 0xac, 0x09, 0xd0, 0xe9, 0xbc,
-	0xcf, 0xa7, 0xca, 0x95, 0x45, 0xe7, 0xe8, 0xf1, 0xf5, 0xc8, 0xb5, 0x6e, 0x46, 0xae, 0xf5, 0x65,
-	0xe4, 0x5a, 0xb7, 0x23, 0xd7, 0xfa, 0x30, 0x76, 0xed, 0xcf, 0x63, 0xd7, 0xba, 0x1e, 0xbb, 0xf6,
-	0xcd, 0xd8, 0xb5, 0xbf, 0x8f, 0x5d, 0xfb, 0xe7, 0xd8, 0xb5, 0x6e, 0xc7, 0xae, 0xfd, 0xf1, 0x87,
-	0x6b, 0xbd, 0x2d, 0xc1, 0xb7, 0xb0, 0x5b, 0xd2, 0xdf, 0xb7, 0x47, 0xbf, 0x03, 0x00, 0x00, 0xff,
-	0xff, 0xde, 0xae, 0x52, 0x03, 0xc4, 0x05, 0x00, 0x00,
+	// 473 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x92, 0x3f, 0x6f, 0xd4, 0x30,
+	0x18, 0xc6, 0x63, 0x5a, 0x8e, 0x23, 0x48, 0x40, 0x43, 0x41, 0x69, 0x07, 0xf7, 0x54, 0xa9, 0xea,
+	0x09, 0x89, 0x44, 0x94, 0x85, 0x95, 0x52, 0x21, 0x15, 0x21, 0x5a, 0xee, 0x24, 0xa4, 0xb2, 0x58,
+	0xbe, 0xe4, 0x4d, 0xce, 0x6a, 0xe2, 0x37, 0xd8, 0x71, 0x05, 0x1b, 0x1f, 0x81, 0x91, 0x8f, 0xc0,
+	0x47, 0xb9, 0xb1, 0x23, 0x13, 0x70, 0x61, 0x61, 0xec, 0xc4, 0x8c, 0x62, 0x27, 0x2d, 0x4c, 0xf9,
+	0xf3, 0xfc, 0xde, 0xdf, 0xf3, 0xca, 0x89, 0xff, 0xa8, 0x14, 0x1f, 0x40, 0xc5, 0x3c, 0xe5, 0x55,
+	0x0d, 0x2a, 0x3e, 0x35, 0x33, 0x50, 0x12, 0x6a, 0xd0, 0x7b, 0x71, 0x82, 0x32, 0x13, 0x79, 0x77,
+	0x89, 0x2a, 0x85, 0x35, 0x06, 0x1b, 0x1d, 0x18, 0x5d, 0x81, 0x91, 0x03, 0x36, 0xd7, 0x73, 0xcc,
+	0xd1, 0x52, 0x71, 0x7b, 0xe7, 0x06, 0x36, 0x69, 0x8e, 0x98, 0x17, 0x10, 0xdb, 0xa7, 0x99, 0xc9,
+	0xe2, 0xd4, 0x28, 0x5e, 0x0b, 0x94, 0x2e, 0xdf, 0xfe, 0xb3, 0xe2, 0x0f, 0x8e, 0xb9, 0xe2, 0xa5,
+	0x0e, 0x76, 0xfd, 0x3b, 0xad, 0xd5, 0xe9, 0x58, 0xc5, 0xeb, 0x79, 0x48, 0x46, 0x64, 0x7c, 0x73,
+	0x72, 0xfb, 0xea, 0xf5, 0x31, 0xaf, 0xe7, 0xc1, 0x89, 0xff, 0x20, 0xe1, 0xc9, 0x1c, 0x98, 0x82,
+	0x4c, 0x81, 0x9e, 0xb3, 0xde, 0x19, 0x5e, 0x1b, 0x91, 0xf1, 0xad, 0xbd, 0x8d, 0xc8, 0x95, 0x46,
+	0x7d, 0x69, 0x74, 0xd0, 0x01, 0xfb, 0xc3, 0xc5, 0xf7, 0x2d, 0xef, 0xcb, 0x8f, 0x2d, 0x32, 0x59,
+	0xb7, 0x8a, 0x89, 0x33, 0xf4, 0x79, 0x10, 0xf9, 0xf7, 0x92, 0xc2, 0xe8, 0x1a, 0x14, 0x4b, 0xb1,
+	0xe4, 0x42, 0x32, 0xc9, 0x4b, 0x08, 0x57, 0xec, 0x1e, 0x6b, 0x5d, 0x74, 0x60, 0x93, 0xd7, 0xbc,
+	0x84, 0xe0, 0xb1, 0x7f, 0xbf, 0xc2, 0x94, 0x15, 0x7c, 0x06, 0x05, 0xcb, 0x50, 0x31, 0x0d, 0xea,
+	0x4c, 0x24, 0x10, 0xae, 0xda, 0x89, 0xa0, 0xc2, 0xf4, 0x55, 0x9b, 0xbd, 0x40, 0x35, 0x75, 0x49,
+	0x70, 0xe4, 0xef, 0xfc, 0x3f, 0x22, 0x74, 0x2d, 0x90, 0x25, 0x58, 0x56, 0x28, 0x41, 0xd6, 0x97,
+	0x8a, 0xeb, 0x56, 0x31, 0xfa, 0x47, 0x71, 0xd8, 0x92, 0xcf, 0x7b, 0xb0, 0x17, 0x4e, 0xfd, 0xdd,
+	0x02, 0xf1, 0xd4, 0x54, 0x4c, 0xc8, 0x5c, 0x81, 0xd6, 0x4c, 0xa3, 0x51, 0x09, 0x30, 0x2e, 0x53,
+	0x86, 0x4a, 0xe4, 0x42, 0xb2, 0x33, 0x5e, 0x18, 0xd0, 0xe1, 0x60, 0x44, 0xc6, 0xc3, 0xc9, 0xb6,
+	0xc3, 0x0f, 0x1d, 0x3d, 0xb5, 0xf0, 0x33, 0x99, 0x1e, 0x59, 0xf4, 0xad, 0x25, 0x83, 0x13, 0xff,
+	0x61, 0x66, 0x8a, 0xe2, 0x23, 0x7b, 0x6f, 0x78, 0x21, 0x32, 0x01, 0x69, 0xb7, 0xe7, 0x65, 0x87,
+	0x6b, 0x77, 0xe7, 0x73, 0xc3, 0xae, 0xba, 0x63, 0x27, 0xde, 0xf4, 0x03, 0x76, 0xdb, 0xbe, 0xc4,
+	0xd1, 0xed, 0x99, 0xbd, 0x5c, 0x1d, 0xae, 0xdd, 0x0d, 0xf6, 0x9f, 0x2e, 0x96, 0xd4, 0x3b, 0x5f,
+	0x52, 0xef, 0xdb, 0x92, 0x7a, 0x17, 0x4b, 0xea, 0x7d, 0x6a, 0x28, 0xf9, 0xda, 0x50, 0x6f, 0xd1,
+	0x50, 0x72, 0xde, 0x50, 0xf2, 0xb3, 0xa1, 0xe4, 0x77, 0x43, 0xbd, 0x8b, 0x86, 0x92, 0xcf, 0xbf,
+	0xa8, 0xf7, 0x6e, 0xe0, 0x7e, 0x81, 0xd9, 0xc0, 0x7e, 0xd6, 0x27, 0x7f, 0x03, 0x00, 0x00, 0xff,
+	0xff, 0x82, 0x92, 0x8a, 0x64, 0xbb, 0x02, 0x00, 0x00,
 }

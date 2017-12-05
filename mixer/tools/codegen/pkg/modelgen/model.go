@@ -173,8 +173,9 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 				&m.OutputTemplateMessage,
 			)
 
-			isPrimitiveValueType := func(typ TypeInfo) bool {
-				if typ.IsValueType || typ.IsResourceMessage || typ.IsRepeated || (typ.IsMap && typ.MapValue.Name != "string") {
+			isPrimitiveValueType := func(goType TypeInfo) bool {
+				if goType.IsValueType || goType.IsResourceMessage || (goType.IsRepeated && goType.Name != "[]byte") || (goType.IsMap && goType.MapValue.Name != "string") {
+
 					return false
 				}
 				return true
@@ -187,7 +188,7 @@ func (m *Model) fillModel(templateProto *FileDescriptor, resourceProtos []*FileD
 				if !isPrimitiveValueType(field.GoType) {
 					m.addError(templateProto.GetName(), unknownLine, "message 'OutputTemplate' field '%s' is of type '%s'."+
 						" Only supported types in OutputTemplate message are : [string, int64, double, bool, "+
-						"google.protobuf.Duration, google.protobuf.TimeStamp, map<string, string>]", field.ProtoName, field.ProtoType.Name)
+						"google.protobuf.Duration, google.protobuf.TimeStamp, map<string, string>]", field.ProtoName, field.GoType.Name)
 				}
 			}
 			m.OutputTemplateMessage.Name = "OutputTemplate"
@@ -384,10 +385,10 @@ func getTypeName(g *FileDescriptorSetParser, field *descriptor.FieldDescriptorPr
 		proto.IsRepeated = true
 		proto.Name = getProtoArray(proto.Name)
 
-		if golang.Name != "net.IP" {
-			golang.IsRepeated = true
-			golang.Name = getGoArray(golang.Name)
-		}
+		//if golang.Name != "net.IP" {
+		golang.IsRepeated = true
+		golang.Name = getGoArray(golang.Name)
+		//}
 	}
 	return proto, golang, err
 }
@@ -410,7 +411,7 @@ func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescripto
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		return TypeInfo{Name: "bool"}, TypeInfo{Name: sBOOL}, nil
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
-		return TypeInfo{Name: "bytes"}, TypeInfo{Name: "net.IP", Import: "net"}, nil
+		return TypeInfo{Name: "bytes"}, TypeInfo{Name: "byte"}, nil
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		if valueTypeAllowed && field.GetTypeName()[1:] == fullProtoNameOfValueTypeEnum {
 			desc := g.ObjectNamed(field.GetTypeName())

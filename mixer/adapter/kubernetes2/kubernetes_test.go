@@ -28,6 +28,7 @@ import (
 	"context"
 
 	"istio.io/istio/mixer/adapter/kubernetes2/config"
+	kubernetes_apa_tmpl "istio.io/istio/mixer/adapter/kubernetes2/template"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/adapter/test"
 )
@@ -73,19 +74,13 @@ func TestBuilder(t *testing.T) {
 }
 
 func TestBuilder_ValidateConfigErrors(t *testing.T) {
-	val := reflect.ValueOf(&config.Params{}).Elem()
-	// currently three non-validated fields:
-	// - kubeconfig
-	// - cache refresh duration
-	// - lookup_ingress_source_and_origin_values
-	expectedConfigErrs := val.NumField() - 3
 	tests := []struct {
 		name     string
 		conf     *config.Params
 		errCount int
 	}{
-		{"empty config", &config.Params{}, expectedConfigErrs},
-		{"bad cluster domain name", &config.Params{ClusterDomainName: "something.silly"}, expectedConfigErrs},
+		{"empty config", &config.Params{}, 4},
+		{"bad cluster domain name", &config.Params{ClusterDomainName: "something.silly", PodLabelForService: "app"}, 3},
 	}
 
 	b := newBuilder(fakePodCache)
@@ -96,6 +91,7 @@ func TestBuilder_ValidateConfigErrors(t *testing.T) {
 		if err == nil {
 			t.Fatalf("Expected config to fail validation: %#v", v.conf)
 		}
+
 		if len(err.Multi.Errors) != v.errCount {
 			t.Fatalf("Got %d errors; wanted %d", len(err.Multi.Errors), v.errCount)
 		}
@@ -209,127 +205,129 @@ func TestKubegen_Generate(t *testing.T) {
 		"testns/ipApp":         {ObjectMeta: metav1.ObjectMeta{Name: "ipApp", Namespace: "testns", Labels: map[string]string{"app": "10.1.10.1"}}},
 	}
 
-	sourceUIDIn := map[string]interface{}{
-		"sourceUID":      "kubernetes://test-pod.testns",
-		"destinationUID": "kubernetes://badsvcuid",
-		"originUID":      "kubernetes://badsvcuid",
+	sourceUIDIn := &kubernetes_apa_tmpl.Instance{
+		SourceUid:      "kubernetes://test-pod.testns",
+		DestinationUid: "kubernetes://badsvcuid",
+		OriginUid:      "kubernetes://badsvcuid",
 	}
 
-	sourceUIDOut := map[string]interface{}{
-		"sourceLabels": map[string]string{
+	sourceUIDOut := &kubernetes_apa_tmpl.Output{
+		SourceLabels: map[string]string{
 			"app":       "test",
 			"something": "",
 		},
-		"sourcePodIP":              net.ParseIP("10.10.10.1"),
-		"sourceHostIP":             net.ParseIP("10.1.1.10"),
-		"sourceNamespace":          "testns",
-		"sourcePodName":            "test-pod",
-		"sourceService":            "test.testns.svc.cluster.local",
-		"sourceServiceAccountName": "test",
+		SourcePodIp:              net.ParseIP("10.10.10.1"),
+		SourceHostIp:             net.ParseIP("10.1.1.10"),
+		SourceNamespace:          "testns",
+		SourcePodName:            "test-pod",
+		SourceService:            "test.testns.svc.cluster.local",
+		SourceServiceAccountName: "test",
 	}
 
-	nsAppLabelIn := map[string]interface{}{"sourceUID": "kubernetes://alt-pod.testns"}
+	nsAppLabelIn := &kubernetes_apa_tmpl.Instance{
+		SourceUid: "kubernetes://alt-pod.testns",
+	}
 
-	nsAppLabelOut := map[string]interface{}{
-		"sourceLabels": map[string]string{
+	nsAppLabelOut := &kubernetes_apa_tmpl.Output{
+		SourceLabels: map[string]string{
 			"app": "alt-svc.testns",
 		},
-		"sourceService":   "alt-svc.testns.svc.cluster.local",
-		"sourceNamespace": "testns",
-		"sourcePodName":   "alt-pod",
+		SourceService:   "alt-svc.testns.svc.cluster.local",
+		SourceNamespace: "testns",
+		SourcePodName:   "alt-pod",
 	}
 
-	svcClusterIn := map[string]interface{}{"sourceUID": "kubernetes://pod-cluster.testns"}
+	svcClusterIn := &kubernetes_apa_tmpl.Instance{SourceUid: "kubernetes://pod-cluster.testns"}
 
-	svcClusterOut := map[string]interface{}{
-		"sourceLabels": map[string]string{
+	svcClusterOut := &kubernetes_apa_tmpl.Output{
+		SourceLabels: map[string]string{
 			"app": "alt-svc-with-cluster.testns.svc.cluster:8080",
 		},
-		"sourceService":   "alt-svc-with-cluster.testns.svc.cluster.local",
-		"sourceNamespace": "testns",
-		"sourcePodName":   "pod-cluster",
+		SourceService:   "alt-svc-with-cluster.testns.svc.cluster.local",
+		SourceNamespace: "testns",
+		SourcePodName:   "pod-cluster",
 	}
 
-	longSvcClusterIn := map[string]interface{}{"sourceUID": "kubernetes://long-pod.testns"}
+	longSvcClusterIn := &kubernetes_apa_tmpl.Instance{SourceUid: "kubernetes://long-pod.testns"}
 
-	longSvcClusterOut := map[string]interface{}{
-		"sourceLabels": map[string]string{
+	longSvcClusterOut := &kubernetes_apa_tmpl.Output{
+		SourceLabels: map[string]string{
 			"app": "long-svc.testns.svc.cluster.local.solar",
 		},
-		"sourceService":   "long-svc.testns.svc.cluster.local.solar",
-		"sourceNamespace": "testns",
-		"sourcePodName":   "long-pod",
+		SourceService:   "long-svc.testns.svc.cluster.local.solar",
+		SourceNamespace: "testns",
+		SourcePodName:   "long-pod",
 	}
 
-	emptySvcIn := map[string]interface{}{"destinationUID": "kubernetes://empty.testns"}
+	emptySvcIn := &kubernetes_apa_tmpl.Instance{DestinationUid: "kubernetes://empty.testns"}
 
-	emptyServiceOut := map[string]interface{}{
-		"destinationLabels": map[string]string{
+	emptyServiceOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels: map[string]string{
 			"app": "",
 		},
-		"destinationNamespace": "testns",
-		"destinationPodName":   "empty",
+		DestinationNamespace: "testns",
+		DestinationPodName:   "empty",
 	}
 
-	badDestinationSvcIn := map[string]interface{}{"destinationUID": "kubernetes://bad-svc-pod.testns"}
+	badDestinationSvcIn := &kubernetes_apa_tmpl.Instance{DestinationUid: "kubernetes://bad-svc-pod.testns"}
 
-	badDestinationOut := map[string]interface{}{
-		"destinationLabels": map[string]string{
+	badDestinationOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels: map[string]string{
 			"app": ":",
 		},
-		"destinationNamespace": "testns",
-		"destinationPodName":   "bad-svc-pod",
+		DestinationNamespace: "testns",
+		DestinationPodName:   "bad-svc-pod",
 	}
 
-	ipDestinationSvcIn := map[string]interface{}{"destinationIP": []uint8(net.ParseIP("192.168.234.3"))}
+	ipDestinationSvcIn := &kubernetes_apa_tmpl.Instance{DestinationIp: []uint8(net.ParseIP("192.168.234.3"))}
 
-	ipDestinationOut := map[string]interface{}{
-		"destinationLabels": map[string]string{
+	ipDestinationOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels: map[string]string{
 			"app": "ipAddr",
 		},
-		"destinationNamespace": "testns",
-		"destinationPodName":   "ip-svc-pod",
-		"destinationService":   "ipAddr.testns.svc.cluster.local",
+		DestinationNamespace: "testns",
+		DestinationPodName:   "ip-svc-pod",
+		DestinationService:   "ipAddr.testns.svc.cluster.local",
 	}
 
-	istioDestinationSvcIn := map[string]interface{}{
-		"destinationUID": "kubernetes://ingress.istio-system",
-		"sourceUID":      "kubernetes://test-pod.testns",
+	istioDestinationSvcIn := &kubernetes_apa_tmpl.Instance{
+		DestinationUid: "kubernetes://ingress.istio-system",
+		SourceUid:      "kubernetes://test-pod.testns",
 	}
 
-	istioDestinationOut := map[string]interface{}{
-		"destinationLabels": map[string]string{
+	istioDestinationOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels: map[string]string{
 			"istio": "ingress",
 		},
-		"destinationNamespace": "istio-system",
-		"destinationPodName":   "ingress",
-		"destinationService":   "ingress.istio-system.svc.cluster.local",
+		DestinationNamespace: "istio-system",
+		DestinationPodName:   "ingress",
+		DestinationService:   "ingress.istio-system.svc.cluster.local",
 	}
 
-	istioDestinationWithSrcOut := map[string]interface{}{
-		"destinationLabels":        map[string]string{"istio": "ingress"},
-		"destinationNamespace":     "istio-system",
-		"destinationPodName":       "ingress",
-		"destinationService":       "ingress.istio-system.svc.cluster.local",
-		"sourceServiceAccountName": "test",
-		"sourceService":            "test.testns.svc.cluster.local",
-		"sourceLabels":             map[string]string{"app": "test", "something": ""},
-		"sourceNamespace":          "testns",
-		"sourcePodIP":              net.ParseIP("10.10.10.1"),
-		"sourceHostIP":             net.ParseIP("10.1.1.10"),
-		"sourcePodName":            "test-pod",
+	istioDestinationWithSrcOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels:        map[string]string{"istio": "ingress"},
+		DestinationNamespace:     "istio-system",
+		DestinationPodName:       "ingress",
+		DestinationService:       "ingress.istio-system.svc.cluster.local",
+		SourceServiceAccountName: "test",
+		SourceService:            "test.testns.svc.cluster.local",
+		SourceLabels:             map[string]string{"app": "test", "something": ""},
+		SourceNamespace:          "testns",
+		SourcePodIp:              net.ParseIP("10.10.10.1"),
+		SourceHostIp:             net.ParseIP("10.1.1.10"),
+		SourcePodName:            "test-pod",
 	}
 
-	ipAppSvcIn := map[string]interface{}{
-		"destinationUID": "kubernetes://ipApp.testns",
+	ipAppSvcIn := &kubernetes_apa_tmpl.Instance{
+		DestinationUid: "kubernetes://ipApp.testns",
 	}
 
-	ipAppDestinationOut := map[string]interface{}{
-		"destinationLabels": map[string]string{
+	ipAppDestinationOut := &kubernetes_apa_tmpl.Output{
+		DestinationLabels: map[string]string{
 			"app": "10.1.10.1",
 		},
-		"destinationNamespace": "testns",
-		"destinationPodName":   "ipApp",
+		DestinationNamespace: "testns",
+		DestinationPodName:   "ipApp",
 	}
 
 	confWithIngressLookups := *conf
@@ -337,20 +335,20 @@ func TestKubegen_Generate(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		inputs map[string]interface{}
-		want   map[string]interface{}
-		params config.Params
+		inputs *kubernetes_apa_tmpl.Instance
+		want   *kubernetes_apa_tmpl.Output
+		params *config.Params
 	}{
-		{"source pod and destination service", sourceUIDIn, sourceUIDOut, *conf},
-		{"alternate service canonicalization (namespace)", nsAppLabelIn, nsAppLabelOut, *conf},
-		{"alternate service canonicalization (svc cluster)", svcClusterIn, svcClusterOut, *conf},
-		{"alternate service canonicalization (long svc)", longSvcClusterIn, longSvcClusterOut, *conf},
-		{"empty service", emptySvcIn, emptyServiceOut, *conf},
-		{"bad destination service", badDestinationSvcIn, badDestinationOut, *conf},
-		{"destination ip pod", ipDestinationSvcIn, ipDestinationOut, *conf},
-		{"istio ingress service (no lookup source)", istioDestinationSvcIn, istioDestinationOut, *conf},
-		{"istio ingress service (lookup source)", istioDestinationSvcIn, istioDestinationWithSrcOut, confWithIngressLookups},
-		{"ip app", ipAppSvcIn, ipAppDestinationOut, *conf},
+		{"source pod and destination service", sourceUIDIn, sourceUIDOut, conf},
+		{"alternate service canonicalization (namespace)", nsAppLabelIn, nsAppLabelOut, conf},
+		{"alternate service canonicalization (svc cluster)", svcClusterIn, svcClusterOut, conf},
+		{"alternate service canonicalization (long svc)", longSvcClusterIn, longSvcClusterOut, conf},
+		{"empty service", emptySvcIn, emptyServiceOut, conf},
+		{"bad destination service", badDestinationSvcIn, badDestinationOut, conf},
+		{"destination ip pod", ipDestinationSvcIn, ipDestinationOut, conf},
+		{"istio ingress service (no lookup source)", istioDestinationSvcIn, istioDestinationOut, conf},
+		{"istio ingress service (lookup source)", istioDestinationSvcIn, istioDestinationWithSrcOut, &confWithIngressLookups},
+		{"ip app", ipAppSvcIn, ipAppDestinationOut, conf},
 	}
 
 	for _, v := range tests {
@@ -358,7 +356,7 @@ func TestKubegen_Generate(t *testing.T) {
 
 			kg := &handler{log: test.NewEnv(t).Logger(), params: v.params, pods: fakeCache{pods: pods}}
 
-			got, err := kg.Generate(v.inputs)
+			got, err := kg.GenerateKubernetesAttributes(context.Background(), v.inputs)
 			if err != nil {
 				t.Errorf("Unexpected error: %v", err)
 				return
