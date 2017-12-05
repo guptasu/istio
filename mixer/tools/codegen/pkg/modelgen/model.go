@@ -388,6 +388,8 @@ func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescripto
 		return TypeInfo{Name: "double"}, TypeInfo{Name: sFLOAT64}, nil
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		return TypeInfo{Name: "bool"}, TypeInfo{Name: sBOOL}, nil
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		return TypeInfo{Name: "bytes"}, TypeInfo{Name: "byte"}, nil
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		if valueTypeAllowed && field.GetTypeName()[1:] == fullProtoNameOfValueTypeEnum {
 			desc := g.ObjectNamed(field.GetTypeName())
