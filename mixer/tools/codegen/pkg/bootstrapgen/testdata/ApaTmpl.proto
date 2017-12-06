@@ -25,6 +25,14 @@ message Template {
     istio.mixer.v1.template.Duration duration = 7;
 
     map<string, Resource3> res3_map = 8;
+
+    istio.mixer.v1.template.IPAddress ip_addr = 11;
+
+    istio.mixer.v1.template.DNSName dns_name = 12;
+
+    istio.mixer.v1.template.EmailAddress email_addr = 13;
+
+    istio.mixer.v1.template.Uri uri = 14;
 }
 
 message OutputTemplate {
@@ -40,6 +48,14 @@ message OutputTemplate {
     istio.mixer.v1.template.TimeStamp timeStamp = 6;
 
     istio.mixer.v1.template.Duration duration = 7;
+
+    istio.mixer.v1.template.IPAddress ip_addr = 11;
+
+    istio.mixer.v1.template.DNSName dns_name = 12;
+
+    istio.mixer.v1.template.EmailAddress email_addr = 13;
+
+    istio.mixer.v1.template.Uri uri = 14;
 }
 
 

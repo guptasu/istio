@@ -219,6 +219,46 @@ var (
 						return nil, fmt.Errorf("error type checking for field '%s': Evaluated expression type %v want %v", path+"Duration", t, istio_mixer_v1_config_descriptor.DURATION)
 					}
 
+					if param.IpAddr == "" || param.IpAddr == emptyQuotes {
+						return nil, fmt.Errorf("expression for field '%s' cannot be empty", path+"IpAddr")
+					}
+					if t, e := tEvalFn(param.IpAddr); e != nil || t != istio_mixer_v1_config_descriptor.IP_ADDRESS {
+						if e != nil {
+							return nil, fmt.Errorf("failed to evaluate expression for field '%s': %v", path+"IpAddr", e)
+						}
+						return nil, fmt.Errorf("error type checking for field '%s': Evaluated expression type %v want %v", path+"IpAddr", t, istio_mixer_v1_config_descriptor.IP_ADDRESS)
+					}
+
+					if param.DnsName == "" || param.DnsName == emptyQuotes {
+						return nil, fmt.Errorf("expression for field '%s' cannot be empty", path+"DnsName")
+					}
+					if t, e := tEvalFn(param.DnsName); e != nil || t != istio_mixer_v1_config_descriptor.DNS_NAME {
+						if e != nil {
+							return nil, fmt.Errorf("failed to evaluate expression for field '%s': %v", path+"DnsName", e)
+						}
+						return nil, fmt.Errorf("error type checking for field '%s': Evaluated expression type %v want %v", path+"DnsName", t, istio_mixer_v1_config_descriptor.DNS_NAME)
+					}
+
+					if param.EmailAddr == "" || param.EmailAddr == emptyQuotes {
+						return nil, fmt.Errorf("expression for field '%s' cannot be empty", path+"EmailAddr")
+					}
+					if t, e := tEvalFn(param.EmailAddr); e != nil || t != istio_mixer_v1_config_descriptor.EMAIL_ADDRESS {
+						if e != nil {
+							return nil, fmt.Errorf("failed to evaluate expression for field '%s': %v", path+"EmailAddr", e)
+						}
+						return nil, fmt.Errorf("error type checking for field '%s': Evaluated expression type %v want %v", path+"EmailAddr", t, istio_mixer_v1_config_descriptor.EMAIL_ADDRESS)
+					}
+
+					if param.Uri == "" || param.Uri == emptyQuotes {
+						return nil, fmt.Errorf("expression for field '%s' cannot be empty", path+"Uri")
+					}
+					if t, e := tEvalFn(param.Uri); e != nil || t != istio_mixer_v1_config_descriptor.URI {
+						if e != nil {
+							return nil, fmt.Errorf("failed to evaluate expression for field '%s': %v", path+"Uri", e)
+						}
+						return nil, fmt.Errorf("error type checking for field '%s': Evaluated expression type %v want %v", path+"Uri", t, istio_mixer_v1_config_descriptor.URI)
+					}
+
 					return nil, err
 
 				}
@@ -402,6 +442,22 @@ var (
 						"istio_mixer_adapter_sample_myapa.output.duration": {
 							ValueType: istio_mixer_v1_config_descriptor.DURATION,
 						},
+
+						"istio_mixer_adapter_sample_myapa.output.ip_addr": {
+							ValueType: istio_mixer_v1_config_descriptor.IP_ADDRESS,
+						},
+
+						"istio_mixer_adapter_sample_myapa.output.dns_name": {
+							ValueType: istio_mixer_v1_config_descriptor.DNS_NAME,
+						},
+
+						"istio_mixer_adapter_sample_myapa.output.email_addr": {
+							ValueType: istio_mixer_v1_config_descriptor.EMAIL_ADDRESS,
+						},
+
+						"istio_mixer_adapter_sample_myapa.output.uri": {
+							ValueType: istio_mixer_v1_config_descriptor.URI,
+						},
 					},
 				},
 			},
@@ -507,6 +563,38 @@ var (
 						return nil, errors.New(msg)
 					}
 
+					IpAddr, err := mapper.Eval(param.IpAddr, attrs)
+
+					if err != nil {
+						msg := fmt.Sprintf("failed to evaluate field '%s' for instance '%s': %v", path+"IpAddr", instName, err)
+						glog.Error(msg)
+						return nil, errors.New(msg)
+					}
+
+					DnsName, err := mapper.Eval(param.DnsName, attrs)
+
+					if err != nil {
+						msg := fmt.Sprintf("failed to evaluate field '%s' for instance '%s': %v", path+"DnsName", instName, err)
+						glog.Error(msg)
+						return nil, errors.New(msg)
+					}
+
+					EmailAddr, err := mapper.Eval(param.EmailAddr, attrs)
+
+					if err != nil {
+						msg := fmt.Sprintf("failed to evaluate field '%s' for instance '%s': %v", path+"EmailAddr", instName, err)
+						glog.Error(msg)
+						return nil, errors.New(msg)
+					}
+
+					Uri, err := mapper.Eval(param.Uri, attrs)
+
+					if err != nil {
+						msg := fmt.Sprintf("failed to evaluate field '%s' for instance '%s': %v", path+"Uri", instName, err)
+						glog.Error(msg)
+						return nil, errors.New(msg)
+					}
+
 					_ = param
 					return &istio_mixer_adapter_sample_myapa.Instance{
 
@@ -535,6 +623,14 @@ var (
 						Duration: Duration.(time.Duration),
 
 						Res3Map: Res3Map,
+
+						IpAddr: net.IP(IpAddr.([]uint8)),
+
+						DnsName: adapter.DNSName(DnsName.(string)),
+
+						EmailAddr: adapter.EmailAddress(EmailAddr.(string)),
+
+						Uri: adapter.Uri(Uri.(string)),
 					}, nil
 				}
 
@@ -758,6 +854,18 @@ var (
 
 							case "duration":
 								return out.Duration, true
+
+							case "ip_addr":
+								return out.IpAddr, true
+
+							case "dns_name":
+								return out.DnsName, true
+
+							case "email_addr":
+								return out.EmailAddr, true
+
+							case "uri":
+								return out.Uri, true
 
 							default:
 								return nil, false

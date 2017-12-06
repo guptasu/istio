@@ -417,7 +417,11 @@ var (
 								switch field {
 									{{range .OutputTemplateMessage.Fields}}
 									case "{{.ProtoName}}":
+										{{if isAliasType .GoType.Name}}
+										return {{getAliasType .GoType.Name}}(out.{{.GoName}}), true
+										{{else}}
 										return out.{{.GoName}}, true
+										{{end}}
 									{{end}}
 									default:
 									return nil, false

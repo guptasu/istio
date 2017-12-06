@@ -47,10 +47,10 @@ const (
 
 // TODO share the code between this generator and the interfacegen code generator.
 var primitiveToValueType = map[string]string{
-	"string":  fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.STRING.String(),
-	"bool":    fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.BOOL.String(),
-	"int64":   fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.INT64.String(),
-	"float64": fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.DOUBLE.String(),
+	"string":               fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.STRING.String(),
+	"bool":                 fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.BOOL.String(),
+	"int64":                fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.INT64.String(),
+	"float64":              fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.DOUBLE.String(),
 	"net.IP":               fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.IP_ADDRESS.String(),
 	"adapter.Uri":          fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.URI.String(),
 	"adapter.DNSName":      fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.DNS_NAME.String(),
@@ -60,11 +60,11 @@ var primitiveToValueType = map[string]string{
 	"time.Time":     fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.TIMESTAMP.String(),
 }
 
-var aliasTypes = map[string]string {
-	"adapter.DNSName":"string",
-	"adapter.EmailAddress":"string",
-	"adapter.Uri":"string",
-	"net.IP":"[]uint8",
+var aliasTypes = map[string]string{
+	"adapter.DNSName":      "string",
+	"adapter.EmailAddress": "string",
+	"adapter.Uri":          "string",
+	"net.IP":               "[]uint8",
 }
 
 func containsValueTypeOrResMsg(ti modelgen.TypeInfo) bool {
@@ -92,11 +92,11 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 				return primitiveToValueType[goType.Name]
 
 			},
-			"isAliasType":func(goType string) bool {
+			"isAliasType": func(goType string) bool {
 				_, found := aliasTypes[goType]
 				return found
 			},
-			"getAliasType":func(goType string) string {
+			"getAliasType": func(goType string) string {
 				return aliasTypes[goType]
 			},
 			"containsValueTypeOrResMsg": containsValueTypeOrResMsg,

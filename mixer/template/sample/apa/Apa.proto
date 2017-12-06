@@ -27,6 +27,8 @@ message Template {
     map<string, Resource3> res3_map = 8;
 
     istio.mixer.v1.template.IPAddress optionalIP = 9;
+
+    istio.mixer.v1.template.EmailAddress email = 10;
 }
 
 message OutputTemplate {
@@ -42,6 +44,8 @@ message OutputTemplate {
     istio.mixer.v1.template.TimeStamp timeStamp = 6;
 
     istio.mixer.v1.template.Duration duration = 7;
+
+    istio.mixer.v1.template.EmailAddress email = 10;
 }
 
 
