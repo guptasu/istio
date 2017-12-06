@@ -31,22 +31,31 @@ const fullProtoNameOfValueTypeEnum = "istio.mixer.v1.config.descriptor.ValueType
 type typeMetadata struct {
 	goName   string
 	goImport string
-
-	protoImport string
 }
 
 // Hardcoded proto->go type mapping along with imports for the
 // generated code.
 var customMessageTypeMetadata = map[string]typeMetadata{
-	".google.protobuf.Timestamp": {
-		goName:      "time.Time",
-		goImport:    "time",
-		protoImport: "google/protobuf/timestamp.proto",
+	".istio.mixer.v1.template.Duration": {
+		goName:   "time.Duration",
+		goImport: "time",
 	},
-	".google.protobuf.Duration": {
-		goName:      "time.Duration",
-		goImport:    "time",
-		protoImport: "google/protobuf/duration.proto",
+	".istio.mixer.v1.template.TimeStamp": {
+		goName:   "time.Time",
+		goImport: "time",
+	},
+	".istio.mixer.v1.template.IPAddress": {
+		goName:   "net.IP",
+		goImport: "net",
+	},
+	".istio.mixer.v1.template.DNSName": {
+		goName: "adapter.DNSName",
+	},
+	".istio.mixer.v1.template.EmailAddress": {
+		goName: "adapter.EmailAddress",
+	},
+	".istio.mixer.v1.template.Uri": {
+		goName: "adapter.Uri",
 	},
 }
 
@@ -415,7 +424,7 @@ func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescripto
 		}
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 		if v, ok := customMessageTypeMetadata[field.GetTypeName()]; ok {
-			return TypeInfo{Name: field.GetTypeName()[1:], Import: v.protoImport},
+			return TypeInfo{Name: field.GetTypeName()[1:]},
 				TypeInfo{Name: v.goName, Import: v.goImport},
 				nil
 		}
