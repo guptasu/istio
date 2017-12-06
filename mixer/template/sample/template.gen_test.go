@@ -1814,7 +1814,7 @@ func TestProcessApa(t *testing.T) {
 						"return attrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
 				}
 				for k, v := range tst.wantOutAttrs {
-					if x, _ := returnAttr.Get(k); !reflect.DeepEqual(x,v) {
+					if x, _ := returnAttr.Get(k); !reflect.DeepEqual(x, v) {
 						t.Errorf("Apa handler "+
 							"return attattrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
 					}
