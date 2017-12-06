@@ -523,7 +523,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),
@@ -708,7 +710,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),
@@ -1298,7 +1302,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),
@@ -1429,7 +1435,9 @@ var (
 						Int64Map: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(Int64Map),
@@ -1540,11 +1548,11 @@ var (
 
 						IpAddr: IpAddr.(net.IP),
 
-						DnsName: DnsName.(adapter.DNSName),
+						DnsName: adapter.DNSName(DnsName.(string)),
 
-						EmailAddr: EmailAddr.(adapter.EmailAddress),
+						EmailAddr: adapter.EmailAddress(EmailAddr.(string)),
 
-						Uri: Uri.(adapter.Uri),
+						Uri: adapter.Uri(Uri.(string)),
 					}, nil
 				}
 
@@ -1791,7 +1799,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),
@@ -2271,7 +2281,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),
@@ -2404,7 +2416,9 @@ var (
 						Int64Map: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(Int64Map),
@@ -2709,7 +2723,9 @@ var (
 						DimensionsFixedInt64ValueDType: func(m map[string]interface{}) map[string]int64 {
 							res := make(map[string]int64, len(m))
 							for k, v := range m {
+
 								res[k] = v.(int64)
+
 							}
 							return res
 						}(DimensionsFixedInt64ValueDType),

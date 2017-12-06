@@ -64,6 +64,13 @@ var primitiveToValueType = map[string]string{
 	"time.Time":     fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.TIMESTAMP.String(),
 }
 
+var aliasTypes = map[string]string {
+	"adapter.DNSName":"string",
+	"adapter.EmailAddress":"string",
+	"adapter.Uri":"string",
+	"net.IP":"[]uint8",
+}
+
 func containsValueTypeOrResMsg(ti modelgen.TypeInfo) bool {
 	return ti.IsValueType || ti.IsResourceMessage || ti.IsMap && (ti.MapValue.IsValueType || ti.MapValue.IsResourceMessage)
 }
@@ -88,6 +95,13 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 			"getValueType": func(goType modelgen.TypeInfo) string {
 				return primitiveToValueType[goType.Name]
 
+			},
+			"isAliasType":func(goType string) bool {
+				_, found := aliasTypes[goType]
+				return found
+			},
+			"getAliasType":func(goType string) string {
+				return aliasTypes[goType]
 			},
 			"containsValueTypeOrResMsg": containsValueTypeOrResMsg,
 			"reportTypeUsed": func(ti modelgen.TypeInfo) string {

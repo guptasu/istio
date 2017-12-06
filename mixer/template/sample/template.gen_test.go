@@ -325,6 +325,11 @@ func getExprEvalFunc(err error) func(string) (pb.ValueType, error) {
 		if strings.HasSuffix(expr, "timestamp") {
 			retType = pb.TIMESTAMP
 		}
+
+		if retType == pb.VALUE_TYPE_UNSPECIFIED {
+			tc := evaluator.NewTypeChecker()
+			retType, _ = tc.EvalType(expr, createAttributeDescriptorFinder(nil))
+		}
 		return retType, err
 	}
 }
@@ -375,6 +380,15 @@ res1:
   stringPrimitive: source.string
   timeStamp: source.timestamp
   duration: source.duration
+  Res2:
+    value: source.int64
+    int64Primitive: source.int64
+    dns_name: source.dns
+    duration: source.duration
+    email_addr: source.email
+    ip_addr: 'ip("0.0.0.0")'
+    timeStamp: source.timestamp
+    uri: source.uri
   dimensions:
     source: source.string
     target: source.string
@@ -389,6 +403,10 @@ res1:
 				Res1: &sample_report.Res1Type{
 					Value:      pb.INT64,
 					Dimensions: map[string]pb.ValueType{"source": pb.STRING, "target": pb.STRING},
+					Res2:&sample_report.Res2Type{
+						Value:pb.INT64,
+						Dimensions: map[string]pb.ValueType{},
+					},
 					Res2Map:    map[string]*sample_report.Res2Type{},
 				},
 			},
@@ -885,6 +903,15 @@ var baseConfig = istio_mixer_v1_config.GlobalConfig{
 				"source.ip": {
 					ValueType: pb.IP_ADDRESS,
 				},
+				"source.email": {
+					ValueType: pb.EMAIL_ADDRESS,
+				},
+				"source.uri": {
+					ValueType: pb.URI,
+				},
+				"source.dns": {
+					ValueType: pb.DNS_NAME,
+				},
 			},
 		},
 	},
@@ -981,6 +1008,12 @@ func TestProcessReport(t *testing.T) {
 								Value:          "1",
 								Dimensions:     map[string]string{"s": "2"},
 								Int64Primitive: "54362",
+								DnsName: `"myDNS"`,
+								Duration: "request.duration",
+								EmailAddr: `"myEMAIL"`,
+								IpAddr:    `ip("0.0.0.0")`,
+								TimeStamp:  "request.timestamp",
+								Uri:        `"myURI"`,
 							},
 						},
 					},
@@ -1024,12 +1057,24 @@ func TestProcessReport(t *testing.T) {
 							Value:          int64(1),
 							Dimensions:     map[string]interface{}{"s": int64(2)},
 							Int64Primitive: 54362,
+							DnsName: adapter.DNSName("myDNS"),
+							Duration:        10 * time.Second,
+							EmailAddr: adapter.EmailAddress("myEMAIL"),
+							IpAddr:    net.ParseIP("0.0.0.0"),
+							TimeStamp:  time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+							Uri:        adapter.Uri("myURI"),
 						},
 						Res2Map: map[string]*sample_report.Res2{
 							"foo": {
 								Value:          int64(1),
 								Dimensions:     map[string]interface{}{"s": int64(2)},
 								Int64Primitive: 54362,
+								DnsName: adapter.DNSName("myDNS"),
+								Duration:        10 * time.Second,
+								EmailAddr: adapter.EmailAddress("myEMAIL"),
+								IpAddr:    net.ParseIP("0.0.0.0"),
+								TimeStamp:  time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+								Uri:        adapter.Uri("myURI"),
 							},
 						},
 					},
