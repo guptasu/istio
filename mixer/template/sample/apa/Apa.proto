@@ -26,9 +26,7 @@ message Template {
 
     map<string, Resource3> res3_map = 8;
 
-    repeated bytes optionalIP = 9;
-
-    string optionalString = 10;
+    istio.mixer.v1.template.IPAddress optionalIP = 9;
 }
 
 message OutputTemplate {

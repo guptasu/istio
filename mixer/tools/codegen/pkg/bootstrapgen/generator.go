@@ -51,10 +51,6 @@ var primitiveToValueType = map[string]string{
 	"bool":    fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.BOOL.String(),
 	"int64":   fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.INT64.String(),
 	"float64": fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.DOUBLE.String(),
-	// TODO: currently IP_ADDRESS is byte[], but reverse might not be true. This code assumes []byte is
-	// IP_ADDRESS, which is a temporary hack since there is currently no way to express IP_ADDRESS inside templates
-	// yet.
-	"[]byte":               fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.IP_ADDRESS.String(),
 	"net.IP":               fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.IP_ADDRESS.String(),
 	"adapter.Uri":          fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.URI.String(),
 	"adapter.DNSName":      fullGoNameOfValueTypePkgName + istio_mixer_v1_config_descriptor.DNS_NAME.String(),

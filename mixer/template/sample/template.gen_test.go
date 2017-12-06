@@ -1510,7 +1510,6 @@ boolPrimitive: source.bool
 doublePrimitive: source.double
 stringPrimitive: source.string
 optionalIP: 'ip("0.0.0.0")'
-optionalString: '"unknown"'
 dimensionsFixedInt64ValueDType:
  d1: source.int64
  d1: source.int64
@@ -1668,7 +1667,6 @@ func TestProcessApa(t *testing.T) {
 				TimeStamp:                      "request.timestamp",
 				Duration:                       "request.duration",
 				OptionalIP:                     `ip("0.0.0.0")`,
-				OptionalString:                 `""`,
 				DimensionsFixedInt64ValueDType: map[string]string{"a": "1"},
 				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3InstanceParam{
 					"source2": {
@@ -1717,7 +1715,6 @@ func TestProcessApa(t *testing.T) {
 				Duration:                       10 * time.Second,
 				DimensionsFixedInt64ValueDType: map[string]int64{"a": int64(1)},
 				OptionalIP:                     net.ParseIP("0.0.0.0"),
-				OptionalString:                 "",
 				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3{
 					"source2": {
 						BoolPrimitive:                  true,
@@ -1751,7 +1748,6 @@ func TestProcessApa(t *testing.T) {
 				Duration:                       "request.duration",
 				DimensionsFixedInt64ValueDType: map[string]string{"a": "1"},
 				OptionalIP:                     `ip("0.0.0.0")`,
-				OptionalString:                 `""`,
 				Res3Map: map[string]*istio_mixer_adapter_sample_myapa.Resource3InstanceParam{
 					"source2": {
 						BoolPrimitive:   "true",
