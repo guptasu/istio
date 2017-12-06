@@ -1691,6 +1691,7 @@ func TestProcessApa(t *testing.T) {
 					"source.mytimeStamp":       "$out.timeStamp",
 					"source.myduration":        "$out.duration",
 					"source.email":             "$out.email",
+					"source.ip":                "$out.out_ip",
 				},
 			},
 			hdlr: &fakeMyApaHandler{
@@ -1698,20 +1699,22 @@ func TestProcessApa(t *testing.T) {
 					BoolPrimitive:   true,
 					DoublePrimitive: 1237,
 					StringPrimitive: "1237",
-					TimeStamp:       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+					TimeStamp:       time.Date(2019, time.January, 01, 0, 0, 0, 0, time.UTC),
 					Duration:        10 * time.Second,
 					Int64Primitive:  1237,
 					Email:           adapter.EmailAddress("updatedfoo@bar.com"),
+					OutIp:           net.ParseIP("1.2.3.4"),
 				},
 			},
 			wantOutAttrs: map[string]interface{}{
 				"source.mystring":          "1237",
-				"source.mytimeStamp":       time.Date(2017, time.January, 01, 0, 0, 0, 0, time.UTC),
+				"source.mytimeStamp":       time.Date(2019, time.January, 01, 0, 0, 0, 0, time.UTC),
 				"source.myduration":        10 * time.Second,
 				"source.myint64Primitive":  int64(1237),
 				"source.myboolPrimitive":   true,
 				"source.mydoublePrimitive": float64(1237),
 				"source.email":             "updatedfoo@bar.com",
+				"source.ip":                []uint8(net.ParseIP("1.2.3.4")),
 			},
 			wantInstance: &istio_mixer_adapter_sample_myapa.Instance{
 				Name:                           "foo",
@@ -1737,7 +1740,7 @@ func TestProcessApa(t *testing.T) {
 				},
 			},
 		},
-		/*{
+		{
 			name:     "EvalError",
 			instName: "foo",
 			instParam: &istio_mixer_adapter_sample_myapa.InstanceParam{
@@ -1781,7 +1784,7 @@ func TestProcessApa(t *testing.T) {
 				retError: fmt.Errorf("some error"),
 			},
 			wantError: "some error",
-		},*/
+		},
 	} {
 		t.Run(tst.name, func(t *testing.T) {
 			h := &tst.hdlr
@@ -1811,7 +1814,7 @@ func TestProcessApa(t *testing.T) {
 						"return attrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
 				}
 				for k, v := range tst.wantOutAttrs {
-					if x, _ := returnAttr.Get(k); x != v {
+					if x, _ := returnAttr.Get(k); !reflect.DeepEqual(x,v) {
 						t.Errorf("Apa handler "+
 							"return attattrs = %v want %v", spew.Sdump(returnAttr), spew.Sdump(tst.wantOutAttrs))
 					}
