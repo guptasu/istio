@@ -46,7 +46,6 @@ var customMessageTypeMetadata = map[string]typeMetadata{
 	},
 	".istio.mixer.v1.template.IPAddress": {
 		goName:   "net.IP",
-		goImport: "net",
 	},
 	".istio.mixer.v1.template.DNSName": {
 		goName: "adapter.DNSName",

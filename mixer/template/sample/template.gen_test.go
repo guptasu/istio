@@ -969,6 +969,12 @@ func TestProcessReport(t *testing.T) {
 							Value:          "1",
 							Dimensions:     map[string]string{"s": "2"},
 							Int64Primitive: "54362",
+							DnsName: `"myDNS"`,
+							Duration: "request.duration",
+							EmailAddr: `"myEMAIL"`,
+							IpAddr:    `ip("0.0.0.0")`,
+							TimeStamp:  "request.timestamp",
+							Uri:        `"myURI"`,
 						},
 						Res2Map: map[string]*sample_report.Res2InstanceParam{
 							"foo": {
