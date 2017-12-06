@@ -838,34 +838,44 @@ var (
 							switch field {
 
 							case "int64Primitive":
+
 								return out.Int64Primitive, true
 
 							case "boolPrimitive":
+
 								return out.BoolPrimitive, true
 
 							case "doublePrimitive":
+
 								return out.DoublePrimitive, true
 
 							case "stringPrimitive":
+
 								return out.StringPrimitive, true
 
 							case "timeStamp":
+
 								return out.TimeStamp, true
 
 							case "duration":
+
 								return out.Duration, true
 
 							case "ip_addr":
-								return out.IpAddr, true
+
+								return []uint8(out.IpAddr), true
 
 							case "dns_name":
-								return out.DnsName, true
+
+								return string(out.DnsName), true
 
 							case "email_addr":
-								return out.EmailAddr, true
+
+								return string(out.EmailAddr), true
 
 							case "uri":
-								return out.Uri, true
+
+								return string(out.Uri), true
 
 							default:
 								return nil, false
