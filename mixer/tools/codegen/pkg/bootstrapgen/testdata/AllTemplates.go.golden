@@ -1546,7 +1546,7 @@ var (
 
 						Duration: Duration.(time.Duration),
 
-						IpAddr: IpAddr.(net.IP),
+						IpAddr: net.IP(IpAddr.([]uint8)),
 
 						DnsName: adapter.DNSName(DnsName.(string)),
 
