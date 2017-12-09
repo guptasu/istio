@@ -21,13 +21,14 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"istio.io/istio/mixer/pkg/adapter"
-	"istio.io/istio/mixer/test/spyAdapter"
-	"istio.io/istio/mixer/pkg/template"
 	"io"
 	"log"
 	"istio.io/istio/mixer/pkg/attribute"
 	"istio.io/api/mixer/v1"
+
+	"istio.io/istio/mixer/pkg/adapter"
+	"istio.io/istio/mixer/pkg/template"
+	"istio.io/istio/mixer/test/spyAdapter"
 )
 
 // ConstructAdapterInfos constructs spyAdapters for each of the adptBehavior. It returns
@@ -125,7 +126,6 @@ func closeHelper(c io.Closer) {
 		log.Fatal(err)
 	}
 }
-
 
 func GetAttrBag(attrs map[string]interface{}, identityAttr, identityAttrDomain string) istio_mixer_v1.CompressedAttributes {
 	requestBag := attribute.GetMutableBag(nil)
