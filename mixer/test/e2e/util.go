@@ -111,6 +111,7 @@ func interfaceMap(m interface{}) map[interface{}]interface{} {
 	return ret
 }
 
+// nolint: deadcode
 type testData struct {
 	name      string
 	cfg       string
@@ -120,6 +121,7 @@ type testData struct {
 	validate  func(t *testing.T, err error, sypAdpts []*spyAdapter.Adapter)
 }
 
+// nolint: deadcode
 func closeHelper(c io.Closer) {
 	err := c.Close()
 	if err != nil {

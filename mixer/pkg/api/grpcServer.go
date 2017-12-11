@@ -138,7 +138,7 @@ func (s *grpcServer) Check(legacyCtx legacyContext.Context, req *mixerpb.CheckRe
 	glog.V(1).Info("Dispatching Preprocess Check")
 
 	mutableBag := attribute.GetMutableBag(requestBag)
-	out := status.OK
+	var out rpc.Status
 
 	// In the next PR
 	// * this block will be deleted.
@@ -318,7 +318,7 @@ func (s *grpcServer) Report(legacyCtx legacyContext.Context, req *mixerpb.Report
 		}
 
 		glog.V(1).Info("Dispatching Preprocess")
-		out := status.OK
+		var out rpc.Status
 
 		// In the next PR
 		// * this block will be deleted.
