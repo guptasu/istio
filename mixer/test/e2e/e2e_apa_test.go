@@ -16,8 +16,12 @@ package e2e
 
 import (
 	"context"
-	"google.golang.org/grpc"
+	"fmt"
+	"reflect"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
+	"google.golang.org/grpc"
 
 	istio_mixer_v1 "istio.io/api/mixer/v1"
 	testEnv "istio.io/istio/mixer/pkg/server"
@@ -25,11 +29,6 @@ import (
 	e2eTmpl "istio.io/istio/mixer/test/spyAdapter/template"
 	apaTmpl "istio.io/istio/mixer/test/spyAdapter/template/apa"
 	reportTmpl "istio.io/istio/mixer/test/spyAdapter/template/report"
-
-	"fmt"
-	"reflect"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 const (
@@ -233,7 +232,7 @@ func TestApa(t *testing.T) {
 
 		req := istio_mixer_v1.ReportRequest{
 			Attributes: []istio_mixer_v1.CompressedAttributes{
-				GetAttrBag(tt.attrs,
+				getAttrBag(tt.attrs,
 					args.ConfigIdentityAttribute,
 					args.ConfigIdentityAttributeDomain)},
 		}

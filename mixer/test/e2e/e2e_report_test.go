@@ -17,7 +17,6 @@ package e2e
 import (
 	"context"
 	"strconv"
-
 	"testing"
 
 	"google.golang.org/grpc"
@@ -158,7 +157,7 @@ func TestReport(t *testing.T) {
 
 			req := istio_mixer_v1.ReportRequest{
 				Attributes: []istio_mixer_v1.CompressedAttributes{
-					GetAttrBag(tt.attrs,
+					getAttrBag(tt.attrs,
 						args.ConfigIdentityAttribute,
 						args.ConfigIdentityAttributeDomain)},
 			}
@@ -168,4 +167,3 @@ func TestReport(t *testing.T) {
 		})
 	}
 }
-

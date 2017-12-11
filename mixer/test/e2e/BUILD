@@ -7,13 +7,12 @@ go_library(
     srcs = ["util.go"],
     deps = [
         "//mixer/pkg/adapter:go_default_library",
+        "//mixer/pkg/attribute:go_default_library",
         "//mixer/pkg/template:go_default_library",
         "//mixer/test/spyAdapter:go_default_library",
         "@com_github_davecgh_go_spew//spew:go_default_library",
-        "@org_golang_google_grpc//:go_default_library",
         "@io_istio_api//mixer/v1:go_default_library",
-        "//mixer/pkg/attribute:go_default_library",
-
+        "@org_golang_google_grpc//:go_default_library",
     ],
 )
 
