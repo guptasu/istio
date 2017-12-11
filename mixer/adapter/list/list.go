@@ -315,6 +315,7 @@ func (b *builder) Validate() (ce *adapter.ConfigErrors) {
 
 func (b *builder) Build(context context.Context, env adapter.Env) (adapter.Handler, error) {
 	ac := b.adapterConfig
+
 	h := &handler{
 		log:     env.Logger(),
 		closing: make(chan bool),

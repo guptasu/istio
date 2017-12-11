@@ -291,7 +291,6 @@ func (m *dispatcher) Preprocess(ctx context.Context, requestBag attribute.Bag, r
 							requestBag, m.mapper,
 							call.handler)
 						if err == nil {
-							// TODO does the Merge fail if there is a conflict ?
 							if err = responseBag.Merge(mBag); err != nil {
 								glog.Infof("Attributes merging failed %v", err)
 							}

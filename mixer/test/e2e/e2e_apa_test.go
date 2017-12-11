@@ -182,6 +182,8 @@ func TestApa(t *testing.T) {
 					return
 				}
 
+				// The labes in report instance config use the values of attributes generated from APA. Validate
+				// the values.
 				CmpSliceAndErr(t, "HandleSampleReport input", adptr.HandlerData.HandleSampleReportInstances,
 					[]*reportTmpl.Instance{
 						{

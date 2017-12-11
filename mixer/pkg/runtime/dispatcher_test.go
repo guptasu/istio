@@ -238,8 +238,8 @@ func TestPreprocess(t *testing.T) {
 		aBag        *attribute.MutableBag
 		emptyResult bool
 	}{
-		//{tn: tname, ncalled: 6, aBag: nil},
 		{name: "basic", tn: tname, ncalled: 6, aBag: mBag},
+		{name: "nilBagFromTmpl", tn: tname, ncalled: 6, aBag: nil},
 		{name: "errFromTmpl", tn: tname, callErr: err1},
 		{name: "resolverErr", tn: tname, callErr: err1, resolveErr: true},
 	} {
