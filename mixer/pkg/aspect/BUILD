@@ -6,10 +6,8 @@ go_library(
     name = "go_default_library",
     srcs = [
         "common.go",
-        "descriptors.go",
         "inventory.go",
         "manager.go",
-        "quotasManager.go",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -33,8 +31,6 @@ go_test(
     size = "small",
     srcs = [
         "common_test.go",
-        "descriptors_test.go",
-        "quotasManager_test.go",
     ],
     library = ":go_default_library",
     deps = [
