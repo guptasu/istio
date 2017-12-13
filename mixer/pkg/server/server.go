@@ -207,7 +207,7 @@ func new(a *Args, p *patchTable) (*Server, error) {
 	// get the grpc server wired up
 	grpc.EnableTracing = a.EnableGRPCTracing
 	s.server = grpc.NewServer(grpcOptions...)
-	mixerpb.RegisterMixerServer(s.server, api.NewGRPCServer(adapterMgr, dispatcher, s.gp))
+	mixerpb.RegisterMixerServer(s.server, api.NewGRPCServer(dispatcher, s.gp))
 
 	return s, nil
 }
