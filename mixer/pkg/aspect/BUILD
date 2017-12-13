@@ -5,7 +5,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
-        "attrgenmgr.go",
         "common.go",
         "descriptors.go",
         "inventory.go",
@@ -33,10 +32,8 @@ go_test(
     name = "go_default_test",
     size = "small",
     srcs = [
-        "attrgenmgr_test.go",
         "common_test.go",
         "descriptors_test.go",
-        "inventory_test.go",
         "quotasManager_test.go",
     ],
     library = ":go_default_library",

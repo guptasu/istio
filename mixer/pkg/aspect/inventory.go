@@ -24,10 +24,8 @@ type ManagerInventory struct {
 func Inventory() ManagerInventory {
 	return ManagerInventory{
 		Preprocess: []PreprocessManager{
-			newAttrGenMgr(),
 		},
 		Quota: []QuotaManager{
-			newQuotasManager(),
 		},
 	}
 }
