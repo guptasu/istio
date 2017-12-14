@@ -6,7 +6,6 @@ go_library(
     name = "go_default_library",
     srcs = [
         "common.go",
-        "inventory.go",
         "manager.go",
     ],
     visibility = ["//visibility:public"],

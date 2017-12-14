@@ -18,17 +18,11 @@
 package aspect
 
 import (
-	"io"
 	"time"
-
-	rpc "github.com/googleapis/googleapis/google/rpc"
 
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
 	"istio.io/istio/mixer/pkg/config"
-	"istio.io/istio/mixer/pkg/config/descriptor"
-	cpb "istio.io/istio/mixer/pkg/config/proto"
-	"istio.io/istio/mixer/pkg/expr"
 )
 
 type (
@@ -43,37 +37,6 @@ type (
 
 		// Kind return the kind of aspect handled by this manager
 		Kind() config.Kind
-	}
-
-	// QuotaManager take care of aspects used to implement the Quota API method
-	QuotaManager interface {
-		Manager
-
-		// NewQuotaExecutor creates a new aspect executor given configuration.
-		NewQuotaExecutor(cfg *cpb.Combined, createAspect CreateAspectFunc, env adapter.Env, df descriptor.Finder, tmpl string) (QuotaExecutor, error)
-	}
-
-	// A PreprocessManager handles adapter execution for pre-processing of
-	// requests before request dispatch to managers of the various API
-	// methods.
-	PreprocessManager interface {
-		Manager
-
-		// NewPreprocessExecutor creates a new executor given configuration.
-		NewPreprocessExecutor(cfg *cpb.Combined, createAspect CreateAspectFunc, env adapter.Env, df descriptor.Finder) (PreprocessExecutor, error)
-	}
-
-	// Executor encapsulates a single aspect and allows it to be invoked.
-	Executor interface {
-		io.Closer
-	}
-
-	// QuotaExecutor encapsulates a single QuotaManager aspect and allows it to be invoked.
-	QuotaExecutor interface {
-		Executor
-
-		// Execute dispatches to the aspect manager.
-		Execute(attrs attribute.Bag, mapper expr.Evaluator, qma *QuotaMethodArgs) (rpc.Status, *QuotaMethodResp)
 	}
 
 	// QuotaMethodArgs is supplied by invocations of the Quota method.
@@ -102,15 +65,6 @@ type (
 
 		// The total amount of quota returned, may be less than requested.
 		Amount int64
-	}
-
-	// PreprocessExecutor encapsulates a single PreprocessManager aspect
-	// and allows it to be invoked.
-	PreprocessExecutor interface {
-		Executor
-
-		// Execute dispatches to the aspect manager.
-		Execute(attrs attribute.Bag, mapper expr.Evaluator) (*PreprocessResult, rpc.Status)
 	}
 
 	// PreprocessResult holds the generated data from the preprocess adapters.
