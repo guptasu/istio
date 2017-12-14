@@ -22,7 +22,6 @@ import (
 
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/attribute"
-	"istio.io/istio/mixer/pkg/config"
 )
 
 type (
@@ -30,14 +29,6 @@ type (
 	// It accepts optional params that may be required for some aspects (Metrics, Quotas).
 	CreateAspectFunc func(env adapter.Env, c adapter.Config, optional ...interface{}) (adapter.Aspect, error)
 
-	// Manager is responsible for a specific aspect and presents a uniform interface
-	// to the rest of the system.
-	Manager interface {
-		config.AspectValidator
-
-		// Kind return the kind of aspect handled by this manager
-		Kind() config.Kind
-	}
 
 	// QuotaMethodArgs is supplied by invocations of the Quota method.
 	QuotaMethodArgs struct {
