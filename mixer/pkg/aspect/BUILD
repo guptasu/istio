@@ -25,27 +25,3 @@ go_library(
         "@io_istio_api//mixer/v1/config/descriptor:descriptor",
     ],
 )
-
-go_test(
-    name = "go_default_test",
-    size = "small",
-    srcs = [
-        "common_test.go",
-    ],
-    library = ":go_default_library",
-    deps = [
-        "//mixer/adapter/noopLegacy:go_default_library",
-        "//mixer/pkg/adapter:go_default_library",
-        "//mixer/pkg/adapter/test:go_default_library",
-        "//mixer/pkg/aspect/config:go_default_library",
-        "//mixer/pkg/aspect/test:go_default_library",
-        "//mixer/pkg/attribute:go_default_library",
-        "//mixer/pkg/config:go_default_library",
-        "//mixer/pkg/config/descriptor:go_default_library",
-        "//mixer/pkg/config/proto:go_default_library",
-        "//mixer/pkg/expr:go_default_library",
-        "//mixer/pkg/il/evaluator:go_default_library",
-        "//mixer/pkg/status:go_default_library",
-        "@io_istio_api//mixer/v1/config/descriptor:descriptor",
-    ],
-)
