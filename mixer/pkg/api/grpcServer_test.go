@@ -28,7 +28,6 @@ import (
 
 	mixerpb "istio.io/api/mixer/v1"
 	"istio.io/istio/mixer/pkg/adapter"
-	"istio.io/istio/mixer/pkg/adapterManager"
 	"istio.io/istio/mixer/pkg/aspect"
 	"istio.io/istio/mixer/pkg/attribute"
 	"istio.io/istio/mixer/pkg/pool"
@@ -46,7 +45,6 @@ type quotaCallbackLegacy func(requestBag attribute.Bag, args *aspect.QuotaMethod
 	rpc.Status)
 
 type legacyDispatcher struct {
-	adapterManager.AspectDispatcher
 	quota   quotaCallbackLegacy
 	preproc preprocCallbackLegacy
 }
