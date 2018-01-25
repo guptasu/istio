@@ -243,7 +243,7 @@ func (g *Generator) Generate(fdsFiles map[string]string) error {
 
 	for _, fdsPath := range fdss {
 		var fds *descriptor.FileDescriptorSet
-		fds, err = getFileDescSet(fdsPath)
+		fds, err = getFileDescSet(os.ExpandEnv(fdsPath))
 		if err != nil {
 			return fmt.Errorf("cannot parse file '%s' as a FileDescriptorSetProto. %v", fds, err)
 		}

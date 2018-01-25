@@ -17,6 +17,7 @@
 package adapter
 
 import (
+	servicecontrol "istio.io/contrib/adapters/istio/mixer/servicecontrol"
 	circonus "istio.io/istio/mixer/adapter/circonus"
 	denier "istio.io/istio/mixer/adapter/denier"
 	fluentd "istio.io/istio/mixer/adapter/fluentd"
@@ -26,7 +27,6 @@ import (
 	noop "istio.io/istio/mixer/adapter/noop"
 	opa "istio.io/istio/mixer/adapter/opa"
 	prometheus "istio.io/istio/mixer/adapter/prometheus"
-	servicecontrol "istio.io/istio/mixer/adapter/servicecontrol"
 	stackdriver "istio.io/istio/mixer/adapter/stackdriver"
 	statsd "istio.io/istio/mixer/adapter/statsd"
 	stdio "istio.io/istio/mixer/adapter/stdio"
