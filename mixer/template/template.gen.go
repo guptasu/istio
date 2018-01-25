@@ -35,7 +35,7 @@ import (
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 
-	"istio.io/contrib/adapters/istio/mixer/servicecontrol/template/servicecontrolreport"
+	"github.com/guptasu/contrib/adapters/istio/mixer/servicecontrol/template/servicecontrolreport"
 
 	"istio.io/istio/mixer/adapter/kubernetesenv/template"
 

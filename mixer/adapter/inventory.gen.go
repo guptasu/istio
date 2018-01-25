@@ -17,7 +17,8 @@
 package adapter
 
 import (
-	servicecontrol "istio.io/contrib/adapters/istio/mixer/servicecontrol"
+	servicecontrol "github.com/guptasu/contrib/adapters/istio/mixer/servicecontrol"
+
 	circonus "istio.io/istio/mixer/adapter/circonus"
 	denier "istio.io/istio/mixer/adapter/denier"
 	fluentd "istio.io/istio/mixer/adapter/fluentd"
