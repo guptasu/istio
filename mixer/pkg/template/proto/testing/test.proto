@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package testing;
+
+
+message Instance {
+    int64 int64Primitive = 1;
+
+    bool boolPrimitive = 2;
+
+    double doublePrimitive = 3;
+
+    string stringPrimitive = 4;
+
+    Sub sub = 5;
+
+    repeated string repeatedStrings = 6;
+
+    repeated Sub subs = 7;
+
+    map<string, string> mapPrimitive = 8;
+}
+
+message Sub {
+    int64 int64Primitive = 1;
+}
+
+message InstanceParam {
+    string int64Primitive = 1;
+
+    string boolPrimitive = 2;
+
+    string doublePrimitive = 3;
+
+    string stringPrimitive = 4;
+
+    SubParam sub = 5;
+
+    repeated string repeatedStrings = 6;
+
+    repeated SubParam subs = 7;
+
+    map<string, string> mapPrimitive = 8;
+}
+
+message SubParam {
+    string int64Primitive = 1;
+}
