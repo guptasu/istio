@@ -24,6 +24,7 @@ import (
 	protobuf "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"istio.io/istio/mixer/pkg/attribute"
 	"istio.io/istio/mixer/pkg/il/compiled"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // Assembler directly serialized proto into the passed buffer, based on the given attribute bag.
@@ -277,5 +278,57 @@ func buildMessageAssembler(
 func (m *constantAssembler) assemble(bag attribute.Bag, index int, buffer *proto.Buffer) error {
 	buffer.EncodeVarint(encodeIndexAndType(index, proto.WireBytes))
 	buffer.EncodeStringBytes(m.value)
+	return nil
+}
+
+
+func yamlToBytes(configYaml string, fd *protobuf.FileDescriptorProto, msgName string) ([]byte, error) {
+	//var result []byte
+	m := make(map[interface{}]interface{})
+
+	err := yaml.Unmarshal([]byte(configYaml), &m)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+	fmt.Printf("--- m:\n%v\n\n", m)
+
+	// d, err := yaml.Marshal(&m)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+	//fmt.Printf("--- m dump:\n%s\n\n", string(d))
+
+	r := newResolver(fd)
+	instanceDescriptor := r.resolve(msgName)
+
+	buf := proto.NewBuffer([]byte{})
+	for k, v := range m {
+		fieldDescriptor := findFieldByName(instanceDescriptor, k.(string))
+		if fieldDescriptor == nil {
+			return nil, fmt.Errorf("field not found in instance: %s", k)
+		}
+		fmt.Println(fieldDescriptor, v)
+		assemble(*fieldDescriptor, v, buf)
+	}
+
+	return buf.Bytes(), nil
+}
+
+
+func assemble(fieldDesc protobuf.FieldDescriptorProto, data interface{}, buffer *proto.Buffer) error {
+	switch *fieldDesc.Type {
+	case protobuf.FieldDescriptorProto_TYPE_STRING:
+		v, ok := data.(string)
+		if !ok {
+			return fmt.Errorf("yaml val %v didn't match field type string", data)
+		}
+
+		buffer.EncodeVarint(encodeIndexAndType(int(*fieldDesc.Number), proto.WireBytes))
+		buffer.EncodeStringBytes(v)
+	default:
+		// TODO: Come up with a strategy for mapping various other types (i.e. int32, fixed64, float etc.)
+		panic("Unrecognized field type:" + (*fieldDesc.Type).String())
+	}
+
 	return nil
 }

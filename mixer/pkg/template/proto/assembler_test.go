@@ -31,7 +31,6 @@ import (
 	configpb "istio.io/api/mixer/v1/config"
 	tst "istio.io/istio/mixer/pkg/template/proto/testing"
 	"fmt"
-	yaml "gopkg.in/yaml.v2"
 
 )
 
@@ -48,11 +47,6 @@ var tests = []struct {
 			BoolPrimitive:   `as == "foo"`,
 			DoublePrimitive: "43.45",
 			Int64Primitive:  "23",
-			MapPrimitive: map[string]string{
-				"foo":  `"foo"`,
-				"bar":  `as`,
-				"fizz": `"buzz"`,
-			},
 		},
 		a: map[string]interface{}{
 			"as": "baz",
@@ -62,11 +56,6 @@ var tests = []struct {
 			BoolPrimitive:   false,
 			DoublePrimitive: float64(43.45),
 			Int64Primitive:  int64(23),
-			MapPrimitive: map[string]string{
-				"foo":  "foo",
-				"bar":  "baz",
-				"fizz": "buzz",
-			},
 		},
 	},
 }
@@ -78,57 +67,6 @@ var manifest = map[string]*configpb.AttributeManifest_AttributeInfo{
 	"ai": {
 		ValueType: pbv.INT64,
 	},
-}
-
-func yamlToBytes(configYaml string, fd *descriptor.FileDescriptorProto, msgName string) ([]byte, error) {
-	//var result []byte
-	m := make(map[interface{}]interface{})
-
-	err := yaml.Unmarshal([]byte(configYaml), &m)
-	if err != nil {
-		return nil, fmt.Errorf("error: %v", err)
-	}
-	fmt.Printf("--- m:\n%v\n\n", m)
-
-	d, err := yaml.Marshal(&m)
-	if err != nil {
-		return nil, fmt.Errorf("error: %v", err)
-	}
-	fmt.Printf("--- m dump:\n%s\n\n", string(d))
-
-	r := newResolver(fd)
-	instanceDescriptor := r.resolve(msgName)
-
-	buf := proto.NewBuffer([]byte{})
-	for k, v := range m {
-		fieldDescriptor := findFieldByName(instanceDescriptor, k.(string))
-		if fieldDescriptor == nil {
-			return nil, fmt.Errorf("field not found in instance: %s", k)
-		}
-		fmt.Println(fieldDescriptor, v)
-		assemble(*fieldDescriptor, v, buf)
-	}
-
-	return buf.Bytes(), nil
-}
-
-
-func assemble(fieldDesc descriptor.FieldDescriptorProto, data interface{}, buffer *proto.Buffer) error {
-	switch *fieldDesc.Type {
-	case descriptor.FieldDescriptorProto_TYPE_STRING:
-		v, ok := data.(string)
-		if !ok {
-			return fmt.Errorf("yaml val %v didn't match field type string", data)
-		}
-
-		buffer.EncodeVarint(encodeIndexAndType(int(*fieldDesc.Number), proto.WireBytes))
-		buffer.EncodeStringBytes(v)
-	default:
-		// TODO: Come up with a strategy for mapping various other types (i.e. int32, fixed64, float etc.)
-		panic("Unrecognized field type:" + (*fieldDesc.Type).String())
-	}
-
-	return nil
 }
 
 func TestDebug(t *testing.T) {
@@ -143,7 +81,6 @@ stringPrimitive: as
 doublePrimitive: "43.45"
 `
 	bytes, err := yamlToBytes(yaml, fd, "InstanceParam")
-
 
 	instanceParam := tst.InstanceParam{}
 	err = proto.Unmarshal(bytes, &instanceParam)
