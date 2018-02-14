@@ -30,24 +30,23 @@ import (
 	pbv "istio.io/api/mixer/v1/config/descriptor"
 	configpb "istio.io/api/mixer/v1/config"
 	tst "istio.io/istio/mixer/pkg/template/proto/testing"
-	"fmt"
 
 )
 
 var tests = []struct {
 	n string
-	i *tst.InstanceParam
+	i string
 	a map[string]interface{}
 	e *tst.Instance
 }{
 	{
 		n: "basic",
-		i: &tst.InstanceParam{
-			StringPrimitive: "as",
-			BoolPrimitive:   `as == "foo"`,
-			DoublePrimitive: "43.45",
-			Int64Primitive:  "23",
-		},
+		i: `
+int64Primitive: "23"
+boolPrimitive: as == "foo"
+stringPrimitive: as
+doublePrimitive: "43.45"
+`,
 		a: map[string]interface{}{
 			"as": "baz",
 		},
@@ -60,37 +59,6 @@ var tests = []struct {
 	},
 }
 
-var manifest = map[string]*configpb.AttributeManifest_AttributeInfo{
-	"as": {
-		ValueType: pbv.STRING,
-	},
-	"ai": {
-		ValueType: pbv.INT64,
-	},
-}
-
-func TestDebug(t *testing.T) {
-	fd, err := getFileDescriptor()
-	if err != nil {
-		t.Fatalf("%v", err)
-	}
-	yaml  := `
-int64Primitive: "23"
-boolPrimitive: as == "foo"
-stringPrimitive: as
-doublePrimitive: "43.45"
-`
-	bytes, err := yamlToBytes(yaml, fd, "InstanceParam")
-
-	instanceParam := tst.InstanceParam{}
-	err = proto.Unmarshal(bytes, &instanceParam)
-	if err != nil {
-		t.Fatalf("error: %v", err)
-	}
-
-	fmt.Println(bytes, err)
-}
-
 func TestAssembler(t *testing.T) {
 	for _, ts := range tests {
 		t.Run(ts.n, func(tt *testing.T) {
@@ -99,7 +67,7 @@ func TestAssembler(t *testing.T) {
 				tt.Fatalf("%v", err)
 			}
 
-			paramBytes, err := proto.Marshal(ts.i)
+			paramBytes, err := yamlToBytes(ts.i, fd, "InstanceParam")
 			if err != nil {
 				tt.Fatalf("Error marshalling instance bytes: %v", err)
 			}
@@ -159,4 +127,13 @@ func ungzip(input []byte) ([]byte, error) {
 		return nil, err
 	}
 	return buf.Bytes(), nil
+}
+
+var manifest = map[string]*configpb.AttributeManifest_AttributeInfo{
+	"as": {
+		ValueType: pbv.STRING,
+	},
+	"ai": {
+		ValueType: pbv.INT64,
+	},
 }
