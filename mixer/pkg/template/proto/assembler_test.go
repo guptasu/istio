@@ -28,7 +28,7 @@ import (
 	"istio.io/istio/mixer/pkg/il/compiled"
 
 	pbv "istio.io/api/mixer/v1/config/descriptor"
-	configpb "istio.io/istio/mixer/pkg/config/proto"
+	configpb "istio.io/api/mixer/v1/config"
 	tst "istio.io/istio/mixer/pkg/template/proto/testing"
 )
 
@@ -89,7 +89,6 @@ var tests = []struct {
 			},
 		},
 	},
-
 	{
 		n: "repeated strings",
 		i: &tst.InstanceParam{
@@ -119,7 +118,6 @@ var tests = []struct {
 			},
 		},
 	},
-
 	{
 		n: "repeated sub messages",
 		i: &tst.InstanceParam{
