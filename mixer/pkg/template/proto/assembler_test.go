@@ -30,6 +30,9 @@ import (
 	pbv "istio.io/api/mixer/v1/config/descriptor"
 	configpb "istio.io/api/mixer/v1/config"
 	tst "istio.io/istio/mixer/pkg/template/proto/testing"
+	"fmt"
+	yaml "gopkg.in/yaml.v2"
+
 )
 
 var tests = []struct {
@@ -45,115 +48,6 @@ var tests = []struct {
 			BoolPrimitive:   `as == "foo"`,
 			DoublePrimitive: "43.45",
 			Int64Primitive:  "23",
-		},
-		a: map[string]interface{}{
-			"as": "bar",
-		},
-		e: &tst.Instance{
-			StringPrimitive: "bar",
-			BoolPrimitive:   false,
-			DoublePrimitive: float64(43.45),
-			Int64Primitive:  int64(23),
-		},
-	},
-
-	{
-		n: "missing fields",
-		i: &tst.InstanceParam{
-			StringPrimitive: "as",
-		},
-		a: map[string]interface{}{
-			"as": "bar",
-		},
-		e: &tst.Instance{
-			StringPrimitive: "bar",
-		},
-	},
-
-	{
-		n: "sub message",
-		i: &tst.InstanceParam{
-			StringPrimitive: "as",
-			Sub: &tst.SubParam{
-				Int64Primitive: "ai",
-			},
-		},
-		a: map[string]interface{}{
-			"as": "baz",
-			"ai": int64(52),
-		},
-		e: &tst.Instance{
-			StringPrimitive: "baz",
-			Sub: &tst.Sub{
-				Int64Primitive: int64(52),
-			},
-		},
-	},
-	{
-		n: "repeated strings",
-		i: &tst.InstanceParam{
-			StringPrimitive: "as",
-			Sub: &tst.SubParam{
-				Int64Primitive: "ai",
-			},
-			RepeatedStrings: []string{
-				`"buzz"`,
-				`as`,
-				`"fizz"`,
-			},
-		},
-		a: map[string]interface{}{
-			"as": "baz",
-			"ai": int64(52),
-		},
-		e: &tst.Instance{
-			StringPrimitive: "baz",
-			Sub: &tst.Sub{
-				Int64Primitive: int64(52),
-			},
-			RepeatedStrings: []string{
-				"buzz",
-				"baz",
-				"fizz",
-			},
-		},
-	},
-	{
-		n: "repeated sub messages",
-		i: &tst.InstanceParam{
-			Subs: []*tst.SubParam{
-				{
-					Int64Primitive: "ai",
-				},
-				{
-					Int64Primitive: "1",
-				},
-				{
-					Int64Primitive: "12",
-				},
-			},
-		},
-		a: map[string]interface{}{
-			"ai": int64(52),
-		},
-		e: &tst.Instance{
-			Subs: []*tst.Sub{
-				{
-					Int64Primitive: int64(52),
-				},
-				{
-					Int64Primitive: int64(1),
-				},
-				{
-					Int64Primitive: int64(12),
-				},
-			},
-		},
-	},
-
-	{
-		n: "map",
-		i: &tst.InstanceParam{
 			MapPrimitive: map[string]string{
 				"foo":  `"foo"`,
 				"bar":  `as`,
@@ -164,6 +58,10 @@ var tests = []struct {
 			"as": "baz",
 		},
 		e: &tst.Instance{
+			StringPrimitive: "baz",
+			BoolPrimitive:   false,
+			DoublePrimitive: float64(43.45),
+			Int64Primitive:  int64(23),
 			MapPrimitive: map[string]string{
 				"foo":  "foo",
 				"bar":  "baz",
@@ -180,6 +78,80 @@ var manifest = map[string]*configpb.AttributeManifest_AttributeInfo{
 	"ai": {
 		ValueType: pbv.INT64,
 	},
+}
+
+func yamlToBytes(configYaml string, fd *descriptor.FileDescriptorProto, msgName string) ([]byte, error) {
+	//var result []byte
+	m := make(map[interface{}]interface{})
+
+	err := yaml.Unmarshal([]byte(configYaml), &m)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+	fmt.Printf("--- m:\n%v\n\n", m)
+
+	d, err := yaml.Marshal(&m)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+	fmt.Printf("--- m dump:\n%s\n\n", string(d))
+
+	r := newResolver(fd)
+	instanceDescriptor := r.resolve(msgName)
+
+	buf := proto.NewBuffer([]byte{})
+	for k, v := range m {
+		fieldDescriptor := findFieldByName(instanceDescriptor, k.(string))
+		if fieldDescriptor == nil {
+			return nil, fmt.Errorf("field not found in instance: %s", k)
+		}
+		fmt.Println(fieldDescriptor, v)
+		assemble(*fieldDescriptor, v, buf)
+	}
+
+	return buf.Bytes(), nil
+}
+
+
+func assemble(fieldDesc descriptor.FieldDescriptorProto, data interface{}, buffer *proto.Buffer) error {
+	switch *fieldDesc.Type {
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		v, ok := data.(string)
+		if !ok {
+			return fmt.Errorf("yaml val %v didn't match field type string", data)
+		}
+
+		buffer.EncodeVarint(encodeIndexAndType(int(*fieldDesc.Number), proto.WireBytes))
+		buffer.EncodeStringBytes(v)
+	default:
+		// TODO: Come up with a strategy for mapping various other types (i.e. int32, fixed64, float etc.)
+		panic("Unrecognized field type:" + (*fieldDesc.Type).String())
+	}
+
+	return nil
+}
+
+func TestDebug(t *testing.T) {
+	fd, err := getFileDescriptor()
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+	yaml  := `
+int64Primitive: "23"
+boolPrimitive: as == "foo"
+stringPrimitive: as
+doublePrimitive: "43.45"
+`
+	bytes, err := yamlToBytes(yaml, fd, "InstanceParam")
+
+
+	instanceParam := tst.InstanceParam{}
+	err = proto.Unmarshal(bytes, &instanceParam)
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
+
+	fmt.Println(bytes, err)
 }
 
 func TestAssembler(t *testing.T) {

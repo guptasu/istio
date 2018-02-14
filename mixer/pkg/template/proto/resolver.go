@@ -72,3 +72,13 @@ func findField(descriptor *protobuf.DescriptorProto, index int) *protobuf.FieldD
 	}
 	return nil
 }
+
+func findFieldByName(descriptor *protobuf.DescriptorProto, name string) *protobuf.FieldDescriptorProto {
+	for _, f := range descriptor.Field {
+		// TODO: Handle missing number
+		if *f.JsonName == name || *f.Name == name {
+			return f
+		}
+	}
+	return nil
+}

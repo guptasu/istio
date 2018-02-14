@@ -162,15 +162,14 @@ func NewAssemblerFor(
 	builder *compiled.ExpressionBuilder) (Assembler, error) {
 
 	r := newResolver(fd)
-	buffer := proto.NewBuffer(instanceParam)
-	return buildMessageAssembler(r, instanceName, paramName, buffer, builder)
+	return buildMessageAssembler(r, instanceName, paramName, proto.NewBuffer(instanceParam), builder)
 }
 
 func buildMessageAssembler(
 	r resolver,
 	instanceName string,
 	paramName string,
-	buffer *proto.Buffer,
+	instParamBuf *proto.Buffer,
 	builder *compiled.ExpressionBuilder) (*messageAssembler, error) {
 
 	instanceDescriptor := r.resolve(instanceName)
@@ -188,7 +187,7 @@ func buildMessageAssembler(
 	}
 
 	for {
-		vint, err := buffer.DecodeVarint()
+		vint, err := instParamBuf.DecodeVarint()
 		if err != nil {
 			if err == io.ErrUnexpectedEOF {
 				return result, nil
@@ -219,7 +218,7 @@ func buildMessageAssembler(
 				paramName = prefix + "Param" + suffix
 			}
 			var mbytes []byte
-			if mbytes, err = buffer.DecodeRawBytes(false); err != nil {
+			if mbytes, err = instParamBuf.DecodeRawBytes(false); err != nil {
 				return nil, err
 			}
 			mbuf := proto.NewBuffer(mbytes)
@@ -236,7 +235,7 @@ func buildMessageAssembler(
 		}
 		// Let the map key pass through
 		if strings.HasSuffix(instanceName, "MapPrimitiveEntry") && i == 1 {
-			mapKey, err := buffer.DecodeStringBytes()
+			mapKey, err := instParamBuf.DecodeStringBytes()
 			if err != nil {
 				return nil, err
 			}
@@ -251,7 +250,7 @@ func buildMessageAssembler(
 			continue
 		}
 
-		expression, err := buffer.DecodeStringBytes()
+		expression, err := instParamBuf.DecodeStringBytes()
 		if err != nil {
 			return nil, fmt.Errorf("unable to decode expression for field: %d, %v", i, err)
 		}
@@ -273,6 +272,7 @@ func buildMessageAssembler(
 		result.fields = append(result.fields, entry)
 	}
 }
+
 
 func (m *constantAssembler) assemble(bag attribute.Bag, index int, buffer *proto.Buffer) error {
 	buffer.EncodeVarint(encodeIndexAndType(index, proto.WireBytes))
