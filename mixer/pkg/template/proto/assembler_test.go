@@ -30,7 +30,6 @@ import (
 	pbv "istio.io/api/mixer/v1/config/descriptor"
 	configpb "istio.io/api/mixer/v1/config"
 	tst "istio.io/istio/mixer/pkg/template/proto/testing"
-
 )
 
 var tests = []struct {
