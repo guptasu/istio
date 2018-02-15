@@ -38,8 +38,11 @@ func main() {
 		fds,
 	)
 	rpcStatusBytes := getRpcStatusBytes()
-	err = conn.Invoke(context.Background(), "/mixer.adapter.metricentry.MetricEntryService/HandleMetricEntry", reqBytes, rpcStatusBytes)
-	if err != nil {
+	if err = conn.Invoke(
+		context.Background(),
+		"/mixer.adapter.metricentry.MetricEntryService/HandleMetricEntry",
+		reqBytes,
+		rpcStatusBytes); err != nil {
 		panic(err)
 	}
 
@@ -51,23 +54,13 @@ func main() {
 func getNewRequestBytes(instCfg string, attrs map[string]interface{}, fds *descriptor.FileDescriptorSet) *bytes.Buffer {
 	var fd *descriptor.FileDescriptorProto
 	fd = fds.File[3]
-	instParamBytes, err := grpcPkg.YamlToBytes(instCfg, fd, "InstanceParam")
+	instParamBytes, _ := grpcPkg.YamlToBytes(instCfg, fd, "InstanceParam")
 
 	builder := compiled.NewBuilder(expr.NewFinder(manifest))
-	if err != nil {
-		panic(err)
-	}
-	assembler, err := grpcPkg.NewAssemblerFor(fd, "Instance", "InstanceParam", instParamBytes, builder)
-	if err != nil {
-		panic(err)
-	}
+	assembler, _ := grpcPkg.NewAssemblerFor(fd, "Instance", "InstanceParam", instParamBytes, builder)
 
 	buf := grpcPkg.GetBuffer()
-	err = assembler.Assemble(attribute.GetFakeMutableBagForTesting(attrs), buf)
-	if err != nil {
-		panic(err)
-	}
-
+	_ = assembler.Assemble(attribute.GetFakeMutableBagForTesting(attrs), buf)
 	return bytes.NewBuffer(buf.Bytes())
 }
 
