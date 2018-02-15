@@ -39,8 +39,8 @@ func main() {
 	}
 	reqBytes := getNewRequestBytes(
 		`name: attr1`,
-		map[string]interface{}{
-			"attr1": "attr1ValFromProxy",
+		map[string]interface{} {
+			"attr1": "attr1Val",
 		},
 		fds,
 	)
@@ -59,8 +59,8 @@ func getNewRequestBytes(instCfg string, attrs map[string]interface{}, fds *descr
 	var fd *descriptor.FileDescriptorProto
 	fd = fds.File[3]
 	instParamBytes, err := grpcPkg.YamlToBytes(instCfg, fd, "InstanceParam")
-	finder := expr.NewFinder(manifest)
-	builder := compiled.NewBuilder(finder)
+
+	builder := compiled.NewBuilder(expr.NewFinder(manifest))
 	if err != nil {
 		panic(err)
 	}
