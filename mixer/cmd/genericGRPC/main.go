@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 
 	"bytes"
 	"context"
@@ -27,16 +26,10 @@ func main() {
 		grpc.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatalf("Couldn't dial: %v", err)
 		panic(err)
 	}
 	defer conn.Close()
 
-	method := "/mixer.adapter.metricentry.MetricEntryService/HandleMetricEntry"
-
-	if err != nil {
-		panic(err)
-	}
 	reqBytes := getNewRequestBytes(
 		`name: attr1`,
 		map[string]interface{} {
@@ -44,14 +37,14 @@ func main() {
 		},
 		fds,
 	)
-	rpcStatus := getRpcStatusBytes()
-	err = conn.Invoke(context.Background(), method, reqBytes, rpcStatus)
+	rpcStatusBytes := getRpcStatusBytes()
+	err = conn.Invoke(context.Background(), "/mixer.adapter.metricentry.MetricEntryService/HandleMetricEntry", reqBytes, rpcStatusBytes)
 	if err != nil {
 		panic(err)
 	}
 
 	result := rpc.Status{}
-	gogoproto.Unmarshal(rpcStatus.Bytes(), &result)
+	gogoproto.Unmarshal(rpcStatusBytes.Bytes(), &result)
 	fmt.Printf("remote adapter response: %v", result)
 }
 
