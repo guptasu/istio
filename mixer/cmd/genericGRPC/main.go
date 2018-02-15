@@ -69,9 +69,8 @@ func getNewRequestBytes(instCfg string, attrs map[string]interface{}, fds *descr
 		panic(err)
 	}
 
-	bag := attribute.GetFakeMutableBagForTesting(attrs)
 	buf := grpcPkg.GetBuffer()
-	err = assembler.Assemble(bag, buf)
+	err = assembler.Assemble(attribute.GetFakeMutableBagForTesting(attrs), buf)
 	if err != nil {
 		panic(err)
 	}
