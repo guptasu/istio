@@ -19,25 +19,32 @@ import (
 )
 
 func main() {
+	////////////////// GET DESCRIPTOR /////////////////
 	fds, err := getFileDescSet("/Users/guptasu/go/src/istio.io/istio/mixer/cmd/genericGRPC/descriptors/metric.pb")
-	conn, err := grpc.Dial(
+
+	///////////////// ESTABLISH CONNECTION ///////////
+	conn, _ := grpc.Dial(
 		"localhost:50051",
 		grpc.WithCodec(ByteCodec{}),
 		grpc.WithInsecure(),
 	)
-	if err != nil {
-		panic(err)
-	}
 	defer conn.Close()
 
+	//////////////// MAKE BYTES FOR REQUEST ///////////
 	reqBytes := getNewRequestBytes(
-		`name: attr1`,
+		`
+name: source.name
+`,
 		map[string]interface{} {
-			"attr1": "attr1Val",
+			"source.name": "myservice",
 		},
 		fds,
 	)
+
+	//////////////// MAKE BYTES FOR RESPONSE ///////////
 	rpcStatusBytes := getRpcStatusBytes()
+
+	/// INVOKE WITH THE FUNCTION NAME (we know this from descriptor) ///
 	if err = conn.Invoke(
 		context.Background(),
 		"/mixer.adapter.metricentry.MetricEntryService/HandleMetricEntry",
@@ -46,6 +53,7 @@ func main() {
 		panic(err)
 	}
 
+	/////////////// PRINT RESULT ////////////////////////
 	result := rpc.Status{}
 	gogoproto.Unmarshal(rpcStatusBytes.Bytes(), &result)
 	fmt.Printf("remote adapter response: %v", result)
@@ -83,7 +91,7 @@ func getFileDescSet(path string) (*descriptor.FileDescriptorSet, error) {
 }
 
 var manifest = map[string]*configpb.AttributeManifest_AttributeInfo{
-	"attr1": {
+	"source.name": {
 		ValueType: pbv.STRING,
 	},
 }
