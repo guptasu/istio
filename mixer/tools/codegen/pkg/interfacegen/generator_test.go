@@ -60,11 +60,13 @@ func TestGenerator_Generate(t *testing.T) {
 	}
 	for _, v := range tests {
 		t.Run(v.name, func(t *testing.T) {
-			oIntface, err := os.Create(path.Join(os.TempDir(), path.Base(v.wantIntFace)))
+			tmpDir := path.Join(os.TempDir(), v.name)
+			_ = os.MkdirAll(tmpDir, os.ModeDir|os.ModePerm)
+			oIntface, err := os.Create(path.Join(tmpDir, path.Base(v.wantIntFace)))
 			if err != nil {
 				t.Fatal(err)
 			}
-			oTmpl, err := os.Create(path.Join(os.TempDir(), path.Base(v.wantProto)))
+			oTmpl, err := os.Create(path.Join(tmpDir, path.Base(v.wantProto)))
 			if err != nil {
 				t.Fatal(err)
 			}

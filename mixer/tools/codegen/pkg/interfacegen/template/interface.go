@@ -23,7 +23,6 @@ package {{.GoPackageName}}
 import (
   "context"
   "istio.io/istio/mixer/pkg/adapter"
-  "istio.io/istio/mixer/pkg/adapter"
   $$additional_imports$$
 )
 
