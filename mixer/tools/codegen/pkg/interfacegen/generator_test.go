@@ -24,6 +24,12 @@ import (
 	"testing"
 )
 
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/interfacegen/testdata/apa/template.proto
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/interfacegen/testdata/check/template.proto
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/interfacegen/testdata/report/template.proto
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/interfacegen/testdata/quota/template.proto
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/interfacegen/testdata/error/template.proto
+
 type logFn func(string, ...interface{})
 
 // TestGenerator_Generate uses the outputs file descriptors generated via bazel
@@ -31,7 +37,7 @@ type logFn func(string, ...interface{})
 func TestGenerator_Generate(t *testing.T) {
 	importmap := map[string]string{
 		"mixer/v1/config/descriptor/value_type.proto": "istio.io/api/mixer/v1/config/descriptor",
-		"mixer/v1/template/extensions.proto":          "istio.io/api/mixer/v1/template",
+		"mixer/adapter/model/v1beta1/extensions.proto":          "istio.io/api/mixer/v1/template",
 		"gogoproto/gogo.proto":                        "github.com/gogo/protobuf/gogoproto",
 		"google/protobuf/duration.proto":              "github.com/gogo/protobuf/types",
 	}

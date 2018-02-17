@@ -157,8 +157,8 @@ if [ "$opttemplate" = true ]; then
 
   template_mappings=(
     "mixer/v1/config/descriptor/value_type.proto:istio.io/api/mixer/v1/config/descriptor"
-    "mixer/v1/template/extensions.proto:istio.io/api/mixer/v1/template"
-    "mixer/v1/template/standard_types.proto:istio.io/api/mixer/v1/template"
+    "mixer/adapter/model/v1beta1/extensions.proto:istio.io/api/mixer/v1/template"
+    "mixer/adapter/model/v1beta1/type.proto:istio.io/api/mixer/v1/template"
     "gogoproto/gogo.proto:github.com/gogo/protobuf/gogoproto"
     "google/protobuf/duration.proto:github.com/gogo/protobuf/types"
   )
