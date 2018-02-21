@@ -18,7 +18,7 @@ package istio_mixer_adapter_sample_myapa
 import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "istio.io/api/mixer/v1/template"
+import _ "istio.io/api/mixer/adapter/model/v1beta1"
 
 import strings "strings"
 import reflect "reflect"
