@@ -22,12 +22,6 @@ import (
 	"testing"
 )
 
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/bootstrapgen/testdata/apa/template.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/bootstrapgen/testdata/check/template.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/bootstrapgen/testdata/quota/template.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/bootstrapgen/testdata/report1/template.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/bootstrapgen/testdata/report2/template.proto
-
 type logFn func(string, ...interface{})
 
 // TestGenerator_Generate uses the outputs file descriptors generated via bazel

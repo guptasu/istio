@@ -25,22 +25,6 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 )
 
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/BasicTopLevelFields.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/MissingBothRequiredExt.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/MissingPackageName.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/MissingTemplateMessage.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/MissingTemplateVarietyExt.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/Proto2BadSyntax.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/ReservedFieldInTemplate.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/SimpleApaTemplate.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/SimpleTemplate.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/UnsupportedFieldTypeAsMap.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/UnsupportedFieldTypeEnum.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/UnsupportedFieldTypeMessage.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/UnsupportedFieldTypePrimitive.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/UnsupportedValueTypeInAPA.proto
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -t mixer/tools/codegen/pkg/modelgen/testdata/WrongPkgName.proto
-
 func TestErrorInTemplate(t *testing.T) {
 	tests := []struct {
 		src           string
