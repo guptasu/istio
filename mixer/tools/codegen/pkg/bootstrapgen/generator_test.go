@@ -29,7 +29,7 @@ type logFn func(string, ...interface{})
 func TestGenerator_Generate(t *testing.T) {
 	importmap := map[string]string{
 		"policy/v1beta1/value_type.proto": "istio.io/api/policy/v1beta1",
-		"mixer/adapter/model/v1beta1/extensions.proto":          "istio.io/api/mixer/v1/template",
+		"mixer/adapter/model/v1beta1/extensions.proto":          "istio.io/api/mixer/adapter/model/v1beta1",
 		"gogoproto/gogo.proto":                        "github.com/gogo/protobuf/gogoproto",
 		"google/protobuf/duration.proto":              "github.com/gogo/protobuf/types",
 	}
