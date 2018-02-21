@@ -1851,7 +1851,7 @@ func TestProcessApa(t *testing.T) {
 				}
 			} else {
 				if err != nil {
-					t.Fatalf("got error; want success: error %v", err)
+					t.Fatalf("got error; want success: error : %v", err)
 				}
 				v := (*h).(*fakeMyApaHandler).procCallInput
 				if !reflect.DeepEqual(v, tst.wantInstance) {
