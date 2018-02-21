@@ -6604,7 +6604,7 @@ func (b *builder_istio_mixer_template_metric_Template) build(
 
 	var err error
 	_ = err
-	var errp template.ErrorPath     
+	var errp template.ErrorPath
 	_ = errp
 	var vBool bool
 	_ = vBool
