@@ -28,11 +28,11 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"golang.org/x/tools/imports"
 
-	tmpl "istio.io/istio/mixer/tools/codegen/pkg/interfacegen/template"
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
 )
 
 const (
+	resourceMsgSuffix      = "Msg"
 	resourceMsgTypeSuffix      = "Type"
 	resourceMsgInstParamSuffix = "InstanceParam"
 	fullGoNameOfValueTypeEnum  = "istio_policy_v1beta1.ValueType"
@@ -62,7 +62,7 @@ func valueTypeOrResMsg(ti modelgen.TypeInfo) bool {
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
 func (g *Generator) Generate(fdsFile string) error {
-	return g.generateInternal(fdsFile, tmpl.InterfaceTemplate, tmpl.AugmentedProtoTmpl)
+	return g.generateInternal(fdsFile, interfaceTemplate, augmentedProtoTmpl)
 }
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
@@ -220,6 +220,15 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model, pkgName stri
 			},
 			"getResourcMessageInterfaceParamTypeName": func(s string) string {
 				return s + resourceMsgInstParamSuffix
+			},
+			"typeName": func(protoTypeInfo modelgen.TypeInfo) string {
+				if protoTypeInfo.IsResourceMessage {
+					return trimPackageName(protoTypeInfo.Name) + resourceMsgSuffix
+				}
+				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsResourceMessage {
+					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name)+resourceMsgSuffix)
+				}
+				return protoTypeInfo.Name
 			},
 		},
 	).Parse(augmentedProtoTmpl)

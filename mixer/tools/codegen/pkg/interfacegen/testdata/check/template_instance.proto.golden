@@ -19,6 +19,9 @@ syntax = "proto3";
 package foo.bar.mylistchecker;
 
 import "mixer/adapter/model/v1beta1/extensions.proto";
+import "google/protobuf/any.proto";
+import "google/rpc/status.proto";
+
 import "policy/v1beta1/value_type.proto";
 
 option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_CHECK;
@@ -35,6 +38,22 @@ message Type {
   istio.policy.v1beta1.ValueType anotherValueType = 7;
 }
 
+
+
+/* Template-specific infrastructure backend service for template MylistChecker */
+service MylistCheckerService {
+    rpc HandleMylistChecker(HandleMylistCheckerRequest) returns (HandleMylistCheckerResponse)
+}
+
+message HandleMylistCheckerRequest {
+    repeated Instance instance = 1;
+    google.protobuf.Any adapter_config = 3;
+    int64 dedup_id = 4;
+}
+
+message HandleMylistCheckerResponse {
+    google.rpc.Status status = 1;
+}
 
 
 
@@ -62,5 +81,6 @@ message InstanceParam {
   
   
 }
+
 
 

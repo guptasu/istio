@@ -23,8 +23,6 @@ import (
 	"path"
 	"strings"
 	"testing"
-
-	tmpl "istio.io/istio/mixer/tools/codegen/pkg/interfacegen/template"
 )
 
 type logFn func(string, ...interface{})
@@ -137,13 +135,13 @@ func TestGeneratorWithBadFds(t *testing.T) {
 
 func TestGeneratorBadInterfaceTmpl(t *testing.T) {
 	g := Generator{}
-	err := g.generateInternal("testdata/report/template_proto.descriptor_set", "{{foo}} bad tmpl", tmpl.AugmentedProtoTmpl)
+	err := g.generateInternal("testdata/report/template_proto.descriptor_set", "{{foo}} bad tmpl", augmentedProtoTmpl)
 	validateHasError(t, err, "cannot load template")
 }
 
 func TestGeneratorBadAugmentedProtoTmpl(t *testing.T) {
 	g := Generator{}
-	err := g.generateInternal("testdata/report/template_proto.descriptor_set", tmpl.InterfaceTemplate, "{{foo}} bad tmpl")
+	err := g.generateInternal("testdata/report/template_proto.descriptor_set", interfaceTemplate, "{{foo}} bad tmpl")
 	validateHasError(t, err, "cannot load template")
 }
 
@@ -163,25 +161,25 @@ func TestGeneratorBadOutputInstanceInterface(t *testing.T) {
 
 func TestGeneratorHandlerInterfaceBadModel(t *testing.T) {
 	g := Generator{}
-	_, err := g.getInterfaceGoContent(nil, tmpl.InterfaceTemplate)
+	_, err := g.getInterfaceGoContent(nil, interfaceTemplate)
 	validateHasError(t, err, "cannot execute the template")
 }
 
 func TestGeneratorAugmentedProtoBadModel(t *testing.T) {
 	g := Generator{}
-	_, err := g.getAugmentedProtoContent(nil, "", tmpl.AugmentedProtoTmpl)
+	_, err := g.getAugmentedProtoContent(nil, "", augmentedProtoTmpl)
 	validateHasError(t, err, "cannot execute the template")
 }
 
 func TestGeneratorCannotFormat(t *testing.T) {
 	g := Generator{}
-	err := g.generateInternal("testdata/report/template_proto.descriptor_set", ".. bad format", tmpl.AugmentedProtoTmpl)
+	err := g.generateInternal("testdata/report/template_proto.descriptor_set", ".. bad format", augmentedProtoTmpl)
 	validateHasError(t, err, "could not format")
 }
 
 func TestGeneratorCannotFixImport(t *testing.T) {
 	g := Generator{}
-	err := g.generateInternal("testdata/report/template_proto.descriptor_set", "badtmpl_cannot_fix_import", tmpl.AugmentedProtoTmpl)
+	err := g.generateInternal("testdata/report/template_proto.descriptor_set", "badtmpl_cannot_fix_import", augmentedProtoTmpl)
 	validateHasError(t, err, "could not fix imports")
 }
 
