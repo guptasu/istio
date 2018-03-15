@@ -4,6 +4,9 @@
 /*
 	Package istio_mixer_adapter_sample_myapa is a generated protocol buffer package.
 
+
+	myapa template is ..
+
 	It is generated from these files:
 		mixer/template/sample/apa/Apa_handler_service.proto
 
@@ -40,6 +43,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
+// myapa template is ..
 type InstanceParam struct {
 	Int64Primitive                 string                             `protobuf:"bytes,1,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
 	BoolPrimitive                  string                             `protobuf:"bytes,2,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`

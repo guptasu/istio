@@ -16,6 +16,10 @@
 
 syntax = "proto3";
 
+
+
+//
+// myapa template is ..
 package istio.mixer.adapter.sample.myapa;
 
 import "mixer/adapter/model/v1beta1/extensions.proto";
@@ -29,6 +33,9 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_A
 
 
 
+
+
+// myapa template is ..
 message InstanceParam {
   
   string int64Primitive = 1;
@@ -99,5 +106,4 @@ message Resource3InstanceParam {
   string duration = 7;
   
 }
-
 

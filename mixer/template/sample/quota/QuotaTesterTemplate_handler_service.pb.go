@@ -8,14 +8,14 @@
 		mixer/template/sample/quota/QuotaTesterTemplate_handler_service.proto
 
 	It has these top-level messages:
-		Type
-		Res1Type
-		Res2Type
 		HandleQuotaRequest
 		HandleQuotaResponse
 		InstanceMsg
 		Res1Msg
 		Res2Msg
+		Type
+		Res1Type
+		Res2Type
 		InstanceParam
 		Res1InstanceParam
 		Res2InstanceParam
@@ -50,97 +50,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
-type Type struct {
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,1,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Res1       *Res1Type                                 `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
-}
-
-func (m *Type) Reset()      { *m = Type{} }
-func (*Type) ProtoMessage() {}
-func (*Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{0}
-}
-
-func (m *Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
-func (m *Type) GetRes1() *Res1Type {
-	if m != nil {
-		return m.Res1
-	}
-	return nil
-}
-
-type Res1Type struct {
-	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Res2       *Res2Type                                 `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
-	Res2Map    map[string]*Res2Type                      `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
-}
-
-func (m *Res1Type) Reset()      { *m = Res1Type{} }
-func (*Res1Type) ProtoMessage() {}
-func (*Res1Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{1}
-}
-
-func (m *Res1Type) GetValue() istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Value
-	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
-}
-
-func (m *Res1Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
-func (m *Res1Type) GetRes2() *Res2Type {
-	if m != nil {
-		return m.Res2
-	}
-	return nil
-}
-
-func (m *Res1Type) GetRes2Map() map[string]*Res2Type {
-	if m != nil {
-		return m.Res2Map
-	}
-	return nil
-}
-
-type Res2Type struct {
-	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-}
-
-func (m *Res2Type) Reset()      { *m = Res2Type{} }
-func (*Res2Type) ProtoMessage() {}
-func (*Res2Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{2}
-}
-
-func (m *Res2Type) GetValue() istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Value
-	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
-}
-
-func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
 // Request message for HandleQuota method.
 type HandleQuotaRequest struct {
 	// Quota instances.
@@ -158,7 +67,7 @@ type HandleQuotaRequest struct {
 func (m *HandleQuotaRequest) Reset()      { *m = HandleQuotaRequest{} }
 func (*HandleQuotaRequest) ProtoMessage() {}
 func (*HandleQuotaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{3}
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{0}
 }
 
 func (m *HandleQuotaRequest) GetInstances() []*Type {
@@ -191,7 +100,7 @@ type HandleQuotaResponse struct {
 func (m *HandleQuotaResponse) Reset()      { *m = HandleQuotaResponse{} }
 func (*HandleQuotaResponse) ProtoMessage() {}
 func (*HandleQuotaResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{4}
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{1}
 }
 
 func (m *HandleQuotaResponse) GetStatus() *google_rpc.Status {
@@ -201,19 +110,20 @@ func (m *HandleQuotaResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// InstanceMsg is constructed by Mixer for the 'quota' template.
+// Request-time payload for 'quota' template . This is passed to infrastructure backends during request-time using
+// HandleQuotaService
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
-	Name       string                                    `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,1,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	BoolMap    map[string]bool                           `protobuf:"bytes,2,rep,name=boolMap" json:"boolMap,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
-	Res1       *Res1Msg                                  `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
+	Name       string                                               `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
+	Dimensions map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,1,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	BoolMap    map[string]bool                                      `protobuf:"bytes,2,rep,name=boolMap" json:"boolMap,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	Res1       *Res1Msg                                             `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
 }
 
 func (m *InstanceMsg) Reset()      { *m = InstanceMsg{} }
 func (*InstanceMsg) ProtoMessage() {}
 func (*InstanceMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{5}
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{2}
 }
 
 func (m *InstanceMsg) GetName() string {
@@ -223,7 +133,7 @@ func (m *InstanceMsg) GetName() string {
 	return ""
 }
 
-func (m *InstanceMsg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *InstanceMsg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -245,33 +155,33 @@ func (m *InstanceMsg) GetRes1() *Res1Msg {
 }
 
 type Res1Msg struct {
-	Value           istio_policy_v1beta1.ValueType                `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions      map[string]istio_policy_v1beta1.ValueType     `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Int64Primitive  int64                                         `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
-	BoolPrimitive   bool                                          `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
-	DoublePrimitive float64                                       `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
-	StringPrimitive string                                        `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
-	Int64Map        map[string]int64                              `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
-	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
-	Duration        *istio_mixer_adapter_model_v1beta11.Duration  `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
-	Res2            *Res2Msg                                      `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
-	Res2Map         map[string]*Res2Msg                           `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Value           *istio_mixer_adapter_model_v1beta11.Value            `protobuf:"bytes,1,opt,name=value" json:"value,omitempty"`
+	Dimensions      map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Int64Primitive  int64                                                `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
+	BoolPrimitive   bool                                                 `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
+	DoublePrimitive float64                                              `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
+	StringPrimitive string                                               `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
+	Int64Map        map[string]int64                                     `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp        `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
+	Duration        *istio_mixer_adapter_model_v1beta11.Duration         `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
+	Res2            *Res2Msg                                             `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
+	Res2Map         map[string]*Res2Msg                                  `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
 }
 
 func (m *Res1Msg) Reset()      { *m = Res1Msg{} }
 func (*Res1Msg) ProtoMessage() {}
 func (*Res1Msg) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{6}
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{3}
 }
 
-func (m *Res1Msg) GetValue() istio_policy_v1beta1.ValueType {
+func (m *Res1Msg) GetValue() *istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Value
 	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+	return nil
 }
 
-func (m *Res1Msg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *Res1Msg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -342,25 +252,25 @@ func (m *Res1Msg) GetRes2Map() map[string]*Res2Msg {
 }
 
 type Res2Msg struct {
-	Value          istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions     map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Int64Primitive int64                                     `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
+	Value          *istio_mixer_adapter_model_v1beta11.Value            `protobuf:"bytes,1,opt,name=value" json:"value,omitempty"`
+	Dimensions     map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Int64Primitive int64                                                `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
 }
 
 func (m *Res2Msg) Reset()      { *m = Res2Msg{} }
 func (*Res2Msg) ProtoMessage() {}
 func (*Res2Msg) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuotaTesterTemplateHandlerService, []int{7}
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{4}
 }
 
-func (m *Res2Msg) GetValue() istio_policy_v1beta1.ValueType {
+func (m *Res2Msg) GetValue() *istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Value
 	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+	return nil
 }
 
-func (m *Res2Msg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *Res2Msg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -372,6 +282,99 @@ func (m *Res2Msg) GetInt64Primitive() int64 {
 		return m.Int64Primitive
 	}
 	return 0
+}
+
+// Type InstanceMsg for template 'quota'. This is passed to infrastructure backends during request-time using
+// HandleQuotaService
+type Type struct {
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,1,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+	Res1       *Res1Type                                 `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
+}
+
+func (m *Type) Reset()      { *m = Type{} }
+func (*Type) ProtoMessage() {}
+func (*Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{5}
+}
+
+func (m *Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
+	}
+	return nil
+}
+
+func (m *Type) GetRes1() *Res1Type {
+	if m != nil {
+		return m.Res1
+	}
+	return nil
+}
+
+type Res1Type struct {
+	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+	Res2       *Res2Type                                 `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
+	Res2Map    map[string]*Res2Type                      `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+}
+
+func (m *Res1Type) Reset()      { *m = Res1Type{} }
+func (*Res1Type) ProtoMessage() {}
+func (*Res1Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{6}
+}
+
+func (m *Res1Type) GetValue() istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Value
+	}
+	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+}
+
+func (m *Res1Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
+	}
+	return nil
+}
+
+func (m *Res1Type) GetRes2() *Res2Type {
+	if m != nil {
+		return m.Res2
+	}
+	return nil
+}
+
+func (m *Res1Type) GetRes2Map() map[string]*Res2Type {
+	if m != nil {
+		return m.Res2Map
+	}
+	return nil
+}
+
+type Res2Type struct {
+	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+}
+
+func (m *Res2Type) Reset()      { *m = Res2Type{} }
+func (*Res2Type) ProtoMessage() {}
+func (*Res2Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuotaTesterTemplateHandlerService, []int{7}
+}
+
+func (m *Res2Type) GetValue() istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Value
+	}
+	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+}
+
+func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
+	}
+	return nil
 }
 
 type InstanceParam struct {
@@ -538,17 +541,253 @@ func (m *Res2InstanceParam) GetInt64Primitive() string {
 }
 
 func init() {
-	proto.RegisterType((*Type)(nil), "istio.mixer.adapter.sample.quota.Type")
-	proto.RegisterType((*Res1Type)(nil), "istio.mixer.adapter.sample.quota.Res1Type")
-	proto.RegisterType((*Res2Type)(nil), "istio.mixer.adapter.sample.quota.Res2Type")
 	proto.RegisterType((*HandleQuotaRequest)(nil), "istio.mixer.adapter.sample.quota.HandleQuotaRequest")
 	proto.RegisterType((*HandleQuotaResponse)(nil), "istio.mixer.adapter.sample.quota.HandleQuotaResponse")
 	proto.RegisterType((*InstanceMsg)(nil), "istio.mixer.adapter.sample.quota.InstanceMsg")
 	proto.RegisterType((*Res1Msg)(nil), "istio.mixer.adapter.sample.quota.Res1Msg")
 	proto.RegisterType((*Res2Msg)(nil), "istio.mixer.adapter.sample.quota.Res2Msg")
+	proto.RegisterType((*Type)(nil), "istio.mixer.adapter.sample.quota.Type")
+	proto.RegisterType((*Res1Type)(nil), "istio.mixer.adapter.sample.quota.Res1Type")
+	proto.RegisterType((*Res2Type)(nil), "istio.mixer.adapter.sample.quota.Res2Type")
 	proto.RegisterType((*InstanceParam)(nil), "istio.mixer.adapter.sample.quota.InstanceParam")
 	proto.RegisterType((*Res1InstanceParam)(nil), "istio.mixer.adapter.sample.quota.Res1InstanceParam")
 	proto.RegisterType((*Res2InstanceParam)(nil), "istio.mixer.adapter.sample.quota.Res2InstanceParam")
+}
+func (this *HandleQuotaRequest) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*HandleQuotaRequest)
+	if !ok {
+		that2, ok := that.(HandleQuotaRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if len(this.Instances) != len(that1.Instances) {
+		return false
+	}
+	for i := range this.Instances {
+		if !this.Instances[i].Equal(that1.Instances[i]) {
+			return false
+		}
+	}
+	if !this.AdapterConfig.Equal(that1.AdapterConfig) {
+		return false
+	}
+	if this.DedupId != that1.DedupId {
+		return false
+	}
+	return true
+}
+func (this *HandleQuotaResponse) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*HandleQuotaResponse)
+	if !ok {
+		that2, ok := that.(HandleQuotaResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Status.Equal(that1.Status) {
+		return false
+	}
+	return true
+}
+func (this *InstanceMsg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*InstanceMsg)
+	if !ok {
+		that2, ok := that.(InstanceMsg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if len(this.BoolMap) != len(that1.BoolMap) {
+		return false
+	}
+	for i := range this.BoolMap {
+		if this.BoolMap[i] != that1.BoolMap[i] {
+			return false
+		}
+	}
+	if !this.Res1.Equal(that1.Res1) {
+		return false
+	}
+	return true
+}
+func (this *Res1Msg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Res1Msg)
+	if !ok {
+		that2, ok := that.(Res1Msg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Value.Equal(that1.Value) {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if this.Int64Primitive != that1.Int64Primitive {
+		return false
+	}
+	if this.BoolPrimitive != that1.BoolPrimitive {
+		return false
+	}
+	if this.DoublePrimitive != that1.DoublePrimitive {
+		return false
+	}
+	if this.StringPrimitive != that1.StringPrimitive {
+		return false
+	}
+	if len(this.Int64Map) != len(that1.Int64Map) {
+		return false
+	}
+	for i := range this.Int64Map {
+		if this.Int64Map[i] != that1.Int64Map[i] {
+			return false
+		}
+	}
+	if !this.TimeStamp.Equal(that1.TimeStamp) {
+		return false
+	}
+	if !this.Duration.Equal(that1.Duration) {
+		return false
+	}
+	if !this.Res2.Equal(that1.Res2) {
+		return false
+	}
+	if len(this.Res2Map) != len(that1.Res2Map) {
+		return false
+	}
+	for i := range this.Res2Map {
+		if !this.Res2Map[i].Equal(that1.Res2Map[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *Res2Msg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Res2Msg)
+	if !ok {
+		that2, ok := that.(Res2Msg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Value.Equal(that1.Value) {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if this.Int64Primitive != that1.Int64Primitive {
+		return false
+	}
+	return true
 }
 func (this *Type) Equal(that interface{}) bool {
 	if that == nil {
@@ -672,242 +911,6 @@ func (this *Res2Type) Equal(that interface{}) bool {
 		if this.Dimensions[i] != that1.Dimensions[i] {
 			return false
 		}
-	}
-	return true
-}
-func (this *HandleQuotaRequest) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*HandleQuotaRequest)
-	if !ok {
-		that2, ok := that.(HandleQuotaRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if len(this.Instances) != len(that1.Instances) {
-		return false
-	}
-	for i := range this.Instances {
-		if !this.Instances[i].Equal(that1.Instances[i]) {
-			return false
-		}
-	}
-	if !this.AdapterConfig.Equal(that1.AdapterConfig) {
-		return false
-	}
-	if this.DedupId != that1.DedupId {
-		return false
-	}
-	return true
-}
-func (this *HandleQuotaResponse) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*HandleQuotaResponse)
-	if !ok {
-		that2, ok := that.(HandleQuotaResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if !this.Status.Equal(that1.Status) {
-		return false
-	}
-	return true
-}
-func (this *InstanceMsg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*InstanceMsg)
-	if !ok {
-		that2, ok := that.(InstanceMsg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Name != that1.Name {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if len(this.BoolMap) != len(that1.BoolMap) {
-		return false
-	}
-	for i := range this.BoolMap {
-		if this.BoolMap[i] != that1.BoolMap[i] {
-			return false
-		}
-	}
-	if !this.Res1.Equal(that1.Res1) {
-		return false
-	}
-	return true
-}
-func (this *Res1Msg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*Res1Msg)
-	if !ok {
-		that2, ok := that.(Res1Msg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if this.Int64Primitive != that1.Int64Primitive {
-		return false
-	}
-	if this.BoolPrimitive != that1.BoolPrimitive {
-		return false
-	}
-	if this.DoublePrimitive != that1.DoublePrimitive {
-		return false
-	}
-	if this.StringPrimitive != that1.StringPrimitive {
-		return false
-	}
-	if len(this.Int64Map) != len(that1.Int64Map) {
-		return false
-	}
-	for i := range this.Int64Map {
-		if this.Int64Map[i] != that1.Int64Map[i] {
-			return false
-		}
-	}
-	if !this.TimeStamp.Equal(that1.TimeStamp) {
-		return false
-	}
-	if !this.Duration.Equal(that1.Duration) {
-		return false
-	}
-	if !this.Res2.Equal(that1.Res2) {
-		return false
-	}
-	if len(this.Res2Map) != len(that1.Res2Map) {
-		return false
-	}
-	for i := range this.Res2Map {
-		if !this.Res2Map[i].Equal(that1.Res2Map[i]) {
-			return false
-		}
-	}
-	return true
-}
-func (this *Res2Msg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*Res2Msg)
-	if !ok {
-		that2, ok := that.(Res2Msg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if this.Int64Primitive != that1.Int64Primitive {
-		return false
 	}
 	return true
 }
@@ -1073,6 +1076,163 @@ func (this *Res2InstanceParam) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *HandleQuotaRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&istio_mixer_adapter_sample_quota.HandleQuotaRequest{")
+	if this.Instances != nil {
+		s = append(s, "Instances: "+fmt.Sprintf("%#v", this.Instances)+",\n")
+	}
+	if this.AdapterConfig != nil {
+		s = append(s, "AdapterConfig: "+fmt.Sprintf("%#v", this.AdapterConfig)+",\n")
+	}
+	s = append(s, "DedupId: "+fmt.Sprintf("%#v", this.DedupId)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *HandleQuotaResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&istio_mixer_adapter_sample_quota.HandleQuotaResponse{")
+	if this.Status != nil {
+		s = append(s, "Status: "+fmt.Sprintf("%#v", this.Status)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *InstanceMsg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&istio_mixer_adapter_sample_quota.InstanceMsg{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	keysForBoolMap := make([]string, 0, len(this.BoolMap))
+	for k, _ := range this.BoolMap {
+		keysForBoolMap = append(keysForBoolMap, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForBoolMap)
+	mapStringForBoolMap := "map[string]bool{"
+	for _, k := range keysForBoolMap {
+		mapStringForBoolMap += fmt.Sprintf("%#v: %#v,", k, this.BoolMap[k])
+	}
+	mapStringForBoolMap += "}"
+	if this.BoolMap != nil {
+		s = append(s, "BoolMap: "+mapStringForBoolMap+",\n")
+	}
+	if this.Res1 != nil {
+		s = append(s, "Res1: "+fmt.Sprintf("%#v", this.Res1)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Res1Msg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 15)
+	s = append(s, "&istio_mixer_adapter_sample_quota.Res1Msg{")
+	if this.Value != nil {
+		s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
+	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
+	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
+	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	if this.Int64Map != nil {
+		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
+	}
+	if this.TimeStamp != nil {
+		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
+	}
+	if this.Duration != nil {
+		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
+	}
+	if this.Res2 != nil {
+		s = append(s, "Res2: "+fmt.Sprintf("%#v", this.Res2)+",\n")
+	}
+	keysForRes2Map := make([]string, 0, len(this.Res2Map))
+	for k, _ := range this.Res2Map {
+		keysForRes2Map = append(keysForRes2Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
+	mapStringForRes2Map := "map[string]*Res2Msg{"
+	for _, k := range keysForRes2Map {
+		mapStringForRes2Map += fmt.Sprintf("%#v: %#v,", k, this.Res2Map[k])
+	}
+	mapStringForRes2Map += "}"
+	if this.Res2Map != nil {
+		s = append(s, "Res2Map: "+mapStringForRes2Map+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Res2Msg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&istio_mixer_adapter_sample_quota.Res2Msg{")
+	if this.Value != nil {
+		s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *Type) GoString() string {
 	if this == nil {
 		return "nil"
@@ -1157,159 +1317,6 @@ func (this *Res2Type) GoString() string {
 	if this.Dimensions != nil {
 		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
 	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *HandleQuotaRequest) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 7)
-	s = append(s, "&istio_mixer_adapter_sample_quota.HandleQuotaRequest{")
-	if this.Instances != nil {
-		s = append(s, "Instances: "+fmt.Sprintf("%#v", this.Instances)+",\n")
-	}
-	if this.AdapterConfig != nil {
-		s = append(s, "AdapterConfig: "+fmt.Sprintf("%#v", this.AdapterConfig)+",\n")
-	}
-	s = append(s, "DedupId: "+fmt.Sprintf("%#v", this.DedupId)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *HandleQuotaResponse) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&istio_mixer_adapter_sample_quota.HandleQuotaResponse{")
-	if this.Status != nil {
-		s = append(s, "Status: "+fmt.Sprintf("%#v", this.Status)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *InstanceMsg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 8)
-	s = append(s, "&istio_mixer_adapter_sample_quota.InstanceMsg{")
-	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	keysForBoolMap := make([]string, 0, len(this.BoolMap))
-	for k, _ := range this.BoolMap {
-		keysForBoolMap = append(keysForBoolMap, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForBoolMap)
-	mapStringForBoolMap := "map[string]bool{"
-	for _, k := range keysForBoolMap {
-		mapStringForBoolMap += fmt.Sprintf("%#v: %#v,", k, this.BoolMap[k])
-	}
-	mapStringForBoolMap += "}"
-	if this.BoolMap != nil {
-		s = append(s, "BoolMap: "+mapStringForBoolMap+",\n")
-	}
-	if this.Res1 != nil {
-		s = append(s, "Res1: "+fmt.Sprintf("%#v", this.Res1)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *Res1Msg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 15)
-	s = append(s, "&istio_mixer_adapter_sample_quota.Res1Msg{")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
-	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
-	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
-	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	if this.Int64Map != nil {
-		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
-	}
-	if this.TimeStamp != nil {
-		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
-	}
-	if this.Duration != nil {
-		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
-	}
-	if this.Res2 != nil {
-		s = append(s, "Res2: "+fmt.Sprintf("%#v", this.Res2)+",\n")
-	}
-	keysForRes2Map := make([]string, 0, len(this.Res2Map))
-	for k, _ := range this.Res2Map {
-		keysForRes2Map = append(keysForRes2Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
-	mapStringForRes2Map := "map[string]*Res2Msg{"
-	for _, k := range keysForRes2Map {
-		mapStringForRes2Map += fmt.Sprintf("%#v: %#v,", k, this.Res2Map[k])
-	}
-	mapStringForRes2Map += "}"
-	if this.Res2Map != nil {
-		s = append(s, "Res2Map: "+mapStringForRes2Map+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *Res2Msg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 7)
-	s = append(s, "&istio_mixer_adapter_sample_quota.Res2Msg{")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1441,166 +1448,6 @@ func valueToGoStringQuotaTesterTemplateHandlerService(v interface{}, typ string)
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("func(v %v) *%v { return &v } ( %#v )", typ, typ, pv)
 }
-func (m *Type) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Type) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0xa
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.Res1 != nil {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n1, err := m.Res1.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n1
-	}
-	return i, nil
-}
-
-func (m *Res1Type) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Res1Type) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0x12
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.Res2 != nil {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
-		n2, err := m.Res2.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n2
-	}
-	if len(m.Res2Map) > 0 {
-		for k, _ := range m.Res2Map {
-			dAtA[i] = 0x62
-			i++
-			v := m.Res2Map[k]
-			msgSize := 0
-			if v != nil {
-				msgSize = v.Size()
-				msgSize += 1 + sovQuotaTesterTemplateHandlerService(uint64(msgSize))
-			}
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + msgSize
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			if v != nil {
-				dAtA[i] = 0x12
-				i++
-				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
-				n3, err := v.MarshalTo(dAtA[i:])
-				if err != nil {
-					return 0, err
-				}
-				i += n3
-			}
-		}
-	}
-	return i, nil
-}
-
-func (m *Res2Type) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Res2Type) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0x12
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	return i, nil
-}
-
 func (m *HandleQuotaRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1632,11 +1479,11 @@ func (m *HandleQuotaRequest) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.AdapterConfig.Size()))
-		n4, err := m.AdapterConfig.MarshalTo(dAtA[i:])
+		n1, err := m.AdapterConfig.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n4
+		i += n1
 	}
 	if len(m.DedupId) > 0 {
 		dAtA[i] = 0x1a
@@ -1666,11 +1513,11 @@ func (m *HandleQuotaResponse) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Status.Size()))
-		n5, err := m.Status.MarshalTo(dAtA[i:])
+		n2, err := m.Status.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n5
+		i += n2
 	}
 	return i, nil
 }
@@ -1695,15 +1542,27 @@ func (m *InstanceMsg) MarshalTo(dAtA []byte) (int, error) {
 			dAtA[i] = 0xa
 			i++
 			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovQuotaTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + msgSize
 			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
 			dAtA[i] = 0xa
 			i++
 			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
 			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n3, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n3
+			}
 		}
 	}
 	if len(m.BoolMap) > 0 {
@@ -1731,11 +1590,11 @@ func (m *InstanceMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n6, err := m.Res1.MarshalTo(dAtA[i:])
+		n4, err := m.Res1.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n6
+		i += n4
 	}
 	if len(m.Name) > 0 {
 		dAtA[i] = 0xfa
@@ -1769,25 +1628,42 @@ func (m *Res1Msg) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
+	if m.Value != nil {
+		dAtA[i] = 0xa
 		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value.Size()))
+		n5, err := m.Value.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n5
 	}
 	if len(m.Dimensions) > 0 {
 		for k, _ := range m.Dimensions {
 			dAtA[i] = 0x12
 			i++
 			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovQuotaTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + msgSize
 			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
 			dAtA[i] = 0xa
 			i++
 			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
 			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n6, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n6
+			}
 		}
 	}
 	if m.Int64Primitive != 0 {
@@ -1909,6 +1785,111 @@ func (m *Res2Msg) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Value != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value.Size()))
+		n11, err := m.Value.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n11
+	}
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0x12
+			i++
+			v := m.Dimensions[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovQuotaTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n12, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n12
+			}
+		}
+	}
+	if m.Int64Primitive != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
+	}
+	return i, nil
+}
+
+func (m *Type) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Type) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0xa
+			i++
+			v := m.Dimensions[k]
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			dAtA[i] = 0x10
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
+		}
+	}
+	if m.Res1 != nil {
+		dAtA[i] = 0x5a
+		i++
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
+		n13, err := m.Res1.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n13
+	}
+	return i, nil
+}
+
+func (m *Res1Type) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Res1Type) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
 	if m.Value != 0 {
 		dAtA[i] = 0x8
 		i++
@@ -1930,10 +1911,82 @@ func (m *Res2Msg) MarshalTo(dAtA []byte) (int, error) {
 			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
 		}
 	}
-	if m.Int64Primitive != 0 {
-		dAtA[i] = 0x18
+	if m.Res2 != nil {
+		dAtA[i] = 0x5a
 		i++
-		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
+		n14, err := m.Res2.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n14
+	}
+	if len(m.Res2Map) > 0 {
+		for k, _ := range m.Res2Map {
+			dAtA[i] = 0x62
+			i++
+			v := m.Res2Map[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovQuotaTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n15, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n15
+			}
+		}
+	}
+	return i, nil
+}
+
+func (m *Res2Type) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Res2Type) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Value != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0x12
+			i++
+			v := m.Dimensions[k]
+			mapSize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			dAtA[i] = 0x10
+			i++
+			i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v))
+		}
 	}
 	return i, nil
 }
@@ -1991,11 +2044,11 @@ func (m *InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n11, err := m.Res1.MarshalTo(dAtA[i:])
+		n16, err := m.Res1.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n11
+		i += n16
 	}
 	return i, nil
 }
@@ -2095,11 +2148,11 @@ func (m *Res1InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
-		n12, err := m.Res2.MarshalTo(dAtA[i:])
+		n17, err := m.Res2.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n12
+		i += n17
 	}
 	if len(m.Res2Map) > 0 {
 		for k, _ := range m.Res2Map {
@@ -2121,11 +2174,11 @@ func (m *Res1InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 				dAtA[i] = 0x12
 				i++
 				i = encodeVarintQuotaTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
-				n13, err := v.MarshalTo(dAtA[i:])
+				n18, err := v.MarshalTo(dAtA[i:])
 				if err != nil {
 					return 0, err
 				}
-				i += n13
+				i += n18
 			}
 		}
 	}
@@ -2188,6 +2241,166 @@ func encodeVarintQuotaTesterTemplateHandlerService(dAtA []byte, offset int, v ui
 	dAtA[offset] = uint8(v)
 	return offset + 1
 }
+func (m *HandleQuotaRequest) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.Instances) > 0 {
+		for _, e := range m.Instances {
+			l = e.Size()
+			n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+		}
+	}
+	if m.AdapterConfig != nil {
+		l = m.AdapterConfig.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	l = len(m.DedupId)
+	if l > 0 {
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *HandleQuotaResponse) Size() (n int) {
+	var l int
+	_ = l
+	if m.Status != nil {
+		l = m.Status.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *InstanceMsg) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovQuotaTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if len(m.BoolMap) > 0 {
+		for k, v := range m.BoolMap {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + 1
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Res1 != nil {
+		l = m.Res1.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 5 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *Res1Msg) Size() (n int) {
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovQuotaTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Int64Primitive != 0 {
+		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Int64Primitive))
+	}
+	if m.BoolPrimitive {
+		n += 2
+	}
+	if m.DoublePrimitive != 0 {
+		n += 9
+	}
+	l = len(m.StringPrimitive)
+	if l > 0 {
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Int64Map) > 0 {
+		for k, v := range m.Int64Map {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.TimeStamp != nil {
+		l = m.TimeStamp.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Duration != nil {
+		l = m.Duration.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Res2 != nil {
+		l = m.Res2.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Res2Map) > 0 {
+		for k, v := range m.Res2Map {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovQuotaTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *Res2Msg) Size() (n int) {
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovQuotaTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Int64Primitive != 0 {
+		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Int64Primitive))
+	}
+	return n
+}
+
 func (m *Type) Size() (n int) {
 	var l int
 	_ = l
@@ -2253,149 +2466,6 @@ func (m *Res2Type) Size() (n int) {
 			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
 			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
 		}
-	}
-	return n
-}
-
-func (m *HandleQuotaRequest) Size() (n int) {
-	var l int
-	_ = l
-	if len(m.Instances) > 0 {
-		for _, e := range m.Instances {
-			l = e.Size()
-			n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-		}
-	}
-	if m.AdapterConfig != nil {
-		l = m.AdapterConfig.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	l = len(m.DedupId)
-	if l > 0 {
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *HandleQuotaResponse) Size() (n int) {
-	var l int
-	_ = l
-	if m.Status != nil {
-		l = m.Status.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *InstanceMsg) Size() (n int) {
-	var l int
-	_ = l
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if len(m.BoolMap) > 0 {
-		for k, v := range m.BoolMap {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + 1
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Res1 != nil {
-		l = m.Res1.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	l = len(m.Name)
-	if l > 0 {
-		n += 5 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *Res1Msg) Size() (n int) {
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Int64Primitive))
-	}
-	if m.BoolPrimitive {
-		n += 2
-	}
-	if m.DoublePrimitive != 0 {
-		n += 9
-	}
-	l = len(m.StringPrimitive)
-	if l > 0 {
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	if len(m.Int64Map) > 0 {
-		for k, v := range m.Int64Map {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.TimeStamp != nil {
-		l = m.TimeStamp.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Duration != nil {
-		l = m.Duration.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Res2 != nil {
-		l = m.Res2.Size()
-		n += 1 + l + sovQuotaTesterTemplateHandlerService(uint64(l))
-	}
-	if len(m.Res2Map) > 0 {
-		for k, v := range m.Res2Map {
-			_ = k
-			_ = v
-			l = 0
-			if v != nil {
-				l = v.Size()
-				l += 1 + sovQuotaTesterTemplateHandlerService(uint64(l))
-			}
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + l
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	return n
-}
-
-func (m *Res2Msg) Size() (n int) {
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovQuotaTesterTemplateHandlerService(uint64(len(k))) + 1 + sovQuotaTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovQuotaTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		n += 1 + sovQuotaTesterTemplateHandlerService(uint64(m.Int64Primitive))
 	}
 	return n
 }
@@ -2528,6 +2598,133 @@ func sovQuotaTesterTemplateHandlerService(x uint64) (n int) {
 func sozQuotaTesterTemplateHandlerService(x uint64) (n int) {
 	return sovQuotaTesterTemplateHandlerService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+func (this *HandleQuotaRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&HandleQuotaRequest{`,
+		`Instances:` + strings.Replace(fmt.Sprintf("%v", this.Instances), "Type", "Type", 1) + `,`,
+		`AdapterConfig:` + strings.Replace(fmt.Sprintf("%v", this.AdapterConfig), "Any", "google_protobuf1.Any", 1) + `,`,
+		`DedupId:` + fmt.Sprintf("%v", this.DedupId) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *HandleQuotaResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&HandleQuotaResponse{`,
+		`Status:` + strings.Replace(fmt.Sprintf("%v", this.Status), "Status", "google_rpc.Status", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *InstanceMsg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	keysForBoolMap := make([]string, 0, len(this.BoolMap))
+	for k, _ := range this.BoolMap {
+		keysForBoolMap = append(keysForBoolMap, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForBoolMap)
+	mapStringForBoolMap := "map[string]bool{"
+	for _, k := range keysForBoolMap {
+		mapStringForBoolMap += fmt.Sprintf("%v: %v,", k, this.BoolMap[k])
+	}
+	mapStringForBoolMap += "}"
+	s := strings.Join([]string{`&InstanceMsg{`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`BoolMap:` + mapStringForBoolMap + `,`,
+		`Res1:` + strings.Replace(fmt.Sprintf("%v", this.Res1), "Res1Msg", "Res1Msg", 1) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Res1Msg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	keysForRes2Map := make([]string, 0, len(this.Res2Map))
+	for k, _ := range this.Res2Map {
+		keysForRes2Map = append(keysForRes2Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
+	mapStringForRes2Map := "map[string]*Res2Msg{"
+	for _, k := range keysForRes2Map {
+		mapStringForRes2Map += fmt.Sprintf("%v: %v,", k, this.Res2Map[k])
+	}
+	mapStringForRes2Map += "}"
+	s := strings.Join([]string{`&Res1Msg{`,
+		`Value:` + strings.Replace(fmt.Sprintf("%v", this.Value), "Value", "istio_mixer_adapter_model_v1beta11.Value", 1) + `,`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
+		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
+		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
+		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
+		`Int64Map:` + mapStringForInt64Map + `,`,
+		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
+		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
+		`Res2:` + strings.Replace(fmt.Sprintf("%v", this.Res2), "Res2Msg", "Res2Msg", 1) + `,`,
+		`Res2Map:` + mapStringForRes2Map + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Res2Msg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	s := strings.Join([]string{`&Res2Msg{`,
+		`Value:` + strings.Replace(fmt.Sprintf("%v", this.Value), "Value", "istio_mixer_adapter_model_v1beta11.Value", 1) + `,`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *Type) String() string {
 	if this == nil {
 		return "nil"
@@ -2599,133 +2796,6 @@ func (this *Res2Type) String() string {
 	s := strings.Join([]string{`&Res2Type{`,
 		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
 		`Dimensions:` + mapStringForDimensions + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *HandleQuotaRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&HandleQuotaRequest{`,
-		`Instances:` + strings.Replace(fmt.Sprintf("%v", this.Instances), "Type", "Type", 1) + `,`,
-		`AdapterConfig:` + strings.Replace(fmt.Sprintf("%v", this.AdapterConfig), "Any", "google_protobuf1.Any", 1) + `,`,
-		`DedupId:` + fmt.Sprintf("%v", this.DedupId) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *HandleQuotaResponse) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&HandleQuotaResponse{`,
-		`Status:` + strings.Replace(fmt.Sprintf("%v", this.Status), "Status", "google_rpc.Status", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *InstanceMsg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	keysForBoolMap := make([]string, 0, len(this.BoolMap))
-	for k, _ := range this.BoolMap {
-		keysForBoolMap = append(keysForBoolMap, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForBoolMap)
-	mapStringForBoolMap := "map[string]bool{"
-	for _, k := range keysForBoolMap {
-		mapStringForBoolMap += fmt.Sprintf("%v: %v,", k, this.BoolMap[k])
-	}
-	mapStringForBoolMap += "}"
-	s := strings.Join([]string{`&InstanceMsg{`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`BoolMap:` + mapStringForBoolMap + `,`,
-		`Res1:` + strings.Replace(fmt.Sprintf("%v", this.Res1), "Res1Msg", "Res1Msg", 1) + `,`,
-		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Res1Msg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	keysForRes2Map := make([]string, 0, len(this.Res2Map))
-	for k, _ := range this.Res2Map {
-		keysForRes2Map = append(keysForRes2Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
-	mapStringForRes2Map := "map[string]*Res2Msg{"
-	for _, k := range keysForRes2Map {
-		mapStringForRes2Map += fmt.Sprintf("%v: %v,", k, this.Res2Map[k])
-	}
-	mapStringForRes2Map += "}"
-	s := strings.Join([]string{`&Res1Msg{`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
-		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
-		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
-		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
-		`Int64Map:` + mapStringForInt64Map + `,`,
-		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
-		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
-		`Res2:` + strings.Replace(fmt.Sprintf("%v", this.Res2), "Res2Msg", "Res2Msg", 1) + `,`,
-		`Res2Map:` + mapStringForRes2Map + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Res2Msg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	s := strings.Join([]string{`&Res2Msg{`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2841,6 +2911,1415 @@ func valueToStringQuotaTesterTemplateHandlerService(v interface{}) string {
 	}
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
+}
+func (m *HandleQuotaRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuotaTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HandleQuotaRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HandleQuotaRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Instances", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Instances = append(m.Instances, &Type{})
+			if err := m.Instances[len(m.Instances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AdapterConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AdapterConfig == nil {
+				m.AdapterConfig = &google_protobuf1.Any{}
+			}
+			if err := m.AdapterConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DedupId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DedupId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *HandleQuotaResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuotaTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HandleQuotaResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HandleQuotaResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Status == nil {
+				m.Status = &google_rpc.Status{}
+			}
+			if err := m.Status.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceMsg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuotaTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InstanceMsg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InstanceMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BoolMap", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.BoolMap == nil {
+				m.BoolMap = make(map[string]bool)
+			}
+			var mapkey string
+			var mapvalue bool
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapvaluetemp int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapvaluetemp |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					mapvalue = bool(mapvaluetemp != 0)
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.BoolMap[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res1", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res1 == nil {
+				m.Res1 = &Res1Msg{}
+			}
+			if err := m.Res1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 72295727:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Res1Msg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuotaTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Res1Msg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Res1Msg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Value == nil {
+				m.Value = &istio_mixer_adapter_model_v1beta11.Value{}
+			}
+			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
+			}
+			m.Int64Primitive = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Int64Primitive |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.BoolPrimitive = bool(v != 0)
+		case 5:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.DoublePrimitive = float64(math.Float64frombits(v))
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Int64Map == nil {
+				m.Int64Map = make(map[string]int64)
+			}
+			var mapkey string
+			var mapvalue int64
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapvalue |= (int64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Int64Map[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TimeStamp == nil {
+				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
+			}
+			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Duration == nil {
+				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
+			}
+			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res2", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res2 == nil {
+				m.Res2 = &Res2Msg{}
+			}
+			if err := m.Res2.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res2Map", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res2Map == nil {
+				m.Res2Map = make(map[string]*Res2Msg)
+			}
+			var mapkey string
+			var mapvalue *Res2Msg
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &Res2Msg{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Res2Map[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Res2Msg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuotaTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Res2Msg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Res2Msg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Value == nil {
+				m.Value = &istio_mixer_adapter_model_v1beta11.Value{}
+			}
+			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuotaTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuotaTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuotaTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
+			}
+			m.Int64Primitive = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuotaTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Int64Primitive |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuotaTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Type) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -3519,1339 +4998,6 @@ func (m *Res2Type) Unmarshal(dAtA []byte) error {
 			}
 			m.Dimensions[mapkey] = mapvalue
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HandleQuotaRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuotaTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HandleQuotaRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HandleQuotaRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Instances", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Instances = append(m.Instances, &Type{})
-			if err := m.Instances[len(m.Instances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AdapterConfig", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.AdapterConfig == nil {
-				m.AdapterConfig = &google_protobuf1.Any{}
-			}
-			if err := m.AdapterConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DedupId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DedupId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HandleQuotaResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuotaTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HandleQuotaResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HandleQuotaResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Status == nil {
-				m.Status = &google_rpc.Status{}
-			}
-			if err := m.Status.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *InstanceMsg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuotaTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: InstanceMsg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: InstanceMsg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BoolMap", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.BoolMap == nil {
-				m.BoolMap = make(map[string]bool)
-			}
-			var mapkey string
-			var mapvalue bool
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapvaluetemp int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvaluetemp |= (int(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					mapvalue = bool(mapvaluetemp != 0)
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.BoolMap[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res1", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res1 == nil {
-				m.Res1 = &Res1Msg{}
-			}
-			if err := m.Res1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 72295727:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Res1Msg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuotaTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Res1Msg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Res1Msg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
-			}
-			m.Int64Primitive = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Int64Primitive |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.BoolPrimitive = bool(v != 0)
-		case 5:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
-			iNdEx += 8
-			m.DoublePrimitive = float64(math.Float64frombits(v))
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Int64Map == nil {
-				m.Int64Map = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (int64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Int64Map[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.TimeStamp == nil {
-				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
-			}
-			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Duration == nil {
-				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
-			}
-			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res2", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res2 == nil {
-				m.Res2 = &Res2Msg{}
-			}
-			if err := m.Res2.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res2Map", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res2Map == nil {
-				m.Res2Map = make(map[string]*Res2Msg)
-			}
-			var mapkey string
-			var mapvalue *Res2Msg
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= (int(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if mapmsglen < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &Res2Msg{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Res2Map[mapkey] = mapvalue
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Res2Msg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuotaTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Res2Msg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Res2Msg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuotaTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowQuotaTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowQuotaTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthQuotaTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
-			}
-			m.Int64Primitive = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuotaTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Int64Primitive |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuotaTesterTemplateHandlerService(dAtA[iNdEx:])
@@ -6173,75 +6319,76 @@ func init() {
 }
 
 var fileDescriptorQuotaTesterTemplateHandlerService = []byte{
-	// 1109 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xce, 0xd8, 0x69, 0xec, 0x1d, 0x27, 0x29, 0x0c, 0x45, 0xb8, 0x16, 0xda, 0x5a, 0x16, 0x8a,
-	0x4c, 0xa9, 0x76, 0x95, 0x69, 0x1b, 0x20, 0x25, 0xb4, 0x69, 0x53, 0x85, 0x20, 0x45, 0x6a, 0x37,
-	0x51, 0x24, 0x40, 0xc5, 0x1a, 0x7b, 0x27, 0x66, 0xc5, 0xfe, 0xea, 0xee, 0x38, 0xaa, 0x39, 0xf1,
-	0x07, 0x70, 0xa8, 0xc4, 0x9f, 0xc0, 0x85, 0x1b, 0x12, 0xe2, 0x08, 0x77, 0xc4, 0xa9, 0xe2, 0xc4,
-	0x81, 0x03, 0x31, 0x1c, 0x38, 0xf6, 0x82, 0x04, 0x07, 0x10, 0xda, 0xd9, 0xb1, 0xbd, 0x6b, 0x6f,
-	0xe3, 0x5d, 0xa7, 0x56, 0x2e, 0x6d, 0x76, 0xe6, 0xbd, 0x6f, 0xe6, 0xfd, 0xf8, 0xde, 0x97, 0x09,
-	0xbc, 0x6b, 0x19, 0x8f, 0xa8, 0xa7, 0x32, 0x6a, 0xb9, 0x26, 0x61, 0x54, 0xf5, 0x89, 0xe5, 0x9a,
-	0x54, 0x7d, 0xd8, 0x71, 0x18, 0x51, 0xef, 0x07, 0xff, 0xee, 0x53, 0x9f, 0x51, 0x6f, 0x5f, 0x18,
-	0x34, 0x3e, 0x21, 0xb6, 0x6e, 0x52, 0xaf, 0xe1, 0x53, 0xef, 0xc8, 0x68, 0x51, 0xc5, 0xf5, 0x1c,
-	0xe6, 0xa0, 0xaa, 0xe1, 0x33, 0xc3, 0x51, 0x38, 0x98, 0x42, 0x74, 0xe2, 0x32, 0xea, 0x29, 0x21,
-	0x96, 0xc2, 0xb1, 0x2a, 0x57, 0xc2, 0x83, 0xc4, 0x9e, 0x6a, 0x39, 0x3a, 0x35, 0xd5, 0xa3, 0xd5,
-	0x26, 0x65, 0x64, 0x55, 0xa5, 0x8f, 0x18, 0xb5, 0x7d, 0xc3, 0xb1, 0xfd, 0x10, 0xaf, 0x72, 0xb1,
-	0xed, 0x38, 0x6d, 0x93, 0xaa, 0xfc, 0xab, 0xd9, 0x39, 0x54, 0x89, 0xdd, 0x15, 0x5b, 0xaf, 0x88,
-	0x2d, 0xcf, 0x6d, 0xa9, 0x3e, 0x23, 0xac, 0xd3, 0xf7, 0x59, 0x39, 0xe9, 0x04, 0xd6, 0x75, 0xc5,
-	0x5d, 0x2b, 0x97, 0x5c, 0xc7, 0x34, 0x5a, 0xdd, 0xc1, 0xd6, 0x11, 0x31, 0x3b, 0xb4, 0x31, 0x34,
-	0xa8, 0xfd, 0x07, 0xe0, 0xfc, 0x7e, 0xd7, 0xa5, 0xe8, 0x00, 0x42, 0xdd, 0xb0, 0xc4, 0xcd, 0xca,
-	0xa0, 0x9a, 0xaf, 0x97, 0xf0, 0x9a, 0x32, 0x29, 0x54, 0x25, 0xf0, 0x55, 0xb6, 0x06, 0x8e, 0x77,
-	0x6d, 0xe6, 0x75, 0xb5, 0x08, 0x12, 0x7a, 0x17, 0xce, 0x7b, 0xd4, 0x5f, 0x2d, 0x97, 0xaa, 0xa0,
-	0x5e, 0xc2, 0x97, 0x27, 0x23, 0x6a, 0xd4, 0x5f, 0x0d, 0x50, 0x35, 0xee, 0x57, 0xf9, 0x18, 0x9e,
-	0x1f, 0x81, 0x47, 0x2f, 0xc0, 0xfc, 0xa7, 0xb4, 0x5b, 0x06, 0x55, 0x50, 0x97, 0xb4, 0xe0, 0x47,
-	0x74, 0x1d, 0x9e, 0xe3, 0x91, 0x95, 0x73, 0x55, 0x50, 0x5f, 0xc6, 0x97, 0xc4, 0x29, 0x61, 0xf0,
-	0x8a, 0x08, 0x5e, 0x39, 0x08, 0x4c, 0x38, 0x74, 0x68, 0xbd, 0x9e, 0x7b, 0x0b, 0xd4, 0xfe, 0xc9,
-	0xc3, 0x62, 0xff, 0xc8, 0x21, 0x0e, 0xc8, 0x82, 0x83, 0x3e, 0x8c, 0xe5, 0x2e, 0xc7, 0x73, 0xb7,
-	0x9e, 0x3e, 0xd2, 0x14, 0xf9, 0xc3, 0x99, 0xf2, 0x87, 0x07, 0xf9, 0xc3, 0x48, 0x83, 0xc5, 0xe0,
-	0xff, 0x86, 0x45, 0xdc, 0xf2, 0x22, 0xbf, 0xd9, 0x9b, 0x19, 0x6e, 0x16, 0x80, 0xed, 0x12, 0x37,
-	0xbc, 0x56, 0xc1, 0x0b, 0xbf, 0x66, 0x5d, 0x93, 0xca, 0x21, 0x5c, 0x8c, 0x1e, 0x9c, 0x00, 0x7e,
-	0x2b, 0x0a, 0x9e, 0x2d, 0x2d, 0x91, 0xda, 0xff, 0x0b, 0x78, 0xed, 0xf1, 0xd9, 0xd4, 0x1e, 0x4f,
-	0xaa, 0xfd, 0xcc, 0x7b, 0xff, 0x5b, 0x00, 0xd1, 0x7b, 0x7c, 0xc6, 0xf1, 0xe9, 0xa7, 0xd1, 0x87,
-	0x1d, 0xea, 0x33, 0xb4, 0x05, 0x25, 0xc3, 0xf6, 0x19, 0xb1, 0x5b, 0xb4, 0x3f, 0x09, 0x56, 0xd2,
-	0x4d, 0x02, 0x6d, 0xe8, 0x88, 0x6e, 0xc0, 0x65, 0x61, 0xd7, 0x68, 0x39, 0xf6, 0xa1, 0xd1, 0x16,
-	0xb5, 0xba, 0xa0, 0x84, 0x43, 0x4d, 0xe9, 0xcf, 0x3b, 0x65, 0xd3, 0xee, 0x6a, 0x4b, 0xc2, 0xf6,
-	0x0e, 0x37, 0x45, 0x17, 0x61, 0x51, 0xa7, 0x7a, 0xc7, 0x6d, 0x18, 0x7a, 0x39, 0xcf, 0x63, 0x2d,
-	0xf0, 0xef, 0x1d, 0xbd, 0xb6, 0x09, 0x5f, 0x8a, 0xdd, 0xd9, 0x77, 0x1d, 0xdb, 0xa7, 0xe8, 0x32,
-	0x5c, 0x08, 0x27, 0x24, 0xcf, 0x4d, 0x09, 0xa3, 0xfe, 0x31, 0x9e, 0xdb, 0x52, 0xf6, 0xf8, 0x8e,
-	0x26, 0x2c, 0x6a, 0xdf, 0xe5, 0x61, 0x69, 0x47, 0x5c, 0x74, 0xd7, 0x6f, 0xa3, 0x07, 0x09, 0xb3,
-	0x6f, 0x63, 0x72, 0xc4, 0x11, 0x88, 0x13, 0x29, 0xbc, 0x0f, 0x0b, 0x4d, 0xc7, 0x31, 0x77, 0x89,
-	0x9b, 0xbe, 0x3f, 0xa2, 0xd8, 0xb7, 0x43, 0x67, 0x41, 0x42, 0x01, 0x85, 0x36, 0x62, 0x83, 0xf5,
-	0xf5, 0x74, 0xa4, 0xde, 0xf5, 0xdb, 0xe1, 0x5c, 0x45, 0x2f, 0xc3, 0x79, 0x9b, 0x58, 0xb4, 0xfc,
-	0xcd, 0x4f, 0xdf, 0xd7, 0x78, 0x82, 0xf9, 0xe7, 0xcc, 0xa9, 0xbd, 0x0e, 0x17, 0xa3, 0xe1, 0x24,
-	0x80, 0x5f, 0x88, 0x82, 0x17, 0xa3, 0xed, 0xfa, 0x43, 0x01, 0x16, 0x44, 0x10, 0xd3, 0xb2, 0xf5,
-	0x83, 0x04, 0xb6, 0xbe, 0x9d, 0x3a, 0x75, 0x27, 0x56, 0x79, 0x05, 0x2e, 0x1b, 0x36, 0x5b, 0xbb,
-	0x76, 0xcf, 0x33, 0x2c, 0x83, 0x19, 0x47, 0x94, 0x37, 0x6e, 0x5e, 0x1b, 0x59, 0x45, 0xaf, 0xc1,
-	0xa5, 0xa0, 0x84, 0x43, 0xb3, 0x79, 0x1e, 0x67, 0x7c, 0x11, 0xd5, 0xe1, 0x79, 0xdd, 0xe9, 0x34,
-	0x4d, 0x3a, 0xb4, 0x3b, 0x57, 0x05, 0x75, 0xa0, 0x8d, 0x2e, 0x07, 0x96, 0x3e, 0xf3, 0x0c, 0xbb,
-	0x3d, 0xb4, 0x5c, 0xe0, 0xd9, 0x1c, 0x5d, 0x46, 0x7b, 0xb0, 0xc8, 0xef, 0x12, 0x34, 0x62, 0x21,
-	0x8b, 0x14, 0x04, 0xa1, 0xef, 0x08, 0xcf, 0x30, 0xf0, 0x01, 0x10, 0x7a, 0x1f, 0x4a, 0xcc, 0xb0,
-	0xe8, 0x1e, 0x23, 0x96, 0x5b, 0x96, 0x78, 0x2f, 0x5e, 0x49, 0x44, 0xe5, 0xbf, 0xa3, 0x0c, 0x2a,
-	0xb3, 0xdf, 0xf7, 0xd1, 0x86, 0xee, 0x68, 0x1b, 0x16, 0xf5, 0x8e, 0x47, 0x98, 0xe1, 0xd8, 0x65,
-	0xc8, 0xa1, 0xde, 0x48, 0x01, 0xb5, 0x25, 0x5c, 0xb4, 0x81, 0xb3, 0xe0, 0x06, 0xce, 0xc4, 0x0d,
-	0xdc, 0xe7, 0x06, 0x46, 0xf7, 0xc7, 0x34, 0x73, 0x2d, 0x7d, 0xa2, 0xce, 0x46, 0x32, 0x6f, 0xc0,
-	0xa5, 0x58, 0x85, 0x26, 0x11, 0x2b, 0x1f, 0x75, 0xa6, 0x13, 0xf5, 0xf6, 0x66, 0x5c, 0x6f, 0x33,
-	0x64, 0x34, 0xc2, 0xdf, 0xaf, 0x72, 0x9c, 0xbf, 0xf8, 0x4c, 0xf8, 0x8b, 0x9f, 0x13, 0x7f, 0x67,
-	0x2e, 0xca, 0x5f, 0xe4, 0x83, 0x52, 0x86, 0xd3, 0xff, 0x1e, 0xf1, 0x88, 0x85, 0x1a, 0x09, 0xf2,
-	0x74, 0x33, 0xbd, 0x84, 0x70, 0x90, 0x13, 0x43, 0x3f, 0x18, 0x15, 0xa8, 0x77, 0xb2, 0xa2, 0x27,
-	0x4b, 0xd4, 0x76, 0x4c, 0xa2, 0xae, 0xa6, 0xe3, 0x50, 0x0c, 0x58, 0x3c, 0x02, 0x36, 0xd2, 0xe4,
-	0x3c, 0xd6, 0xdf, 0xd2, 0x29, 0x44, 0x27, 0xea, 0x5b, 0xfb, 0x75, 0x01, 0xbe, 0x38, 0x76, 0xad,
-	0xa1, 0x3d, 0x88, 0xd8, 0xa3, 0x56, 0x42, 0x77, 0xde, 0x99, 0x22, 0xea, 0x29, 0xfa, 0x54, 0x4a,
-	0xa7, 0x33, 0x52, 0x4a, 0x9d, 0x91, 0x4e, 0xa3, 0x33, 0x0f, 0xc6, 0x74, 0x66, 0x73, 0x9a, 0x24,
-	0x3c, 0x4b, 0x71, 0x5e, 0x1d, 0x55, 0x1c, 0x29, 0xaa, 0x21, 0x95, 0x11, 0x0d, 0x91, 0x22, 0xb2,
-	0xb0, 0x1d, 0x93, 0x85, 0x74, 0xfd, 0x88, 0xc7, 0xfb, 0x11, 0xa3, 0x8f, 0xc6, 0x04, 0xe2, 0xd6,
-	0x34, 0x11, 0x26, 0x4b, 0xc5, 0x29, 0x9b, 0x3d, 0xab, 0x12, 0xc4, 0x9c, 0x9d, 0x89, 0x4a, 0xb0,
-	0x13, 0x57, 0x82, 0xa9, 0x92, 0x18, 0xa1, 0xd7, 0x5f, 0x80, 0xd3, 0x0b, 0xcf, 0x96, 0x5e, 0xf8,
-	0xb9, 0xd3, 0xeb, 0x94, 0x55, 0xc2, 0x8f, 0xe3, 0x4f, 0xaf, 0xbd, 0xf0, 0x2f, 0x4c, 0xe8, 0x33,
-	0x58, 0x8a, 0xac, 0xa2, 0x6b, 0x93, 0xa3, 0x1b, 0x7f, 0xbf, 0x55, 0xae, 0x67, 0xf4, 0x0a, 0x5f,
-	0x50, 0xb7, 0xf1, 0x93, 0x63, 0x79, 0xee, 0x97, 0x63, 0x79, 0xee, 0xe9, 0xb1, 0x0c, 0x3e, 0xef,
-	0xc9, 0xe0, 0xeb, 0x9e, 0x0c, 0x7e, 0xec, 0xc9, 0xe0, 0x49, 0x4f, 0x06, 0xbf, 0xf5, 0x64, 0xf0,
-	0x67, 0x4f, 0x9e, 0x7b, 0xda, 0x93, 0xc1, 0xe3, 0xdf, 0xe5, 0xb9, 0xbf, 0x7f, 0xfe, 0xe3, 0xcb,
-	0x5c, 0xae, 0xb9, 0xc0, 0x1f, 0x71, 0x57, 0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0xcc, 0xd6, 0xf7,
-	0x05, 0x5b, 0x13, 0x00, 0x00,
+	// 1132 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0xcf, 0x6f, 0x1b, 0xc5,
+	0x17, 0xcf, 0xd8, 0x69, 0xec, 0x1d, 0x27, 0xe9, 0xf7, 0x3b, 0x14, 0xb1, 0xb5, 0xd0, 0xd6, 0xb2,
+	0x50, 0x64, 0x4a, 0xb5, 0xab, 0x4c, 0xdb, 0x14, 0x52, 0xd2, 0x36, 0x6d, 0xaa, 0x10, 0xa4, 0x48,
+	0xed, 0xc6, 0x8a, 0x04, 0xa8, 0x58, 0x63, 0xef, 0xc4, 0xac, 0xf0, 0xfe, 0xe8, 0xee, 0x38, 0xaa,
+	0x39, 0xf1, 0x07, 0x70, 0xa8, 0xc4, 0x3f, 0xc1, 0x0d, 0x09, 0x89, 0x1b, 0xdc, 0x11, 0x17, 0x2a,
+	0x4e, 0x1c, 0x38, 0x10, 0xc3, 0x81, 0x63, 0x2f, 0x48, 0x70, 0x00, 0x21, 0xcf, 0x8e, 0xbd, 0xbb,
+	0xf6, 0x12, 0xef, 0x3a, 0x4d, 0x7b, 0x49, 0xbc, 0x33, 0xef, 0x7d, 0xe6, 0x7d, 0xde, 0xaf, 0x79,
+	0x1a, 0x78, 0xd7, 0x32, 0x1f, 0x51, 0x4f, 0x63, 0xd4, 0x72, 0x3b, 0x84, 0x51, 0xcd, 0x27, 0x96,
+	0xdb, 0xa1, 0xda, 0xc3, 0xae, 0xc3, 0x88, 0x76, 0x7f, 0xf0, 0xb7, 0x4e, 0x7d, 0x46, 0xbd, 0xba,
+	0x10, 0x68, 0x7c, 0x44, 0x6c, 0xa3, 0x43, 0xbd, 0x86, 0x4f, 0xbd, 0x43, 0xb3, 0x45, 0x55, 0xd7,
+	0x73, 0x98, 0x83, 0x2a, 0xa6, 0xcf, 0x4c, 0x47, 0xe5, 0x60, 0x2a, 0x31, 0x88, 0xcb, 0xa8, 0xa7,
+	0x06, 0x58, 0x2a, 0xc7, 0x2a, 0x5f, 0x0a, 0x0e, 0x12, 0x7b, 0x9a, 0xe5, 0x18, 0xb4, 0xa3, 0x1d,
+	0xae, 0x36, 0x29, 0x23, 0xab, 0x1a, 0x7d, 0xc4, 0xa8, 0xed, 0x9b, 0x8e, 0xed, 0x07, 0x78, 0xe5,
+	0xf3, 0x6d, 0xc7, 0x69, 0x77, 0xa8, 0xc6, 0xbf, 0x9a, 0xdd, 0x03, 0x8d, 0xd8, 0x3d, 0xb1, 0xf5,
+	0x8a, 0xd8, 0xf2, 0xdc, 0x96, 0xe6, 0x33, 0xc2, 0xba, 0x43, 0x9d, 0x95, 0xe3, 0x4e, 0x60, 0x3d,
+	0x57, 0xd8, 0x5a, 0xbe, 0xe0, 0x3a, 0x1d, 0xb3, 0xd5, 0x1b, 0x6d, 0x1d, 0x92, 0x4e, 0x97, 0x36,
+	0x42, 0x81, 0xea, 0x57, 0x00, 0xa2, 0x77, 0x38, 0x4d, 0xee, 0x00, 0x9d, 0x3e, 0xec, 0x52, 0x9f,
+	0xa1, 0x2d, 0x28, 0x99, 0xb6, 0xcf, 0x88, 0xdd, 0xa2, 0xbe, 0x0c, 0x2a, 0xf9, 0x5a, 0x09, 0xaf,
+	0xa8, 0xd3, 0x78, 0xab, 0xf5, 0x9e, 0x4b, 0xf5, 0x50, 0x11, 0x5d, 0x87, 0xcb, 0x42, 0xae, 0xd1,
+	0x72, 0xec, 0x03, 0xb3, 0x2d, 0xe7, 0x2a, 0xa0, 0x56, 0xc2, 0xe7, 0xd4, 0x80, 0x97, 0x3a, 0xa4,
+	0xac, 0x6e, 0xda, 0x3d, 0x7d, 0x49, 0xc8, 0xde, 0xe1, 0xa2, 0xe8, 0x3c, 0x2c, 0x1a, 0xd4, 0xe8,
+	0xba, 0x0d, 0xd3, 0x90, 0xf3, 0x15, 0x50, 0x93, 0xf4, 0x02, 0xff, 0xde, 0x31, 0xaa, 0x9b, 0xf0,
+	0xa5, 0x98, 0xcd, 0xbe, 0xeb, 0xd8, 0x3e, 0x45, 0x17, 0xe1, 0x42, 0xe0, 0x24, 0x19, 0xf0, 0x63,
+	0xd0, 0xf0, 0x18, 0xcf, 0x6d, 0xa9, 0x7b, 0x7c, 0x47, 0x17, 0x12, 0xd5, 0x6f, 0xf3, 0xb0, 0xb4,
+	0x23, 0x0c, 0xdd, 0xf5, 0xdb, 0xe8, 0x01, 0x84, 0x86, 0x69, 0x89, 0xc0, 0x08, 0xc6, 0x1b, 0xd3,
+	0x19, 0x47, 0x20, 0xd4, 0xad, 0x91, 0xfe, 0x5d, 0x9b, 0x79, 0x3d, 0x3d, 0x02, 0x88, 0xea, 0xb0,
+	0xd0, 0x74, 0x9c, 0xce, 0x2e, 0x71, 0xe5, 0x1c, 0xc7, 0x5e, 0xcf, 0x86, 0x7d, 0x3b, 0x50, 0x0e,
+	0x80, 0x87, 0x50, 0x68, 0x03, 0xce, 0x7b, 0xd4, 0x5f, 0x95, 0x4b, 0x9c, 0xee, 0xeb, 0xd3, 0x21,
+	0x75, 0xea, 0xaf, 0xee, 0xfa, 0x6d, 0x9d, 0xab, 0xa1, 0x97, 0xe1, 0xbc, 0x4d, 0x2c, 0x2a, 0x7f,
+	0xf9, 0xfd, 0x37, 0x55, 0xee, 0x60, 0xfe, 0x59, 0x6e, 0xc3, 0xb3, 0x63, 0x54, 0xd0, 0xff, 0x60,
+	0xfe, 0x63, 0xda, 0xe3, 0x6e, 0x95, 0xf4, 0xc1, 0x4f, 0x74, 0x03, 0x9e, 0xe1, 0xb9, 0x24, 0x22,
+	0x5a, 0x4b, 0x3c, 0x9b, 0xa7, 0xa5, 0x2a, 0x72, 0x4f, 0xdd, 0x1f, 0xc8, 0xeb, 0x81, 0xda, 0x7a,
+	0xee, 0x4d, 0x50, 0x5e, 0x87, 0x8b, 0x51, 0x5e, 0x09, 0xa7, 0x9c, 0x8b, 0x9e, 0x52, 0x8c, 0xe8,
+	0x56, 0x7f, 0x28, 0xc0, 0x82, 0x60, 0x13, 0xda, 0x02, 0x66, 0xb2, 0x05, 0xbd, 0x17, 0x8b, 0x7d,
+	0x10, 0x9f, 0xb7, 0x52, 0x3b, 0xf3, 0xd8, 0xb8, 0xaf, 0xc0, 0x65, 0xd3, 0x66, 0x6b, 0x57, 0xee,
+	0x79, 0xa6, 0x65, 0x32, 0xf3, 0x90, 0xf2, 0x54, 0xce, 0xeb, 0x63, 0xab, 0xe8, 0x35, 0xb8, 0x34,
+	0x08, 0x6a, 0x28, 0x36, 0xcf, 0x09, 0xc7, 0x17, 0x51, 0x0d, 0x9e, 0x35, 0x9c, 0x6e, 0xb3, 0x43,
+	0x43, 0xb9, 0x33, 0x15, 0x50, 0x03, 0xfa, 0xf8, 0xf2, 0x40, 0xd2, 0x67, 0x9e, 0x69, 0xb7, 0x43,
+	0xc9, 0x05, 0xee, 0xd6, 0xf1, 0x65, 0xb4, 0x07, 0x8b, 0xdc, 0x96, 0x41, 0x6a, 0x16, 0x38, 0xf5,
+	0x6b, 0xe9, 0xa9, 0xef, 0x08, 0xcd, 0x80, 0xf8, 0x08, 0x08, 0xbd, 0x0b, 0x25, 0x66, 0x5a, 0x74,
+	0x8f, 0x11, 0xcb, 0x95, 0x25, 0x1e, 0x95, 0x4b, 0x29, 0xa2, 0x52, 0x1f, 0xea, 0xe8, 0xa1, 0x3a,
+	0xda, 0x86, 0x45, 0xa3, 0xeb, 0x11, 0x66, 0x3a, 0xb6, 0x0c, 0x39, 0xd4, 0x1b, 0x29, 0xa0, 0xb6,
+	0x84, 0x8a, 0x3e, 0x52, 0x16, 0xd5, 0x82, 0x33, 0x55, 0x0b, 0x1e, 0x56, 0x0b, 0x46, 0xf7, 0x61,
+	0x71, 0xf0, 0xbf, 0x61, 0x11, 0x57, 0x5e, 0xe4, 0x8e, 0x5a, 0x4b, 0xef, 0x28, 0x0e, 0x35, 0xaa,
+	0x5f, 0x2f, 0xf8, 0x7a, 0x7e, 0x95, 0x76, 0x1d, 0x2e, 0xc5, 0x42, 0x35, 0xad, 0xd4, 0xf2, 0x51,
+	0x65, 0x0a, 0x17, 0xa3, 0xe6, 0x27, 0xe8, 0xde, 0x8c, 0x9b, 0x98, 0xc1, 0xb5, 0x91, 0x8a, 0xfe,
+	0x3a, 0xc7, 0x2b, 0x1a, 0xbf, 0xd8, 0x8a, 0xc6, 0xcf, 0xa8, 0xa2, 0x9f, 0x5b, 0x6c, 0xab, 0xff,
+	0x00, 0x38, 0x3f, 0xb8, 0x78, 0xd1, 0x7e, 0xc2, 0x15, 0xb6, 0x96, 0xee, 0xd2, 0x3e, 0x96, 0xf1,
+	0x8d, 0xd8, 0x2d, 0x73, 0x31, 0x5d, 0xd2, 0xf3, 0x51, 0x80, 0xeb, 0x95, 0x3f, 0x4c, 0xe3, 0x89,
+	0xab, 0x51, 0x4f, 0x2c, 0xe3, 0x0b, 0xe2, 0x94, 0x60, 0x7c, 0x89, 0x93, 0xe7, 0xd0, 0x11, 0x07,
+	0xfc, 0x95, 0x87, 0xc5, 0xe1, 0x91, 0x21, 0x0e, 0xc8, 0x82, 0x83, 0xde, 0x4f, 0x48, 0x98, 0xf5,
+	0xf4, 0x4c, 0x53, 0xf8, 0x0f, 0x67, 0xf2, 0x1f, 0x1e, 0xf9, 0x0f, 0x23, 0x7d, 0xa2, 0xf1, 0x5c,
+	0xcb, 0x60, 0x59, 0x72, 0xe7, 0x39, 0xe5, 0x98, 0x94, 0x0f, 0xa6, 0xf6, 0x8c, 0x5b, 0xf1, 0xd4,
+	0xcf, 0xe2, 0x96, 0x48, 0xec, 0xff, 0x06, 0x3c, 0xf6, 0xf8, 0xc5, 0xc4, 0x1e, 0x4f, 0x8b, 0xfd,
+	0xa9, 0xe7, 0xfe, 0x67, 0xf9, 0x41, 0x67, 0x0f, 0xe6, 0xc4, 0x7b, 0xc4, 0x23, 0x16, 0x6a, 0x24,
+	0x74, 0x81, 0x9b, 0xe9, 0x87, 0x4d, 0x0e, 0x72, 0x6c, 0x3a, 0xef, 0x8f, 0x8f, 0xb2, 0x6f, 0x67,
+	0x45, 0x4f, 0x1e, 0x66, 0xb7, 0x63, 0x6d, 0xe6, 0x72, 0xba, 0x14, 0x8f, 0x01, 0x8b, 0x7e, 0xb3,
+	0x91, 0xc6, 0xe7, 0xb1, 0xeb, 0x4e, 0x3a, 0xc1, 0x54, 0x1a, 0xd5, 0xad, 0xfe, 0xbc, 0x00, 0xff,
+	0x3f, 0x61, 0x56, 0x28, 0x0f, 0x22, 0xf2, 0xa8, 0x95, 0x90, 0x76, 0x77, 0x66, 0x60, 0x3d, 0xc3,
+	0x6d, 0x25, 0xa5, 0x9b, 0x3f, 0xa5, 0x94, 0xf3, 0xa7, 0x74, 0x92, 0xf9, 0xf3, 0xc1, 0xc4, 0xfc,
+	0xb9, 0x39, 0x8b, 0x13, 0xfe, 0x6b, 0x12, 0x7d, 0x75, 0x7c, 0x12, 0x95, 0xa2, 0xb3, 0x65, 0x79,
+	0x6c, 0xb6, 0x94, 0x22, 0xe3, 0xe2, 0x76, 0xac, 0x6d, 0xa7, 0xcb, 0x47, 0x3c, 0x99, 0x8f, 0x18,
+	0x7d, 0x30, 0xd1, 0xbf, 0x6f, 0xcd, 0xc2, 0x30, 0xb9, 0x91, 0x9f, 0x30, 0xd9, 0xb3, 0x0e, 0x86,
+	0x31, 0x65, 0x67, 0x6a, 0x93, 0xdf, 0x89, 0x37, 0xf9, 0x99, 0x9c, 0x18, 0x29, 0xaf, 0x3f, 0x00,
+	0x2f, 0x2f, 0x7c, 0xba, 0xe5, 0x85, 0x9f, 0x79, 0x79, 0x9d, 0x30, 0x4a, 0xf8, 0x71, 0xfc, 0x91,
+	0x66, 0x2f, 0x78, 0x8e, 0x42, 0x9f, 0xc0, 0x52, 0x64, 0x15, 0x5d, 0x99, 0xce, 0x6e, 0xf2, 0xa5,
+	0xa7, 0x7c, 0x35, 0xa3, 0x56, 0xf0, 0xd6, 0x72, 0x1b, 0x3f, 0x39, 0x52, 0xe6, 0x7e, 0x3a, 0x52,
+	0xe6, 0x9e, 0x1e, 0x29, 0xe0, 0xd3, 0xbe, 0x02, 0xbe, 0xe8, 0x2b, 0xe0, 0xbb, 0xbe, 0x02, 0x9e,
+	0xf4, 0x15, 0xf0, 0x4b, 0x5f, 0x01, 0xbf, 0xf7, 0x95, 0xb9, 0xa7, 0x7d, 0x05, 0x3c, 0xfe, 0x55,
+	0x99, 0xfb, 0xf3, 0xc7, 0xdf, 0x3e, 0xcf, 0xe5, 0x9a, 0x0b, 0xfc, 0xb9, 0xe7, 0xf2, 0xbf, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0x78, 0x06, 0x82, 0xe0, 0x88, 0x13, 0x00, 0x00,
 }
