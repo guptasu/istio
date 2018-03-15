@@ -35,27 +35,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = {{.VarietyName}};
 
 {{if ne .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
 
-/* Infrastructure backend service for template '{{.TemplateName}}'*/
+// Handle{{.InterfaceName}}Service is implemented by backends that wants to handle request-time '{{.TemplateName}}' instances.
 service Handle{{.InterfaceName}}Service {
-    // Handle{{.InterfaceName}} is called by Mixer at request-time to deliver '{{.TemplateName}}' instances to
-    // to the backend.
+    // Handle{{.InterfaceName}} is called by Mixer at request-time to deliver '{{.TemplateName}}' instances to the backend.
     rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (Handle{{.InterfaceName}}Response);
 }
 
 // Request message for Handle{{.InterfaceName}} method.
 message Handle{{.InterfaceName}}Request {
 
-    // {{.InterfaceName}} instances.
+    // '{{.TemplateName}}' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -65,8 +65,8 @@ message Handle{{.InterfaceName}}Response {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for '{{.TemplateName}}' template . This is passed to infrastructure backends during request-time using
-Handle{{.InterfaceName}}Service */
+// Contains instance payload for '{{.TemplateName}}' template. This is passed to infrastructure backends during request-time
+// through Handle{{.InterfaceName}}Service.Handle{{.InterfaceName}}.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -90,8 +90,8 @@ message {{.Name}}Msg {
 
 {{if ne .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
 
-/* Type InstanceMsg for template '{{.TemplateName}}'. This is passed to infrastructure backends during request-time using
-Handle{{.InterfaceName}}Service */
+// Contains inferred type information about specific instance of '{{.TemplateName}}' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   {{range .TemplateMessage.Fields -}}
   {{- if valueTypeOrResMsg .ProtoType}}
@@ -115,9 +115,10 @@ message {{getResourcMessageTypeName .Name}} {
 
 {{end}}
 
-{{.TemplateMessage.Comment}}
+// Represents instance configuration schema for '{{.TemplateName}}' template.
 message InstanceParam {
   {{range .TemplateMessage.Fields}}
+  {{.Comment}}
   {{stringify .ProtoType}} {{.ProtoName}} = {{.Number}};
   {{end}}
   {{if eq .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
@@ -133,6 +134,7 @@ message InstanceParam {
 {{range .ResourceMessages}}
 message {{getResourcMessageInterfaceParamTypeName  .Name}} {
   {{range .Fields}}
+  {{.Comment}}
   {{stringify .ProtoType}} {{.ProtoName}} = {{.Number}};
   {{end}}
 }

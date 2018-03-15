@@ -35,26 +35,36 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_A
 
 
 
-// myapa template is ..
+// Represents instance configuration schema for 'myapa' template.
 message InstanceParam {
+  
   
   string int64Primitive = 1;
   
+  
   string boolPrimitive = 2;
+  
   
   string doublePrimitive = 3;
   
+  
   string stringPrimitive = 4;
+  
   
   map<string, string> dimensionsFixedInt64ValueDType = 5;
   
+  
   string timeStamp = 6;
+  
   
   string duration = 7;
   
+  
   map<string, Resource3InstanceParam> res3_map = 8;
   
+  
   string optionalIP = 9;
+  
   
   string email = 10;
   
@@ -71,9 +81,12 @@ message InstanceParam {
 
 message Resource1InstanceParam {
   
+  
   string str = 1;
   
+  
   Resource1InstanceParam self_ref_res1 = 3;
+  
   
   Resource2InstanceParam resRef2 = 2;
   
@@ -81,9 +94,12 @@ message Resource1InstanceParam {
 
 message Resource2InstanceParam {
   
+  
   string str = 1;
   
+  
   Resource3InstanceParam res3 = 2;
+  
   
   map<string, Resource3InstanceParam> res3_map = 3;
   
@@ -91,17 +107,24 @@ message Resource2InstanceParam {
 
 message Resource3InstanceParam {
   
+  
   string int64Primitive = 1;
+  
   
   string boolPrimitive = 2;
   
+  
   string doublePrimitive = 3;
+  
   
   string stringPrimitive = 4;
   
+  
   map<string, string> dimensionsFixedInt64ValueDType = 5;
   
+  
   string timeStamp = 6;
+  
   
   string duration = 7;
   

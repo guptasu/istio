@@ -62,15 +62,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleApiKey method.
 type HandleApiKeyRequest struct {
-	// ApiKey instances.
+	// 'apikey' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -120,8 +121,8 @@ func (m *HandleApiKeyResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'apikey' template . This is passed to infrastructure backends during request-time using
-// HandleApiKeyService
+// Contains instance payload for 'apikey' template. This is passed to infrastructure backends during request-time
+// through HandleApiKeyService.HandleApiKey.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -185,8 +186,8 @@ func (m *InstanceMsg) GetTimestamp() *istio_mixer_adapter_model_v1beta11.TimeSta
 	return nil
 }
 
-// Type InstanceMsg for template 'apikey'. This is passed to infrastructure backends during request-time using
-// HandleApiKeyService
+// Contains inferred type information about specific instance of 'apikey' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 }
 
@@ -194,29 +195,18 @@ func (m *Type) Reset()                    { *m = Type{} }
 func (*Type) ProtoMessage()               {}
 func (*Type) Descriptor() ([]byte, []int) { return fileDescriptorTemplateHandlerService, []int{3} }
 
-// The `apikey` template represents a single API key, used to authorize API calls.
-//
-// Sample config:
-//
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: apikey
-// metadata:
-//   name: validate-apikey
-//   namespace: istio-system
-// spec:
-//   api: api.service | ""
-//   api_version: api.version | ""
-//   api_operation: api.operation | ""
-//   api_key: api.key | ""
-//   timestamp: request.time
-// ```
+// Represents instance configuration schema for 'apikey' template.
 type InstanceParam struct {
-	Api          string `protobuf:"bytes,1,opt,name=api,proto3" json:"api,omitempty"`
-	ApiVersion   string `protobuf:"bytes,2,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	// The API being called (api.service).
+	Api string `protobuf:"bytes,1,opt,name=api,proto3" json:"api,omitempty"`
+	// The version of the API (api.version).
+	ApiVersion string `protobuf:"bytes,2,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	// The API operation is being called.
 	ApiOperation string `protobuf:"bytes,3,opt,name=api_operation,json=apiOperation,proto3" json:"api_operation,omitempty"`
-	ApiKey       string `protobuf:"bytes,4,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	Timestamp    string `protobuf:"bytes,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	// API key used in API call.
+	ApiKey string `protobuf:"bytes,4,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	// Timestamp of API call.
+	Timestamp string `protobuf:"bytes,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 }
 
 func (m *InstanceParam) Reset()      { *m = InstanceParam{} }

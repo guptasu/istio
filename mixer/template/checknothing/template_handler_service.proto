@@ -46,27 +46,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_C
 
 
 
-/* Infrastructure backend service for template 'checknothing'*/
+// HandleCheckNothingService is implemented by backends that wants to handle request-time 'checknothing' instances.
 service HandleCheckNothingService {
-    // HandleCheckNothing is called by Mixer at request-time to deliver 'checknothing' instances to
-    // to the backend.
+    // HandleCheckNothing is called by Mixer at request-time to deliver 'checknothing' instances to the backend.
     rpc HandleCheckNothing(HandleCheckNothingRequest) returns (HandleCheckNothingResponse);
 }
 
 // Request message for HandleCheckNothing method.
 message HandleCheckNothingRequest {
 
-    // CheckNothing instances.
+    // 'checknothing' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -76,8 +76,8 @@ message HandleCheckNothingResponse {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for 'checknothing' template . This is passed to infrastructure backends during request-time using
-HandleCheckNothingService */
+// Contains instance payload for 'checknothing' template. This is passed to infrastructure backends during request-time
+// through HandleCheckNothingService.HandleCheckNothing.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -90,8 +90,8 @@ message InstanceMsg {
 
 
 
-/* Type InstanceMsg for template 'checknothing'. This is passed to infrastructure backends during request-time using
-HandleCheckNothingService */
+// Contains inferred type information about specific instance of 'checknothing' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   
 }
@@ -100,19 +100,7 @@ message Type {
 
 
 
-// CheckNothing represents an empty block of data that is used for Check-capable
-// adapters which don't require any parameters. This is primarily intended for testing
-// scenarios.
-// 
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: checknothing
-// metadata:
-//   name: denyrequest
-//   namespace: istio-system
-// spec:
-// ```
+// Represents instance configuration schema for 'checknothing' template.
 message InstanceParam {
   
   

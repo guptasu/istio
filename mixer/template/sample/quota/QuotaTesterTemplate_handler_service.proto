@@ -31,27 +31,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_Q
 
 
 
-/* Infrastructure backend service for template 'quota'*/
+// HandleQuotaService is implemented by backends that wants to handle request-time 'quota' instances.
 service HandleQuotaService {
-    // HandleQuota is called by Mixer at request-time to deliver 'quota' instances to
-    // to the backend.
+    // HandleQuota is called by Mixer at request-time to deliver 'quota' instances to the backend.
     rpc HandleQuota(HandleQuotaRequest) returns (HandleQuotaResponse);
 }
 
 // Request message for HandleQuota method.
 message HandleQuotaRequest {
 
-    // Quota instances.
+    // 'quota' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -61,8 +61,8 @@ message HandleQuotaResponse {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for 'quota' template . This is passed to infrastructure backends during request-time using
-HandleQuotaService */
+// Contains instance payload for 'quota' template. This is passed to infrastructure backends during request-time
+// through HandleQuotaService.HandleQuota.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -136,8 +136,8 @@ message Res2Msg {
 
 
 
-/* Type InstanceMsg for template 'quota'. This is passed to infrastructure backends during request-time using
-HandleQuotaService */
+// Contains inferred type information about specific instance of 'quota' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   
   
@@ -172,12 +172,15 @@ message Res2Type {
 
 
 
-
+// Represents instance configuration schema for 'quota' template.
 message InstanceParam {
+  
   
   map<string, string> dimensions = 1;
   
+  
   map<string, string> boolMap = 2;
+  
   
   Res1InstanceParam res1 = 11;
   
@@ -187,25 +190,36 @@ message InstanceParam {
 
 message Res1InstanceParam {
   
+  
   string value = 1;
+  
   
   map<string, string> dimensions = 2;
   
+  
   string int64Primitive = 3;
+  
   
   string boolPrimitive = 4;
   
+  
   string doublePrimitive = 5;
+  
   
   string stringPrimitive = 6;
   
+  
   map<string, string> int64Map = 7;
+  
   
   string timeStamp = 9;
   
+  
   string duration = 10;
   
+  
   Res2InstanceParam res2 = 11;
+  
   
   map<string, Res2InstanceParam> res2_map = 12;
   
@@ -213,9 +227,12 @@ message Res1InstanceParam {
 
 message Res2InstanceParam {
   
+  
   string value = 1;
   
+  
   map<string, string> dimensions = 2;
+  
   
   string int64Primitive = 3;
   

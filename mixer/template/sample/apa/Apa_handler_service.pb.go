@@ -43,7 +43,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
-// myapa template is ..
+// Represents instance configuration schema for 'myapa' template.
 type InstanceParam struct {
 	Int64Primitive                 string                             `protobuf:"bytes,1,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
 	BoolPrimitive                  string                             `protobuf:"bytes,2,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`

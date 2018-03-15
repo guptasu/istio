@@ -31,27 +31,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_R
 
 
 
-/* Infrastructure backend service for template 'report'*/
+// HandleReportService is implemented by backends that wants to handle request-time 'report' instances.
 service HandleReportService {
-    // HandleReport is called by Mixer at request-time to deliver 'report' instances to
-    // to the backend.
+    // HandleReport is called by Mixer at request-time to deliver 'report' instances to the backend.
     rpc HandleReport(HandleReportRequest) returns (HandleReportResponse);
 }
 
 // Request message for HandleReport method.
 message HandleReportRequest {
 
-    // Report instances.
+    // 'report' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -61,8 +61,8 @@ message HandleReportResponse {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for 'report' template . This is passed to infrastructure backends during request-time using
-HandleReportService */
+// Contains instance payload for 'report' template. This is passed to infrastructure backends during request-time
+// through HandleReportService.HandleReport.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -175,8 +175,8 @@ message Res2Msg {
 
 
 
-/* Type InstanceMsg for template 'report'. This is passed to infrastructure backends during request-time using
-HandleReportService */
+// Contains inferred type information about specific instance of 'report' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   
   
@@ -213,26 +213,36 @@ message Res2Type {
 
 
 
-
+// Represents instance configuration schema for 'report' template.
 message InstanceParam {
+  
   
   string value = 1;
   
+  
   map<string, string> dimensions = 2;
+  
   
   string int64Primitive = 3;
   
+  
   string boolPrimitive = 4;
+  
   
   string doublePrimitive = 5;
   
+  
   string stringPrimitive = 6;
+  
   
   map<string, string> int64Map = 7;
   
+  
   string timeStamp = 9;
   
+  
   string duration = 10;
+  
   
   Res1InstanceParam res1 = 11;
   
@@ -242,25 +252,36 @@ message InstanceParam {
 
 message Res1InstanceParam {
   
+  
   string value = 1;
+  
   
   map<string, string> dimensions = 2;
   
+  
   string int64Primitive = 3;
+  
   
   string boolPrimitive = 4;
   
+  
   string doublePrimitive = 5;
+  
   
   string stringPrimitive = 6;
   
+  
   map<string, string> int64Map = 7;
+  
   
   string timeStamp = 9;
   
+  
   string duration = 10;
   
+  
   Res2InstanceParam res2 = 11;
+  
   
   map<string, Res2InstanceParam> res2_map = 12;
   
@@ -268,21 +289,30 @@ message Res1InstanceParam {
 
 message Res2InstanceParam {
   
+  
   string value = 1;
+  
   
   map<string, string> dimensions = 2;
   
+  
   string int64Primitive = 3;
+  
   
   string timeStamp = 9;
   
+  
   string duration = 10;
+  
   
   string ip_addr = 11;
   
+  
   string dns_name = 12;
   
+  
   string email_addr = 13;
+  
   
   string uri = 14;
   

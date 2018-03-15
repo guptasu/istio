@@ -52,15 +52,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleReport method.
 type HandleReportRequest struct {
-	// Report instances.
+	// 'report' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -110,8 +111,8 @@ func (m *HandleReportResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'report' template . This is passed to infrastructure backends during request-time using
-// HandleReportService
+// Contains instance payload for 'report' template. This is passed to infrastructure backends during request-time
+// through HandleReportService.HandleReport.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name            string                                               `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -388,8 +389,8 @@ func (m *Res2Msg) GetUri() *istio_mixer_adapter_model_v1beta11.Uri {
 	return nil
 }
 
-// Type InstanceMsg for template 'report'. This is passed to infrastructure backends during request-time using
-// HandleReportService
+// Contains inferred type information about specific instance of 'report' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
 	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
@@ -489,6 +490,7 @@ func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
 	return nil
 }
 
+// Represents instance configuration schema for 'report' template.
 type InstanceParam struct {
 	Value           string             `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 	Dimensions      map[string]string  `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`

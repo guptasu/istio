@@ -52,15 +52,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleCheck method.
 type HandleCheckRequest struct {
-	// Check instances.
+	// 'check' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -110,8 +111,8 @@ func (m *HandleCheckResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'check' template . This is passed to infrastructure backends during request-time using
-// HandleCheckService
+// Contains instance payload for 'check' template. This is passed to infrastructure backends during request-time
+// through HandleCheckService.HandleCheck.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name            string            `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -284,8 +285,8 @@ func (m *Res2Msg) GetInt64Primitive() int64 {
 	return 0
 }
 
-// Type InstanceMsg for template 'check'. This is passed to infrastructure backends during request-time using
-// HandleCheckService
+// Contains inferred type information about specific instance of 'check' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 	Res1 *Res1Type `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
 }
@@ -369,6 +370,7 @@ func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
 	return nil
 }
 
+// Represents instance configuration schema for 'check' template.
 type InstanceParam struct {
 	CheckExpression string             `protobuf:"bytes,1,opt,name=check_expression,json=checkExpression,proto3" json:"check_expression,omitempty"`
 	StringMap       map[string]string  `protobuf:"bytes,2,rep,name=stringMap" json:"stringMap,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`

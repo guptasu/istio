@@ -80,15 +80,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleTraceSpan method.
 type HandleTraceSpanRequest struct {
-	// TraceSpan instances.
+	// 'tracespan' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -138,8 +139,8 @@ func (m *HandleTraceSpanResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'tracespan' template . This is passed to infrastructure backends during request-time using
-// HandleTraceSpanService
+// Contains instance payload for 'tracespan' template. This is passed to infrastructure backends during request-time
+// through HandleTraceSpanService.HandleTraceSpan.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -244,8 +245,8 @@ func (m *InstanceMsg) GetSpanTags() map[string]*istio_mixer_adapter_model_v1beta
 	return nil
 }
 
-// Type InstanceMsg for template 'tracespan'. This is passed to infrastructure backends during request-time using
-// HandleTraceSpanService
+// Contains inferred type information about specific instance of 'tracespan' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 	// Span tags are a set of <key, value> pairs that provide metadata for the
 	// entire span. The values can be specified in the form of expressions.
@@ -265,48 +266,45 @@ func (m *Type) GetSpanTags() map[string]istio_policy_v1beta1.ValueType {
 	return nil
 }
 
-// TraceSpan represents an individual span within a distributed trace.
-//
-// When writing the configuration, the value for the fields associated with this template can either be a
-// literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-// then the expression's [inferred type](https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking) must match the datatype of the field.
-//
-// Example config:
-// ```
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: tracespan
-// metadata:
-//   name: default
-//   namespace: istio-system
-// spec:
-//   traceId: request.headers["x-b3-traceid"]
-//   spanId: request.headers["x-b3-spanid"] | ""
-//   parentSpanId: request.headers["x-b3-parentspanid"] | ""
-//   spanName: request.path | "/"
-//   startTime: request.time
-//   endTime: response.time
-//   spanTags:
-//     http.method: request.method | ""
-//     http.status_code: response.code | 200
-//     http.url: request.path | ""
-//     request.size: request.size | 0
-//     response.size: response.size | 0
-//     source.ip: source.ip | ip("0.0.0.0")
-//     source.service: source.service | ""
-//     source.user: source.user | ""
-//     source.version: source.labels["version"] | ""
-// ```
-//
-// See also: [Distributed Tracing](https://istio.io/docs/tasks/telemetry/distributed-tracing.html)
-// for information on tracing within Istio.
+// Represents instance configuration schema for 'tracespan' template.
 type InstanceParam struct {
-	TraceId      string            `protobuf:"bytes,1,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`
-	SpanId       string            `protobuf:"bytes,2,opt,name=span_id,json=spanId,proto3" json:"span_id,omitempty"`
-	ParentSpanId string            `protobuf:"bytes,3,opt,name=parent_span_id,json=parentSpanId,proto3" json:"parent_span_id,omitempty"`
-	SpanName     string            `protobuf:"bytes,4,opt,name=span_name,json=spanName,proto3" json:"span_name,omitempty"`
-	StartTime    string            `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime      string            `protobuf:"bytes,6,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	SpanTags     map[string]string `protobuf:"bytes,7,rep,name=span_tags,json=spanTags" json:"span_tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Trace ID is the unique identifier for a trace. All spans from the same
+	// trace share the same Trace ID.
+	//
+	// Required.
+	TraceId string `protobuf:"bytes,1,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`
+	// Span ID is the unique identifier for a span within a trace. It is assigned
+	// when the span is created.
+	//
+	// Optional.
+	SpanId string `protobuf:"bytes,2,opt,name=span_id,json=spanId,proto3" json:"span_id,omitempty"`
+	// Parent Span ID is the unique identifier for a parent span of this span
+	// instance. If this is a root span, then this field MUST be empty.
+	//
+	// Optional.
+	ParentSpanId string `protobuf:"bytes,3,opt,name=parent_span_id,json=parentSpanId,proto3" json:"parent_span_id,omitempty"`
+	// Span name is a description of the span's operation.
+	//
+	// For example, the name can be a qualified method name or a file name
+	// and a line number where the operation is called. A best practice is to use
+	// the same display name within an application and at the same call point.
+	// This makes it easier to correlate spans in different traces.
+	//
+	// Required.
+	SpanName string `protobuf:"bytes,4,opt,name=span_name,json=spanName,proto3" json:"span_name,omitempty"`
+	// The start time of the span.
+	//
+	// Required.
+	StartTime string `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// The end time of the span.
+	//
+	// Required.
+	EndTime string `protobuf:"bytes,6,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	// Span tags are a set of <key, value> pairs that provide metadata for the
+	// entire span. The values can be specified in the form of expressions.
+	//
+	// Optional.
+	SpanTags map[string]string `protobuf:"bytes,7,rep,name=span_tags,json=spanTags" json:"span_tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *InstanceParam) Reset()      { *m = InstanceParam{} }
