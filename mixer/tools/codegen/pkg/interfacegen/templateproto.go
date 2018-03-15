@@ -28,6 +28,11 @@ import "mixer/adapter/model/v1beta1/extensions.proto";
 import "google/protobuf/any.proto";
 import "google/rpc/status.proto";
 import "mixer/adapter/model/v1beta1/type.proto";
+{{if ne .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
+import "mixer/adapter/model/v1beta1/check.proto";
+import "mixer/adapter/model/v1beta1/report.proto";
+import "mixer/adapter/model/v1beta1/quota.proto";
+{{end}}
 
 $$additional_imports$$
 
@@ -38,12 +43,17 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = {{.VarietyName}};
 // Handle{{.InterfaceName}}Service is implemented by backends that wants to handle request-time '{{.TemplateName}}' instances.
 service Handle{{.InterfaceName}}Service {
     // Handle{{.InterfaceName}} is called by Mixer at request-time to deliver '{{.TemplateName}}' instances to the backend.
-    rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (Handle{{.InterfaceName}}Response);
+    {{if eq .VarietyName "TEMPLATE_VARIETY_CHECK" -}}
+      rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (istio.mixer.adapter.model.v1beta1.CheckResult);
+    {{else if eq .VarietyName "TEMPLATE_VARIETY_QUOTA" -}}
+      rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (istio.mixer.adapter.model.v1beta1.QuotaResult);
+    {{else if eq .VarietyName "TEMPLATE_VARIETY_REPORT" -}}
+      rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (istio.mixer.adapter.model.v1beta1.ReportResult);
+    {{end}}
 }
 
 // Request message for Handle{{.InterfaceName}} method.
 message Handle{{.InterfaceName}}Request {
-
     // '{{.TemplateName}}' instances.
     repeated Type instances = 1;
 
@@ -57,12 +67,6 @@ message Handle{{.InterfaceName}}Request {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
-}
-
-// Response message for Handle{{.InterfaceName}} method.
-message Handle{{.InterfaceName}}Response {
-    // The success/failure status of Handle{{.InterfaceName}} call.
-    google.rpc.Status status = 1;
 }
 
 // Contains instance payload for '{{.TemplateName}}' template. This is passed to infrastructure backends during request-time
