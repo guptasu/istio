@@ -16,6 +16,8 @@
 
 syntax = "proto3";
 
+
+
 package istio.mixer.adapter.sample.report;
 
 import "mixer/adapter/model/v1beta1/extensions.proto";
@@ -27,42 +29,6 @@ import "policy/v1beta1/value_type.proto";
 
 option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_REPORT;
 
-
-
-
-
-message Type {
-  
-  
-  istio.policy.v1beta1.ValueType value = 1;
-  
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
-  
-  Res1Type res1 = 11;
-}
-
-
-
-message Res1Type {
-  
-  
-  istio.policy.v1beta1.ValueType value = 1;
-  
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
-  
-  Res2Type res2 = 11;
-  
-  map<string, Res2Type> res2_map = 12;
-}
-
-
-message Res2Type {
-  
-  
-  istio.policy.v1beta1.ValueType value = 1;
-  
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
-}
 
 
 /* Infrastructure backend service for template 'report'*/
@@ -95,16 +61,17 @@ message HandleReportResponse {
     google.rpc.Status status = 1;
 }
 
-// InstanceMsg is constructed by Mixer for the 'report' template.
+/* Request-time payload for 'report' template . This is passed to infrastructure backends during request-time using
+HandleReportService */
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
   
   
-  istio.policy.v1beta1.ValueType value = 1;
+  istio.mixer.adapter.model.v1beta1.Value value = 1;
   
   
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  map<string, istio.mixer.adapter.model.v1beta1.Value> dimensions = 2;
   
   
   int64 int64Primitive = 3;
@@ -137,10 +104,10 @@ message InstanceMsg {
 message Res1Msg {
   
   
-  istio.policy.v1beta1.ValueType value = 1;
+  istio.mixer.adapter.model.v1beta1.Value value = 1;
   
   
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  map<string, istio.mixer.adapter.model.v1beta1.Value> dimensions = 2;
   
   
   int64 int64Primitive = 3;
@@ -175,10 +142,10 @@ message Res1Msg {
 message Res2Msg {
   
   
-  istio.policy.v1beta1.ValueType value = 1;
+  istio.mixer.adapter.model.v1beta1.Value value = 1;
   
   
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  map<string, istio.mixer.adapter.model.v1beta1.Value> dimensions = 2;
   
   
   int64 int64Primitive = 3;
@@ -202,6 +169,47 @@ message Res2Msg {
   istio.mixer.adapter.model.v1beta1.Uri uri = 14;
   
 }
+
+
+
+
+
+
+/* Type InstanceMsg for template 'report'. This is passed to infrastructure backends during request-time using
+HandleReportService */
+message Type {
+  
+  
+  istio.policy.v1beta1.ValueType value = 1;
+  
+  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  
+  Res1Type res1 = 11;
+}
+
+
+
+message Res1Type {
+  
+  
+  istio.policy.v1beta1.ValueType value = 1;
+  
+  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  
+  Res2Type res2 = 11;
+  
+  map<string, Res2Type> res2_map = 12;
+}
+
+
+message Res2Type {
+  
+  
+  istio.policy.v1beta1.ValueType value = 1;
+  
+  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+}
+
 
 
 
@@ -279,5 +287,4 @@ message Res2InstanceParam {
   string uri = 14;
   
 }
-
 

@@ -8,14 +8,14 @@
 		mixer/template/sample/report/ReportTesterTemplate_handler_service.proto
 
 	It has these top-level messages:
-		Type
-		Res1Type
-		Res2Type
 		HandleReportRequest
 		HandleReportResponse
 		InstanceMsg
 		Res1Msg
 		Res2Msg
+		Type
+		Res1Type
+		Res2Type
 		InstanceParam
 		Res1InstanceParam
 		Res2InstanceParam
@@ -50,105 +50,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
-type Type struct {
-	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Res1       *Res1Type                                 `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
-}
-
-func (m *Type) Reset()      { *m = Type{} }
-func (*Type) ProtoMessage() {}
-func (*Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{0}
-}
-
-func (m *Type) GetValue() istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Value
-	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
-}
-
-func (m *Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
-func (m *Type) GetRes1() *Res1Type {
-	if m != nil {
-		return m.Res1
-	}
-	return nil
-}
-
-type Res1Type struct {
-	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Res2       *Res2Type                                 `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
-	Res2Map    map[string]*Res2Type                      `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
-}
-
-func (m *Res1Type) Reset()      { *m = Res1Type{} }
-func (*Res1Type) ProtoMessage() {}
-func (*Res1Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{1}
-}
-
-func (m *Res1Type) GetValue() istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Value
-	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
-}
-
-func (m *Res1Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
-func (m *Res1Type) GetRes2() *Res2Type {
-	if m != nil {
-		return m.Res2
-	}
-	return nil
-}
-
-func (m *Res1Type) GetRes2Map() map[string]*Res2Type {
-	if m != nil {
-		return m.Res2Map
-	}
-	return nil
-}
-
-type Res2Type struct {
-	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-}
-
-func (m *Res2Type) Reset()      { *m = Res2Type{} }
-func (*Res2Type) ProtoMessage() {}
-func (*Res2Type) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{2}
-}
-
-func (m *Res2Type) GetValue() istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Value
-	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
-}
-
-func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
-	if m != nil {
-		return m.Dimensions
-	}
-	return nil
-}
-
 // Request message for HandleReport method.
 type HandleReportRequest struct {
 	// Report instances.
@@ -166,7 +67,7 @@ type HandleReportRequest struct {
 func (m *HandleReportRequest) Reset()      { *m = HandleReportRequest{} }
 func (*HandleReportRequest) ProtoMessage() {}
 func (*HandleReportRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{3}
+	return fileDescriptorReportTesterTemplateHandlerService, []int{0}
 }
 
 func (m *HandleReportRequest) GetInstances() []*Type {
@@ -199,7 +100,7 @@ type HandleReportResponse struct {
 func (m *HandleReportResponse) Reset()      { *m = HandleReportResponse{} }
 func (*HandleReportResponse) ProtoMessage() {}
 func (*HandleReportResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{4}
+	return fileDescriptorReportTesterTemplateHandlerService, []int{1}
 }
 
 func (m *HandleReportResponse) GetStatus() *google_rpc.Status {
@@ -209,26 +110,27 @@ func (m *HandleReportResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// InstanceMsg is constructed by Mixer for the 'report' template.
+// Request-time payload for 'report' template . This is passed to infrastructure backends during request-time using
+// HandleReportService
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
-	Name            string                                        `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
-	Value           istio_policy_v1beta1.ValueType                `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions      map[string]istio_policy_v1beta1.ValueType     `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Int64Primitive  int64                                         `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
-	BoolPrimitive   bool                                          `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
-	DoublePrimitive float64                                       `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
-	StringPrimitive string                                        `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
-	Int64Map        map[string]int64                              `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
-	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
-	Duration        *istio_mixer_adapter_model_v1beta11.Duration  `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
-	Res1            *Res1Msg                                      `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
+	Name            string                                               `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
+	Value           *istio_mixer_adapter_model_v1beta11.Value            `protobuf:"bytes,1,opt,name=value" json:"value,omitempty"`
+	Dimensions      map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Int64Primitive  int64                                                `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
+	BoolPrimitive   bool                                                 `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
+	DoublePrimitive float64                                              `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
+	StringPrimitive string                                               `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
+	Int64Map        map[string]int64                                     `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp        `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
+	Duration        *istio_mixer_adapter_model_v1beta11.Duration         `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
+	Res1            *Res1Msg                                             `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
 }
 
 func (m *InstanceMsg) Reset()      { *m = InstanceMsg{} }
 func (*InstanceMsg) ProtoMessage() {}
 func (*InstanceMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{5}
+	return fileDescriptorReportTesterTemplateHandlerService, []int{2}
 }
 
 func (m *InstanceMsg) GetName() string {
@@ -238,14 +140,14 @@ func (m *InstanceMsg) GetName() string {
 	return ""
 }
 
-func (m *InstanceMsg) GetValue() istio_policy_v1beta1.ValueType {
+func (m *InstanceMsg) GetValue() *istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Value
 	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+	return nil
 }
 
-func (m *InstanceMsg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *InstanceMsg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -309,33 +211,33 @@ func (m *InstanceMsg) GetRes1() *Res1Msg {
 }
 
 type Res1Msg struct {
-	Value           istio_policy_v1beta1.ValueType                `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions      map[string]istio_policy_v1beta1.ValueType     `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Int64Primitive  int64                                         `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
-	BoolPrimitive   bool                                          `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
-	DoublePrimitive float64                                       `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
-	StringPrimitive string                                        `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
-	Int64Map        map[string]int64                              `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
-	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
-	Duration        *istio_mixer_adapter_model_v1beta11.Duration  `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
-	Res2            *Res2Msg                                      `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
-	Res2Map         map[string]*Res2Msg                           `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Value           *istio_mixer_adapter_model_v1beta11.Value            `protobuf:"bytes,1,opt,name=value" json:"value,omitempty"`
+	Dimensions      map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Int64Primitive  int64                                                `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
+	BoolPrimitive   bool                                                 `protobuf:"varint,4,opt,name=boolPrimitive,proto3" json:"boolPrimitive,omitempty"`
+	DoublePrimitive float64                                              `protobuf:"fixed64,5,opt,name=doublePrimitive,proto3" json:"doublePrimitive,omitempty"`
+	StringPrimitive string                                               `protobuf:"bytes,6,opt,name=stringPrimitive,proto3" json:"stringPrimitive,omitempty"`
+	Int64Map        map[string]int64                                     `protobuf:"bytes,7,rep,name=int64Map" json:"int64Map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	TimeStamp       *istio_mixer_adapter_model_v1beta11.TimeStamp        `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
+	Duration        *istio_mixer_adapter_model_v1beta11.Duration         `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
+	Res2            *Res2Msg                                             `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
+	Res2Map         map[string]*Res2Msg                                  `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
 }
 
 func (m *Res1Msg) Reset()      { *m = Res1Msg{} }
 func (*Res1Msg) ProtoMessage() {}
 func (*Res1Msg) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{6}
+	return fileDescriptorReportTesterTemplateHandlerService, []int{3}
 }
 
-func (m *Res1Msg) GetValue() istio_policy_v1beta1.ValueType {
+func (m *Res1Msg) GetValue() *istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Value
 	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+	return nil
 }
 
-func (m *Res1Msg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *Res1Msg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -406,31 +308,31 @@ func (m *Res1Msg) GetRes2Map() map[string]*Res2Msg {
 }
 
 type Res2Msg struct {
-	Value          istio_policy_v1beta1.ValueType                   `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
-	Dimensions     map[string]istio_policy_v1beta1.ValueType        `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
-	Int64Primitive int64                                            `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
-	TimeStamp      *istio_mixer_adapter_model_v1beta11.TimeStamp    `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
-	Duration       *istio_mixer_adapter_model_v1beta11.Duration     `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
-	IpAddr         *istio_mixer_adapter_model_v1beta11.IPAddress    `protobuf:"bytes,11,opt,name=ip_addr,json=ipAddr" json:"ip_addr,omitempty"`
-	DnsName        *istio_mixer_adapter_model_v1beta11.DNSName      `protobuf:"bytes,12,opt,name=dns_name,json=dnsName" json:"dns_name,omitempty"`
-	EmailAddr      *istio_mixer_adapter_model_v1beta11.EmailAddress `protobuf:"bytes,13,opt,name=email_addr,json=emailAddr" json:"email_addr,omitempty"`
-	Uri            *istio_mixer_adapter_model_v1beta11.Uri          `protobuf:"bytes,14,opt,name=uri" json:"uri,omitempty"`
+	Value          *istio_mixer_adapter_model_v1beta11.Value            `protobuf:"bytes,1,opt,name=value" json:"value,omitempty"`
+	Dimensions     map[string]*istio_mixer_adapter_model_v1beta11.Value `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+	Int64Primitive int64                                                `protobuf:"varint,3,opt,name=int64Primitive,proto3" json:"int64Primitive,omitempty"`
+	TimeStamp      *istio_mixer_adapter_model_v1beta11.TimeStamp        `protobuf:"bytes,9,opt,name=timeStamp" json:"timeStamp,omitempty"`
+	Duration       *istio_mixer_adapter_model_v1beta11.Duration         `protobuf:"bytes,10,opt,name=duration" json:"duration,omitempty"`
+	IpAddr         *istio_mixer_adapter_model_v1beta11.IPAddress        `protobuf:"bytes,11,opt,name=ip_addr,json=ipAddr" json:"ip_addr,omitempty"`
+	DnsName        *istio_mixer_adapter_model_v1beta11.DNSName          `protobuf:"bytes,12,opt,name=dns_name,json=dnsName" json:"dns_name,omitempty"`
+	EmailAddr      *istio_mixer_adapter_model_v1beta11.EmailAddress     `protobuf:"bytes,13,opt,name=email_addr,json=emailAddr" json:"email_addr,omitempty"`
+	Uri            *istio_mixer_adapter_model_v1beta11.Uri              `protobuf:"bytes,14,opt,name=uri" json:"uri,omitempty"`
 }
 
 func (m *Res2Msg) Reset()      { *m = Res2Msg{} }
 func (*Res2Msg) ProtoMessage() {}
 func (*Res2Msg) Descriptor() ([]byte, []int) {
-	return fileDescriptorReportTesterTemplateHandlerService, []int{7}
+	return fileDescriptorReportTesterTemplateHandlerService, []int{4}
 }
 
-func (m *Res2Msg) GetValue() istio_policy_v1beta1.ValueType {
+func (m *Res2Msg) GetValue() *istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Value
 	}
-	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+	return nil
 }
 
-func (m *Res2Msg) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+func (m *Res2Msg) GetDimensions() map[string]*istio_mixer_adapter_model_v1beta11.Value {
 	if m != nil {
 		return m.Dimensions
 	}
@@ -482,6 +384,107 @@ func (m *Res2Msg) GetEmailAddr() *istio_mixer_adapter_model_v1beta11.EmailAddres
 func (m *Res2Msg) GetUri() *istio_mixer_adapter_model_v1beta11.Uri {
 	if m != nil {
 		return m.Uri
+	}
+	return nil
+}
+
+// Type InstanceMsg for template 'report'. This is passed to infrastructure backends during request-time using
+// HandleReportService
+type Type struct {
+	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+	Res1       *Res1Type                                 `protobuf:"bytes,11,opt,name=res1" json:"res1,omitempty"`
+}
+
+func (m *Type) Reset()      { *m = Type{} }
+func (*Type) ProtoMessage() {}
+func (*Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorReportTesterTemplateHandlerService, []int{5}
+}
+
+func (m *Type) GetValue() istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Value
+	}
+	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+}
+
+func (m *Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
+	}
+	return nil
+}
+
+func (m *Type) GetRes1() *Res1Type {
+	if m != nil {
+		return m.Res1
+	}
+	return nil
+}
+
+type Res1Type struct {
+	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+	Res2       *Res2Type                                 `protobuf:"bytes,11,opt,name=res2" json:"res2,omitempty"`
+	Res2Map    map[string]*Res2Type                      `protobuf:"bytes,12,rep,name=res2_map,json=res2Map" json:"res2_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
+}
+
+func (m *Res1Type) Reset()      { *m = Res1Type{} }
+func (*Res1Type) ProtoMessage() {}
+func (*Res1Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorReportTesterTemplateHandlerService, []int{6}
+}
+
+func (m *Res1Type) GetValue() istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Value
+	}
+	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+}
+
+func (m *Res1Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
+	}
+	return nil
+}
+
+func (m *Res1Type) GetRes2() *Res2Type {
+	if m != nil {
+		return m.Res2
+	}
+	return nil
+}
+
+func (m *Res1Type) GetRes2Map() map[string]*Res2Type {
+	if m != nil {
+		return m.Res2Map
+	}
+	return nil
+}
+
+type Res2Type struct {
+	Value      istio_policy_v1beta1.ValueType            `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
+	Dimensions map[string]istio_policy_v1beta1.ValueType `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType"`
+}
+
+func (m *Res2Type) Reset()      { *m = Res2Type{} }
+func (*Res2Type) ProtoMessage() {}
+func (*Res2Type) Descriptor() ([]byte, []int) {
+	return fileDescriptorReportTesterTemplateHandlerService, []int{7}
+}
+
+func (m *Res2Type) GetValue() istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Value
+	}
+	return istio_policy_v1beta1.VALUE_TYPE_UNSPECIFIED
+}
+
+func (m *Res2Type) GetDimensions() map[string]istio_policy_v1beta1.ValueType {
+	if m != nil {
+		return m.Dimensions
 	}
 	return nil
 }
@@ -754,17 +757,292 @@ func (m *Res2InstanceParam) GetUri() string {
 }
 
 func init() {
-	proto.RegisterType((*Type)(nil), "istio.mixer.adapter.sample.report.Type")
-	proto.RegisterType((*Res1Type)(nil), "istio.mixer.adapter.sample.report.Res1Type")
-	proto.RegisterType((*Res2Type)(nil), "istio.mixer.adapter.sample.report.Res2Type")
 	proto.RegisterType((*HandleReportRequest)(nil), "istio.mixer.adapter.sample.report.HandleReportRequest")
 	proto.RegisterType((*HandleReportResponse)(nil), "istio.mixer.adapter.sample.report.HandleReportResponse")
 	proto.RegisterType((*InstanceMsg)(nil), "istio.mixer.adapter.sample.report.InstanceMsg")
 	proto.RegisterType((*Res1Msg)(nil), "istio.mixer.adapter.sample.report.Res1Msg")
 	proto.RegisterType((*Res2Msg)(nil), "istio.mixer.adapter.sample.report.Res2Msg")
+	proto.RegisterType((*Type)(nil), "istio.mixer.adapter.sample.report.Type")
+	proto.RegisterType((*Res1Type)(nil), "istio.mixer.adapter.sample.report.Res1Type")
+	proto.RegisterType((*Res2Type)(nil), "istio.mixer.adapter.sample.report.Res2Type")
 	proto.RegisterType((*InstanceParam)(nil), "istio.mixer.adapter.sample.report.InstanceParam")
 	proto.RegisterType((*Res1InstanceParam)(nil), "istio.mixer.adapter.sample.report.Res1InstanceParam")
 	proto.RegisterType((*Res2InstanceParam)(nil), "istio.mixer.adapter.sample.report.Res2InstanceParam")
+}
+func (this *HandleReportRequest) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*HandleReportRequest)
+	if !ok {
+		that2, ok := that.(HandleReportRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if len(this.Instances) != len(that1.Instances) {
+		return false
+	}
+	for i := range this.Instances {
+		if !this.Instances[i].Equal(that1.Instances[i]) {
+			return false
+		}
+	}
+	if !this.AdapterConfig.Equal(that1.AdapterConfig) {
+		return false
+	}
+	if this.DedupId != that1.DedupId {
+		return false
+	}
+	return true
+}
+func (this *HandleReportResponse) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*HandleReportResponse)
+	if !ok {
+		that2, ok := that.(HandleReportResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Status.Equal(that1.Status) {
+		return false
+	}
+	return true
+}
+func (this *InstanceMsg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*InstanceMsg)
+	if !ok {
+		that2, ok := that.(InstanceMsg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if !this.Value.Equal(that1.Value) {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if this.Int64Primitive != that1.Int64Primitive {
+		return false
+	}
+	if this.BoolPrimitive != that1.BoolPrimitive {
+		return false
+	}
+	if this.DoublePrimitive != that1.DoublePrimitive {
+		return false
+	}
+	if this.StringPrimitive != that1.StringPrimitive {
+		return false
+	}
+	if len(this.Int64Map) != len(that1.Int64Map) {
+		return false
+	}
+	for i := range this.Int64Map {
+		if this.Int64Map[i] != that1.Int64Map[i] {
+			return false
+		}
+	}
+	if !this.TimeStamp.Equal(that1.TimeStamp) {
+		return false
+	}
+	if !this.Duration.Equal(that1.Duration) {
+		return false
+	}
+	if !this.Res1.Equal(that1.Res1) {
+		return false
+	}
+	return true
+}
+func (this *Res1Msg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Res1Msg)
+	if !ok {
+		that2, ok := that.(Res1Msg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Value.Equal(that1.Value) {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if this.Int64Primitive != that1.Int64Primitive {
+		return false
+	}
+	if this.BoolPrimitive != that1.BoolPrimitive {
+		return false
+	}
+	if this.DoublePrimitive != that1.DoublePrimitive {
+		return false
+	}
+	if this.StringPrimitive != that1.StringPrimitive {
+		return false
+	}
+	if len(this.Int64Map) != len(that1.Int64Map) {
+		return false
+	}
+	for i := range this.Int64Map {
+		if this.Int64Map[i] != that1.Int64Map[i] {
+			return false
+		}
+	}
+	if !this.TimeStamp.Equal(that1.TimeStamp) {
+		return false
+	}
+	if !this.Duration.Equal(that1.Duration) {
+		return false
+	}
+	if !this.Res2.Equal(that1.Res2) {
+		return false
+	}
+	if len(this.Res2Map) != len(that1.Res2Map) {
+		return false
+	}
+	for i := range this.Res2Map {
+		if !this.Res2Map[i].Equal(that1.Res2Map[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *Res2Msg) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Res2Msg)
+	if !ok {
+		that2, ok := that.(Res2Msg)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Value.Equal(that1.Value) {
+		return false
+	}
+	if len(this.Dimensions) != len(that1.Dimensions) {
+		return false
+	}
+	for i := range this.Dimensions {
+		if !this.Dimensions[i].Equal(that1.Dimensions[i]) {
+			return false
+		}
+	}
+	if this.Int64Primitive != that1.Int64Primitive {
+		return false
+	}
+	if !this.TimeStamp.Equal(that1.TimeStamp) {
+		return false
+	}
+	if !this.Duration.Equal(that1.Duration) {
+		return false
+	}
+	if !this.IpAddr.Equal(that1.IpAddr) {
+		return false
+	}
+	if !this.DnsName.Equal(that1.DnsName) {
+		return false
+	}
+	if !this.EmailAddr.Equal(that1.EmailAddr) {
+		return false
+	}
+	if !this.Uri.Equal(that1.Uri) {
+		return false
+	}
+	return true
 }
 func (this *Type) Equal(that interface{}) bool {
 	if that == nil {
@@ -891,281 +1169,6 @@ func (this *Res2Type) Equal(that interface{}) bool {
 		if this.Dimensions[i] != that1.Dimensions[i] {
 			return false
 		}
-	}
-	return true
-}
-func (this *HandleReportRequest) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*HandleReportRequest)
-	if !ok {
-		that2, ok := that.(HandleReportRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if len(this.Instances) != len(that1.Instances) {
-		return false
-	}
-	for i := range this.Instances {
-		if !this.Instances[i].Equal(that1.Instances[i]) {
-			return false
-		}
-	}
-	if !this.AdapterConfig.Equal(that1.AdapterConfig) {
-		return false
-	}
-	if this.DedupId != that1.DedupId {
-		return false
-	}
-	return true
-}
-func (this *HandleReportResponse) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*HandleReportResponse)
-	if !ok {
-		that2, ok := that.(HandleReportResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if !this.Status.Equal(that1.Status) {
-		return false
-	}
-	return true
-}
-func (this *InstanceMsg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*InstanceMsg)
-	if !ok {
-		that2, ok := that.(InstanceMsg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Name != that1.Name {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if this.Int64Primitive != that1.Int64Primitive {
-		return false
-	}
-	if this.BoolPrimitive != that1.BoolPrimitive {
-		return false
-	}
-	if this.DoublePrimitive != that1.DoublePrimitive {
-		return false
-	}
-	if this.StringPrimitive != that1.StringPrimitive {
-		return false
-	}
-	if len(this.Int64Map) != len(that1.Int64Map) {
-		return false
-	}
-	for i := range this.Int64Map {
-		if this.Int64Map[i] != that1.Int64Map[i] {
-			return false
-		}
-	}
-	if !this.TimeStamp.Equal(that1.TimeStamp) {
-		return false
-	}
-	if !this.Duration.Equal(that1.Duration) {
-		return false
-	}
-	if !this.Res1.Equal(that1.Res1) {
-		return false
-	}
-	return true
-}
-func (this *Res1Msg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*Res1Msg)
-	if !ok {
-		that2, ok := that.(Res1Msg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if this.Int64Primitive != that1.Int64Primitive {
-		return false
-	}
-	if this.BoolPrimitive != that1.BoolPrimitive {
-		return false
-	}
-	if this.DoublePrimitive != that1.DoublePrimitive {
-		return false
-	}
-	if this.StringPrimitive != that1.StringPrimitive {
-		return false
-	}
-	if len(this.Int64Map) != len(that1.Int64Map) {
-		return false
-	}
-	for i := range this.Int64Map {
-		if this.Int64Map[i] != that1.Int64Map[i] {
-			return false
-		}
-	}
-	if !this.TimeStamp.Equal(that1.TimeStamp) {
-		return false
-	}
-	if !this.Duration.Equal(that1.Duration) {
-		return false
-	}
-	if !this.Res2.Equal(that1.Res2) {
-		return false
-	}
-	if len(this.Res2Map) != len(that1.Res2Map) {
-		return false
-	}
-	for i := range this.Res2Map {
-		if !this.Res2Map[i].Equal(that1.Res2Map[i]) {
-			return false
-		}
-	}
-	return true
-}
-func (this *Res2Msg) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*Res2Msg)
-	if !ok {
-		that2, ok := that.(Res2Msg)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if len(this.Dimensions) != len(that1.Dimensions) {
-		return false
-	}
-	for i := range this.Dimensions {
-		if this.Dimensions[i] != that1.Dimensions[i] {
-			return false
-		}
-	}
-	if this.Int64Primitive != that1.Int64Primitive {
-		return false
-	}
-	if !this.TimeStamp.Equal(that1.TimeStamp) {
-		return false
-	}
-	if !this.Duration.Equal(that1.Duration) {
-		return false
-	}
-	if !this.IpAddr.Equal(that1.IpAddr) {
-		return false
-	}
-	if !this.DnsName.Equal(that1.DnsName) {
-		return false
-	}
-	if !this.EmailAddr.Equal(that1.EmailAddr) {
-		return false
-	}
-	if !this.Uri.Equal(that1.Uri) {
-		return false
 	}
 	return true
 }
@@ -1370,6 +1373,194 @@ func (this *Res2InstanceParam) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *HandleReportRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&istio_mixer_adapter_sample_report.HandleReportRequest{")
+	if this.Instances != nil {
+		s = append(s, "Instances: "+fmt.Sprintf("%#v", this.Instances)+",\n")
+	}
+	if this.AdapterConfig != nil {
+		s = append(s, "AdapterConfig: "+fmt.Sprintf("%#v", this.AdapterConfig)+",\n")
+	}
+	s = append(s, "DedupId: "+fmt.Sprintf("%#v", this.DedupId)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *HandleReportResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&istio_mixer_adapter_sample_report.HandleReportResponse{")
+	if this.Status != nil {
+		s = append(s, "Status: "+fmt.Sprintf("%#v", this.Status)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *InstanceMsg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 15)
+	s = append(s, "&istio_mixer_adapter_sample_report.InstanceMsg{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	if this.Value != nil {
+		s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
+	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
+	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
+	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	if this.Int64Map != nil {
+		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
+	}
+	if this.TimeStamp != nil {
+		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
+	}
+	if this.Duration != nil {
+		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
+	}
+	if this.Res1 != nil {
+		s = append(s, "Res1: "+fmt.Sprintf("%#v", this.Res1)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Res1Msg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 15)
+	s = append(s, "&istio_mixer_adapter_sample_report.Res1Msg{")
+	if this.Value != nil {
+		s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
+	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
+	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
+	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	if this.Int64Map != nil {
+		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
+	}
+	if this.TimeStamp != nil {
+		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
+	}
+	if this.Duration != nil {
+		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
+	}
+	if this.Res2 != nil {
+		s = append(s, "Res2: "+fmt.Sprintf("%#v", this.Res2)+",\n")
+	}
+	keysForRes2Map := make([]string, 0, len(this.Res2Map))
+	for k, _ := range this.Res2Map {
+		keysForRes2Map = append(keysForRes2Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
+	mapStringForRes2Map := "map[string]*Res2Msg{"
+	for _, k := range keysForRes2Map {
+		mapStringForRes2Map += fmt.Sprintf("%#v: %#v,", k, this.Res2Map[k])
+	}
+	mapStringForRes2Map += "}"
+	if this.Res2Map != nil {
+		s = append(s, "Res2Map: "+mapStringForRes2Map+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Res2Msg) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 13)
+	s = append(s, "&istio_mixer_adapter_sample_report.Res2Msg{")
+	if this.Value != nil {
+		s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	if this.Dimensions != nil {
+		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
+	}
+	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
+	if this.TimeStamp != nil {
+		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
+	}
+	if this.Duration != nil {
+		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
+	}
+	if this.IpAddr != nil {
+		s = append(s, "IpAddr: "+fmt.Sprintf("%#v", this.IpAddr)+",\n")
+	}
+	if this.DnsName != nil {
+		s = append(s, "DnsName: "+fmt.Sprintf("%#v", this.DnsName)+",\n")
+	}
+	if this.EmailAddr != nil {
+		s = append(s, "EmailAddr: "+fmt.Sprintf("%#v", this.EmailAddr)+",\n")
+	}
+	if this.Uri != nil {
+		s = append(s, "Uri: "+fmt.Sprintf("%#v", this.Uri)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *Type) GoString() string {
 	if this == nil {
 		return "nil"
@@ -1454,188 +1645,6 @@ func (this *Res2Type) GoString() string {
 	mapStringForDimensions += "}"
 	if this.Dimensions != nil {
 		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *HandleReportRequest) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 7)
-	s = append(s, "&istio_mixer_adapter_sample_report.HandleReportRequest{")
-	if this.Instances != nil {
-		s = append(s, "Instances: "+fmt.Sprintf("%#v", this.Instances)+",\n")
-	}
-	if this.AdapterConfig != nil {
-		s = append(s, "AdapterConfig: "+fmt.Sprintf("%#v", this.AdapterConfig)+",\n")
-	}
-	s = append(s, "DedupId: "+fmt.Sprintf("%#v", this.DedupId)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *HandleReportResponse) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&istio_mixer_adapter_sample_report.HandleReportResponse{")
-	if this.Status != nil {
-		s = append(s, "Status: "+fmt.Sprintf("%#v", this.Status)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *InstanceMsg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 15)
-	s = append(s, "&istio_mixer_adapter_sample_report.InstanceMsg{")
-	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
-	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
-	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
-	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	if this.Int64Map != nil {
-		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
-	}
-	if this.TimeStamp != nil {
-		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
-	}
-	if this.Duration != nil {
-		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
-	}
-	if this.Res1 != nil {
-		s = append(s, "Res1: "+fmt.Sprintf("%#v", this.Res1)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *Res1Msg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 15)
-	s = append(s, "&istio_mixer_adapter_sample_report.Res1Msg{")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
-	s = append(s, "BoolPrimitive: "+fmt.Sprintf("%#v", this.BoolPrimitive)+",\n")
-	s = append(s, "DoublePrimitive: "+fmt.Sprintf("%#v", this.DoublePrimitive)+",\n")
-	s = append(s, "StringPrimitive: "+fmt.Sprintf("%#v", this.StringPrimitive)+",\n")
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%#v: %#v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	if this.Int64Map != nil {
-		s = append(s, "Int64Map: "+mapStringForInt64Map+",\n")
-	}
-	if this.TimeStamp != nil {
-		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
-	}
-	if this.Duration != nil {
-		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
-	}
-	if this.Res2 != nil {
-		s = append(s, "Res2: "+fmt.Sprintf("%#v", this.Res2)+",\n")
-	}
-	keysForRes2Map := make([]string, 0, len(this.Res2Map))
-	for k, _ := range this.Res2Map {
-		keysForRes2Map = append(keysForRes2Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
-	mapStringForRes2Map := "map[string]*Res2Msg{"
-	for _, k := range keysForRes2Map {
-		mapStringForRes2Map += fmt.Sprintf("%#v: %#v,", k, this.Res2Map[k])
-	}
-	mapStringForRes2Map += "}"
-	if this.Res2Map != nil {
-		s = append(s, "Res2Map: "+mapStringForRes2Map+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *Res2Msg) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 13)
-	s = append(s, "&istio_mixer_adapter_sample_report.Res2Msg{")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%#v: %#v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	if this.Dimensions != nil {
-		s = append(s, "Dimensions: "+mapStringForDimensions+",\n")
-	}
-	s = append(s, "Int64Primitive: "+fmt.Sprintf("%#v", this.Int64Primitive)+",\n")
-	if this.TimeStamp != nil {
-		s = append(s, "TimeStamp: "+fmt.Sprintf("%#v", this.TimeStamp)+",\n")
-	}
-	if this.Duration != nil {
-		s = append(s, "Duration: "+fmt.Sprintf("%#v", this.Duration)+",\n")
-	}
-	if this.IpAddr != nil {
-		s = append(s, "IpAddr: "+fmt.Sprintf("%#v", this.IpAddr)+",\n")
-	}
-	if this.DnsName != nil {
-		s = append(s, "DnsName: "+fmt.Sprintf("%#v", this.DnsName)+",\n")
-	}
-	if this.EmailAddr != nil {
-		s = append(s, "EmailAddr: "+fmt.Sprintf("%#v", this.EmailAddr)+",\n")
-	}
-	if this.Uri != nil {
-		s = append(s, "Uri: "+fmt.Sprintf("%#v", this.Uri)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -1781,6 +1790,501 @@ func valueToGoStringReportTesterTemplateHandlerService(v interface{}, typ string
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("func(v %v) *%v { return &v } ( %#v )", typ, typ, pv)
 }
+func (m *HandleReportRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *HandleReportRequest) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Instances) > 0 {
+		for _, msg := range m.Instances {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if m.AdapterConfig != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.AdapterConfig.Size()))
+		n1, err := m.AdapterConfig.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
+	if len(m.DedupId) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.DedupId)))
+		i += copy(dAtA[i:], m.DedupId)
+	}
+	return i, nil
+}
+
+func (m *HandleReportResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *HandleReportResponse) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Status != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Status.Size()))
+		n2, err := m.Status.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n2
+	}
+	return i, nil
+}
+
+func (m *InstanceMsg) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceMsg) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Value != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value.Size()))
+		n3, err := m.Value.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n3
+	}
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0x12
+			i++
+			v := m.Dimensions[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovReportTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n4, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n4
+			}
+		}
+	}
+	if m.Int64Primitive != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
+	}
+	if m.BoolPrimitive {
+		dAtA[i] = 0x20
+		i++
+		if m.BoolPrimitive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if m.DoublePrimitive != 0 {
+		dAtA[i] = 0x29
+		i++
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DoublePrimitive))))
+		i += 8
+	}
+	if len(m.StringPrimitive) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.StringPrimitive)))
+		i += copy(dAtA[i:], m.StringPrimitive)
+	}
+	if len(m.Int64Map) > 0 {
+		for k, _ := range m.Int64Map {
+			dAtA[i] = 0x3a
+			i++
+			v := m.Int64Map[k]
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			dAtA[i] = 0x10
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
+		}
+	}
+	if m.TimeStamp != nil {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
+		n5, err := m.TimeStamp.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n5
+	}
+	if m.Duration != nil {
+		dAtA[i] = 0x52
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
+		n6, err := m.Duration.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n6
+	}
+	if m.Res1 != nil {
+		dAtA[i] = 0x5a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
+		n7, err := m.Res1.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n7
+	}
+	if len(m.Name) > 0 {
+		dAtA[i] = 0xfa
+		i++
+		dAtA[i] = 0xd2
+		i++
+		dAtA[i] = 0xe4
+		i++
+		dAtA[i] = 0x93
+		i++
+		dAtA[i] = 0x2
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
+	}
+	return i, nil
+}
+
+func (m *Res1Msg) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Res1Msg) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Value != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value.Size()))
+		n8, err := m.Value.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n8
+	}
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0x12
+			i++
+			v := m.Dimensions[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovReportTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n9, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n9
+			}
+		}
+	}
+	if m.Int64Primitive != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
+	}
+	if m.BoolPrimitive {
+		dAtA[i] = 0x20
+		i++
+		if m.BoolPrimitive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if m.DoublePrimitive != 0 {
+		dAtA[i] = 0x29
+		i++
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DoublePrimitive))))
+		i += 8
+	}
+	if len(m.StringPrimitive) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.StringPrimitive)))
+		i += copy(dAtA[i:], m.StringPrimitive)
+	}
+	if len(m.Int64Map) > 0 {
+		for k, _ := range m.Int64Map {
+			dAtA[i] = 0x3a
+			i++
+			v := m.Int64Map[k]
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			dAtA[i] = 0x10
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
+		}
+	}
+	if m.TimeStamp != nil {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
+		n10, err := m.TimeStamp.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n10
+	}
+	if m.Duration != nil {
+		dAtA[i] = 0x52
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
+		n11, err := m.Duration.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n11
+	}
+	if m.Res2 != nil {
+		dAtA[i] = 0x5a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
+		n12, err := m.Res2.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n12
+	}
+	if len(m.Res2Map) > 0 {
+		for k, _ := range m.Res2Map {
+			dAtA[i] = 0x62
+			i++
+			v := m.Res2Map[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovReportTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n13, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n13
+			}
+		}
+	}
+	return i, nil
+}
+
+func (m *Res2Msg) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Res2Msg) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Value != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value.Size()))
+		n14, err := m.Value.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n14
+	}
+	if len(m.Dimensions) > 0 {
+		for k, _ := range m.Dimensions {
+			dAtA[i] = 0x12
+			i++
+			v := m.Dimensions[k]
+			msgSize := 0
+			if v != nil {
+				msgSize = v.Size()
+				msgSize += 1 + sovReportTesterTemplateHandlerService(uint64(msgSize))
+			}
+			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + msgSize
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
+			i += copy(dAtA[i:], k)
+			if v != nil {
+				dAtA[i] = 0x12
+				i++
+				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
+				n15, err := v.MarshalTo(dAtA[i:])
+				if err != nil {
+					return 0, err
+				}
+				i += n15
+			}
+		}
+	}
+	if m.Int64Primitive != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
+	}
+	if m.TimeStamp != nil {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
+		n16, err := m.TimeStamp.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n16
+	}
+	if m.Duration != nil {
+		dAtA[i] = 0x52
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
+		n17, err := m.Duration.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n17
+	}
+	if m.IpAddr != nil {
+		dAtA[i] = 0x5a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.IpAddr.Size()))
+		n18, err := m.IpAddr.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n18
+	}
+	if m.DnsName != nil {
+		dAtA[i] = 0x62
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.DnsName.Size()))
+		n19, err := m.DnsName.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n19
+	}
+	if m.EmailAddr != nil {
+		dAtA[i] = 0x6a
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.EmailAddr.Size()))
+		n20, err := m.EmailAddr.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n20
+	}
+	if m.Uri != nil {
+		dAtA[i] = 0x72
+		i++
+		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Uri.Size()))
+		n21, err := m.Uri.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n21
+	}
+	return i, nil
+}
+
 func (m *Type) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1821,11 +2325,11 @@ func (m *Type) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n1, err := m.Res1.MarshalTo(dAtA[i:])
+		n22, err := m.Res1.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n1
+		i += n22
 	}
 	return i, nil
 }
@@ -1870,11 +2374,11 @@ func (m *Res1Type) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
-		n2, err := m.Res2.MarshalTo(dAtA[i:])
+		n23, err := m.Res2.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n2
+		i += n23
 	}
 	if len(m.Res2Map) > 0 {
 		for k, _ := range m.Res2Map {
@@ -1896,11 +2400,11 @@ func (m *Res1Type) MarshalTo(dAtA []byte) (int, error) {
 				dAtA[i] = 0x12
 				i++
 				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
-				n3, err := v.MarshalTo(dAtA[i:])
+				n24, err := v.MarshalTo(dAtA[i:])
 				if err != nil {
 					return 0, err
 				}
-				i += n3
+				i += n24
 			}
 		}
 	}
@@ -1942,450 +2446,6 @@ func (m *Res2Type) MarshalTo(dAtA []byte) (int, error) {
 			i++
 			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
 		}
-	}
-	return i, nil
-}
-
-func (m *HandleReportRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *HandleReportRequest) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Instances) > 0 {
-		for _, msg := range m.Instances {
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.AdapterConfig != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.AdapterConfig.Size()))
-		n4, err := m.AdapterConfig.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n4
-	}
-	if len(m.DedupId) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.DedupId)))
-		i += copy(dAtA[i:], m.DedupId)
-	}
-	return i, nil
-}
-
-func (m *HandleReportResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *HandleReportResponse) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Status != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Status.Size()))
-		n5, err := m.Status.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n5
-	}
-	return i, nil
-}
-
-func (m *InstanceMsg) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *InstanceMsg) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0x12
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
-	}
-	if m.BoolPrimitive {
-		dAtA[i] = 0x20
-		i++
-		if m.BoolPrimitive {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.DoublePrimitive != 0 {
-		dAtA[i] = 0x29
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DoublePrimitive))))
-		i += 8
-	}
-	if len(m.StringPrimitive) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.StringPrimitive)))
-		i += copy(dAtA[i:], m.StringPrimitive)
-	}
-	if len(m.Int64Map) > 0 {
-		for k, _ := range m.Int64Map {
-			dAtA[i] = 0x3a
-			i++
-			v := m.Int64Map[k]
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.TimeStamp != nil {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
-		n6, err := m.TimeStamp.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n6
-	}
-	if m.Duration != nil {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
-		n7, err := m.Duration.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n7
-	}
-	if m.Res1 != nil {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n8, err := m.Res1.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n8
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0xfa
-		i++
-		dAtA[i] = 0xd2
-		i++
-		dAtA[i] = 0xe4
-		i++
-		dAtA[i] = 0x93
-		i++
-		dAtA[i] = 0x2
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	return i, nil
-}
-
-func (m *Res1Msg) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Res1Msg) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0x12
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
-	}
-	if m.BoolPrimitive {
-		dAtA[i] = 0x20
-		i++
-		if m.BoolPrimitive {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.DoublePrimitive != 0 {
-		dAtA[i] = 0x29
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DoublePrimitive))))
-		i += 8
-	}
-	if len(m.StringPrimitive) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(m.StringPrimitive)))
-		i += copy(dAtA[i:], m.StringPrimitive)
-	}
-	if len(m.Int64Map) > 0 {
-		for k, _ := range m.Int64Map {
-			dAtA[i] = 0x3a
-			i++
-			v := m.Int64Map[k]
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.TimeStamp != nil {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
-		n9, err := m.TimeStamp.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n9
-	}
-	if m.Duration != nil {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
-		n10, err := m.Duration.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n10
-	}
-	if m.Res2 != nil {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
-		n11, err := m.Res2.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n11
-	}
-	if len(m.Res2Map) > 0 {
-		for k, _ := range m.Res2Map {
-			dAtA[i] = 0x62
-			i++
-			v := m.Res2Map[k]
-			msgSize := 0
-			if v != nil {
-				msgSize = v.Size()
-				msgSize += 1 + sovReportTesterTemplateHandlerService(uint64(msgSize))
-			}
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + msgSize
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			if v != nil {
-				dAtA[i] = 0x12
-				i++
-				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
-				n12, err := v.MarshalTo(dAtA[i:])
-				if err != nil {
-					return 0, err
-				}
-				i += n12
-			}
-		}
-	}
-	return i, nil
-}
-
-func (m *Res2Msg) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Res2Msg) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Value != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, _ := range m.Dimensions {
-			dAtA[i] = 0x12
-			i++
-			v := m.Dimensions[k]
-			mapSize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Int64Primitive))
-	}
-	if m.TimeStamp != nil {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.TimeStamp.Size()))
-		n13, err := m.TimeStamp.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n13
-	}
-	if m.Duration != nil {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Duration.Size()))
-		n14, err := m.Duration.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n14
-	}
-	if m.IpAddr != nil {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.IpAddr.Size()))
-		n15, err := m.IpAddr.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n15
-	}
-	if m.DnsName != nil {
-		dAtA[i] = 0x62
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.DnsName.Size()))
-		n16, err := m.DnsName.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n16
-	}
-	if m.EmailAddr != nil {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.EmailAddr.Size()))
-		n17, err := m.EmailAddr.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n17
-	}
-	if m.Uri != nil {
-		dAtA[i] = 0x72
-		i++
-		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Uri.Size()))
-		n18, err := m.Uri.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n18
 	}
 	return i, nil
 }
@@ -2485,11 +2545,11 @@ func (m *InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res1.Size()))
-		n19, err := m.Res1.MarshalTo(dAtA[i:])
+		n25, err := m.Res1.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n19
+		i += n25
 	}
 	return i, nil
 }
@@ -2589,11 +2649,11 @@ func (m *Res1InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(m.Res2.Size()))
-		n20, err := m.Res2.MarshalTo(dAtA[i:])
+		n26, err := m.Res2.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n20
+		i += n26
 	}
 	if len(m.Res2Map) > 0 {
 		for k, _ := range m.Res2Map {
@@ -2615,11 +2675,11 @@ func (m *Res1InstanceParam) MarshalTo(dAtA []byte) (int, error) {
 				dAtA[i] = 0x12
 				i++
 				i = encodeVarintReportTesterTemplateHandlerService(dAtA, i, uint64(v.Size()))
-				n21, err := v.MarshalTo(dAtA[i:])
+				n27, err := v.MarshalTo(dAtA[i:])
 				if err != nil {
 					return 0, err
 				}
-				i += n21
+				i += n27
 			}
 		}
 	}
@@ -2718,6 +2778,215 @@ func encodeVarintReportTesterTemplateHandlerService(dAtA []byte, offset int, v u
 	dAtA[offset] = uint8(v)
 	return offset + 1
 }
+func (m *HandleReportRequest) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.Instances) > 0 {
+		for _, e := range m.Instances {
+			l = e.Size()
+			n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+		}
+	}
+	if m.AdapterConfig != nil {
+		l = m.AdapterConfig.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	l = len(m.DedupId)
+	if l > 0 {
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *HandleReportResponse) Size() (n int) {
+	var l int
+	_ = l
+	if m.Status != nil {
+		l = m.Status.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *InstanceMsg) Size() (n int) {
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovReportTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Int64Primitive != 0 {
+		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
+	}
+	if m.BoolPrimitive {
+		n += 2
+	}
+	if m.DoublePrimitive != 0 {
+		n += 9
+	}
+	l = len(m.StringPrimitive)
+	if l > 0 {
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Int64Map) > 0 {
+		for k, v := range m.Int64Map {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.TimeStamp != nil {
+		l = m.TimeStamp.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Duration != nil {
+		l = m.Duration.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Res1 != nil {
+		l = m.Res1.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 5 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
+func (m *Res1Msg) Size() (n int) {
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovReportTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Int64Primitive != 0 {
+		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
+	}
+	if m.BoolPrimitive {
+		n += 2
+	}
+	if m.DoublePrimitive != 0 {
+		n += 9
+	}
+	l = len(m.StringPrimitive)
+	if l > 0 {
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Int64Map) > 0 {
+		for k, v := range m.Int64Map {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.TimeStamp != nil {
+		l = m.TimeStamp.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Duration != nil {
+		l = m.Duration.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Res2 != nil {
+		l = m.Res2.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Res2Map) > 0 {
+		for k, v := range m.Res2Map {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovReportTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *Res2Msg) Size() (n int) {
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if len(m.Dimensions) > 0 {
+		for k, v := range m.Dimensions {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovReportTesterTemplateHandlerService(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
+		}
+	}
+	if m.Int64Primitive != 0 {
+		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
+	}
+	if m.TimeStamp != nil {
+		l = m.TimeStamp.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Duration != nil {
+		l = m.Duration.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.IpAddr != nil {
+		l = m.IpAddr.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.DnsName != nil {
+		l = m.DnsName.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.EmailAddr != nil {
+		l = m.EmailAddr.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	if m.Uri != nil {
+		l = m.Uri.Size()
+		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
+	}
+	return n
+}
+
 func (m *Type) Size() (n int) {
 	var l int
 	_ = l
@@ -2786,197 +3055,6 @@ func (m *Res2Type) Size() (n int) {
 			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
 			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
 		}
-	}
-	return n
-}
-
-func (m *HandleReportRequest) Size() (n int) {
-	var l int
-	_ = l
-	if len(m.Instances) > 0 {
-		for _, e := range m.Instances {
-			l = e.Size()
-			n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-		}
-	}
-	if m.AdapterConfig != nil {
-		l = m.AdapterConfig.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	l = len(m.DedupId)
-	if l > 0 {
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *HandleReportResponse) Size() (n int) {
-	var l int
-	_ = l
-	if m.Status != nil {
-		l = m.Status.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *InstanceMsg) Size() (n int) {
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
-	}
-	if m.BoolPrimitive {
-		n += 2
-	}
-	if m.DoublePrimitive != 0 {
-		n += 9
-	}
-	l = len(m.StringPrimitive)
-	if l > 0 {
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if len(m.Int64Map) > 0 {
-		for k, v := range m.Int64Map {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.TimeStamp != nil {
-		l = m.TimeStamp.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Duration != nil {
-		l = m.Duration.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Res1 != nil {
-		l = m.Res1.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	l = len(m.Name)
-	if l > 0 {
-		n += 5 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	return n
-}
-
-func (m *Res1Msg) Size() (n int) {
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
-	}
-	if m.BoolPrimitive {
-		n += 2
-	}
-	if m.DoublePrimitive != 0 {
-		n += 9
-	}
-	l = len(m.StringPrimitive)
-	if l > 0 {
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if len(m.Int64Map) > 0 {
-		for k, v := range m.Int64Map {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.TimeStamp != nil {
-		l = m.TimeStamp.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Duration != nil {
-		l = m.Duration.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Res2 != nil {
-		l = m.Res2.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if len(m.Res2Map) > 0 {
-		for k, v := range m.Res2Map {
-			_ = k
-			_ = v
-			l = 0
-			if v != nil {
-				l = v.Size()
-				l += 1 + sovReportTesterTemplateHandlerService(uint64(l))
-			}
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + l
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	return n
-}
-
-func (m *Res2Msg) Size() (n int) {
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Value))
-	}
-	if len(m.Dimensions) > 0 {
-		for k, v := range m.Dimensions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovReportTesterTemplateHandlerService(uint64(len(k))) + 1 + sovReportTesterTemplateHandlerService(uint64(v))
-			n += mapEntrySize + 1 + sovReportTesterTemplateHandlerService(uint64(mapEntrySize))
-		}
-	}
-	if m.Int64Primitive != 0 {
-		n += 1 + sovReportTesterTemplateHandlerService(uint64(m.Int64Primitive))
-	}
-	if m.TimeStamp != nil {
-		l = m.TimeStamp.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Duration != nil {
-		l = m.Duration.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.IpAddr != nil {
-		l = m.IpAddr.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.DnsName != nil {
-		l = m.DnsName.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.EmailAddr != nil {
-		l = m.EmailAddr.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
-	}
-	if m.Uri != nil {
-		l = m.Uri.Size()
-		n += 1 + l + sovReportTesterTemplateHandlerService(uint64(l))
 	}
 	return n
 }
@@ -3161,6 +3239,146 @@ func sovReportTesterTemplateHandlerService(x uint64) (n int) {
 func sozReportTesterTemplateHandlerService(x uint64) (n int) {
 	return sovReportTesterTemplateHandlerService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+func (this *HandleReportRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&HandleReportRequest{`,
+		`Instances:` + strings.Replace(fmt.Sprintf("%v", this.Instances), "Type", "Type", 1) + `,`,
+		`AdapterConfig:` + strings.Replace(fmt.Sprintf("%v", this.AdapterConfig), "Any", "google_protobuf1.Any", 1) + `,`,
+		`DedupId:` + fmt.Sprintf("%v", this.DedupId) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *HandleReportResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&HandleReportResponse{`,
+		`Status:` + strings.Replace(fmt.Sprintf("%v", this.Status), "Status", "google_rpc.Status", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *InstanceMsg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	s := strings.Join([]string{`&InstanceMsg{`,
+		`Value:` + strings.Replace(fmt.Sprintf("%v", this.Value), "Value", "istio_mixer_adapter_model_v1beta11.Value", 1) + `,`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
+		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
+		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
+		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
+		`Int64Map:` + mapStringForInt64Map + `,`,
+		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
+		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
+		`Res1:` + strings.Replace(fmt.Sprintf("%v", this.Res1), "Res1Msg", "Res1Msg", 1) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Res1Msg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	keysForInt64Map := make([]string, 0, len(this.Int64Map))
+	for k, _ := range this.Int64Map {
+		keysForInt64Map = append(keysForInt64Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
+	mapStringForInt64Map := "map[string]int64{"
+	for _, k := range keysForInt64Map {
+		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
+	}
+	mapStringForInt64Map += "}"
+	keysForRes2Map := make([]string, 0, len(this.Res2Map))
+	for k, _ := range this.Res2Map {
+		keysForRes2Map = append(keysForRes2Map, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
+	mapStringForRes2Map := "map[string]*Res2Msg{"
+	for _, k := range keysForRes2Map {
+		mapStringForRes2Map += fmt.Sprintf("%v: %v,", k, this.Res2Map[k])
+	}
+	mapStringForRes2Map += "}"
+	s := strings.Join([]string{`&Res1Msg{`,
+		`Value:` + strings.Replace(fmt.Sprintf("%v", this.Value), "Value", "istio_mixer_adapter_model_v1beta11.Value", 1) + `,`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
+		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
+		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
+		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
+		`Int64Map:` + mapStringForInt64Map + `,`,
+		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
+		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
+		`Res2:` + strings.Replace(fmt.Sprintf("%v", this.Res2), "Res2Msg", "Res2Msg", 1) + `,`,
+		`Res2Map:` + mapStringForRes2Map + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Res2Msg) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForDimensions := make([]string, 0, len(this.Dimensions))
+	for k, _ := range this.Dimensions {
+		keysForDimensions = append(keysForDimensions, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
+	mapStringForDimensions := "map[string]*istio_mixer_adapter_model_v1beta11.Value{"
+	for _, k := range keysForDimensions {
+		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
+	}
+	mapStringForDimensions += "}"
+	s := strings.Join([]string{`&Res2Msg{`,
+		`Value:` + strings.Replace(fmt.Sprintf("%v", this.Value), "Value", "istio_mixer_adapter_model_v1beta11.Value", 1) + `,`,
+		`Dimensions:` + mapStringForDimensions + `,`,
+		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
+		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
+		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
+		`IpAddr:` + strings.Replace(fmt.Sprintf("%v", this.IpAddr), "IPAddress", "istio_mixer_adapter_model_v1beta11.IPAddress", 1) + `,`,
+		`DnsName:` + strings.Replace(fmt.Sprintf("%v", this.DnsName), "DNSName", "istio_mixer_adapter_model_v1beta11.DNSName", 1) + `,`,
+		`EmailAddr:` + strings.Replace(fmt.Sprintf("%v", this.EmailAddr), "EmailAddress", "istio_mixer_adapter_model_v1beta11.EmailAddress", 1) + `,`,
+		`Uri:` + strings.Replace(fmt.Sprintf("%v", this.Uri), "Uri", "istio_mixer_adapter_model_v1beta11.Uri", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *Type) String() string {
 	if this == nil {
 		return "nil"
@@ -3233,146 +3451,6 @@ func (this *Res2Type) String() string {
 	s := strings.Join([]string{`&Res2Type{`,
 		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
 		`Dimensions:` + mapStringForDimensions + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *HandleReportRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&HandleReportRequest{`,
-		`Instances:` + strings.Replace(fmt.Sprintf("%v", this.Instances), "Type", "Type", 1) + `,`,
-		`AdapterConfig:` + strings.Replace(fmt.Sprintf("%v", this.AdapterConfig), "Any", "google_protobuf1.Any", 1) + `,`,
-		`DedupId:` + fmt.Sprintf("%v", this.DedupId) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *HandleReportResponse) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&HandleReportResponse{`,
-		`Status:` + strings.Replace(fmt.Sprintf("%v", this.Status), "Status", "google_rpc.Status", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *InstanceMsg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	s := strings.Join([]string{`&InstanceMsg{`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
-		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
-		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
-		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
-		`Int64Map:` + mapStringForInt64Map + `,`,
-		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
-		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
-		`Res1:` + strings.Replace(fmt.Sprintf("%v", this.Res1), "Res1Msg", "Res1Msg", 1) + `,`,
-		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Res1Msg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	keysForInt64Map := make([]string, 0, len(this.Int64Map))
-	for k, _ := range this.Int64Map {
-		keysForInt64Map = append(keysForInt64Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForInt64Map)
-	mapStringForInt64Map := "map[string]int64{"
-	for _, k := range keysForInt64Map {
-		mapStringForInt64Map += fmt.Sprintf("%v: %v,", k, this.Int64Map[k])
-	}
-	mapStringForInt64Map += "}"
-	keysForRes2Map := make([]string, 0, len(this.Res2Map))
-	for k, _ := range this.Res2Map {
-		keysForRes2Map = append(keysForRes2Map, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForRes2Map)
-	mapStringForRes2Map := "map[string]*Res2Msg{"
-	for _, k := range keysForRes2Map {
-		mapStringForRes2Map += fmt.Sprintf("%v: %v,", k, this.Res2Map[k])
-	}
-	mapStringForRes2Map += "}"
-	s := strings.Join([]string{`&Res1Msg{`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
-		`BoolPrimitive:` + fmt.Sprintf("%v", this.BoolPrimitive) + `,`,
-		`DoublePrimitive:` + fmt.Sprintf("%v", this.DoublePrimitive) + `,`,
-		`StringPrimitive:` + fmt.Sprintf("%v", this.StringPrimitive) + `,`,
-		`Int64Map:` + mapStringForInt64Map + `,`,
-		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
-		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
-		`Res2:` + strings.Replace(fmt.Sprintf("%v", this.Res2), "Res2Msg", "Res2Msg", 1) + `,`,
-		`Res2Map:` + mapStringForRes2Map + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Res2Msg) String() string {
-	if this == nil {
-		return "nil"
-	}
-	keysForDimensions := make([]string, 0, len(this.Dimensions))
-	for k, _ := range this.Dimensions {
-		keysForDimensions = append(keysForDimensions, k)
-	}
-	github_com_gogo_protobuf_sortkeys.Strings(keysForDimensions)
-	mapStringForDimensions := "map[string]istio_policy_v1beta1.ValueType{"
-	for _, k := range keysForDimensions {
-		mapStringForDimensions += fmt.Sprintf("%v: %v,", k, this.Dimensions[k])
-	}
-	mapStringForDimensions += "}"
-	s := strings.Join([]string{`&Res2Msg{`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`Dimensions:` + mapStringForDimensions + `,`,
-		`Int64Primitive:` + fmt.Sprintf("%v", this.Int64Primitive) + `,`,
-		`TimeStamp:` + strings.Replace(fmt.Sprintf("%v", this.TimeStamp), "TimeStamp", "istio_mixer_adapter_model_v1beta11.TimeStamp", 1) + `,`,
-		`Duration:` + strings.Replace(fmt.Sprintf("%v", this.Duration), "Duration", "istio_mixer_adapter_model_v1beta11.Duration", 1) + `,`,
-		`IpAddr:` + strings.Replace(fmt.Sprintf("%v", this.IpAddr), "IPAddress", "istio_mixer_adapter_model_v1beta11.IPAddress", 1) + `,`,
-		`DnsName:` + strings.Replace(fmt.Sprintf("%v", this.DnsName), "DNSName", "istio_mixer_adapter_model_v1beta11.DNSName", 1) + `,`,
-		`EmailAddr:` + strings.Replace(fmt.Sprintf("%v", this.EmailAddr), "EmailAddress", "istio_mixer_adapter_model_v1beta11.EmailAddress", 1) + `,`,
-		`Uri:` + strings.Replace(fmt.Sprintf("%v", this.Uri), "Uri", "istio_mixer_adapter_model_v1beta11.Uri", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3501,6 +3579,1789 @@ func valueToStringReportTesterTemplateHandlerService(v interface{}) string {
 	}
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
+}
+func (m *HandleReportRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowReportTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HandleReportRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HandleReportRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Instances", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Instances = append(m.Instances, &Type{})
+			if err := m.Instances[len(m.Instances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AdapterConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AdapterConfig == nil {
+				m.AdapterConfig = &google_protobuf1.Any{}
+			}
+			if err := m.AdapterConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DedupId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DedupId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *HandleReportResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowReportTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HandleReportResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HandleReportResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Status == nil {
+				m.Status = &google_rpc.Status{}
+			}
+			if err := m.Status.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceMsg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowReportTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InstanceMsg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InstanceMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Value == nil {
+				m.Value = &istio_mixer_adapter_model_v1beta11.Value{}
+			}
+			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
+			}
+			m.Int64Primitive = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Int64Primitive |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.BoolPrimitive = bool(v != 0)
+		case 5:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.DoublePrimitive = float64(math.Float64frombits(v))
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Int64Map == nil {
+				m.Int64Map = make(map[string]int64)
+			}
+			var mapkey string
+			var mapvalue int64
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapvalue |= (int64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Int64Map[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TimeStamp == nil {
+				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
+			}
+			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Duration == nil {
+				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
+			}
+			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res1", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res1 == nil {
+				m.Res1 = &Res1Msg{}
+			}
+			if err := m.Res1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 72295727:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Res1Msg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowReportTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Res1Msg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Res1Msg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Value == nil {
+				m.Value = &istio_mixer_adapter_model_v1beta11.Value{}
+			}
+			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
+			}
+			m.Int64Primitive = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Int64Primitive |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.BoolPrimitive = bool(v != 0)
+		case 5:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.DoublePrimitive = float64(math.Float64frombits(v))
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Int64Map == nil {
+				m.Int64Map = make(map[string]int64)
+			}
+			var mapkey string
+			var mapvalue int64
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapvalue |= (int64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Int64Map[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TimeStamp == nil {
+				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
+			}
+			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Duration == nil {
+				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
+			}
+			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res2", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res2 == nil {
+				m.Res2 = &Res2Msg{}
+			}
+			if err := m.Res2.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Res2Map", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Res2Map == nil {
+				m.Res2Map = make(map[string]*Res2Msg)
+			}
+			var mapkey string
+			var mapvalue *Res2Msg
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &Res2Msg{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Res2Map[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Res2Msg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowReportTesterTemplateHandlerService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Res2Msg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Res2Msg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Value == nil {
+				m.Value = &istio_mixer_adapter_model_v1beta11.Value{}
+			}
+			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Dimensions == nil {
+				m.Dimensions = make(map[string]*istio_mixer_adapter_model_v1beta11.Value)
+			}
+			var mapkey string
+			var mapvalue *istio_mixer_adapter_model_v1beta11.Value
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowReportTesterTemplateHandlerService
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowReportTesterTemplateHandlerService
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= (int(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if mapmsglen < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &istio_mixer_adapter_model_v1beta11.Value{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthReportTesterTemplateHandlerService
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Dimensions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
+			}
+			m.Int64Primitive = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Int64Primitive |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TimeStamp == nil {
+				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
+			}
+			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Duration == nil {
+				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
+			}
+			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpAddr", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.IpAddr == nil {
+				m.IpAddr = &istio_mixer_adapter_model_v1beta11.IPAddress{}
+			}
+			if err := m.IpAddr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DnsName", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DnsName == nil {
+				m.DnsName = &istio_mixer_adapter_model_v1beta11.DNSName{}
+			}
+			if err := m.DnsName.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EmailAddr", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EmailAddr == nil {
+				m.EmailAddr = &istio_mixer_adapter_model_v1beta11.EmailAddress{}
+			}
+			if err := m.EmailAddr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 14:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Uri", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowReportTesterTemplateHandlerService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Uri == nil {
+				m.Uri = &istio_mixer_adapter_model_v1beta11.Uri{}
+			}
+			if err := m.Uri.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthReportTesterTemplateHandlerService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Type) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -4197,1699 +6058,6 @@ func (m *Res2Type) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HandleReportRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowReportTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HandleReportRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HandleReportRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Instances", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Instances = append(m.Instances, &Type{})
-			if err := m.Instances[len(m.Instances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AdapterConfig", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.AdapterConfig == nil {
-				m.AdapterConfig = &google_protobuf1.Any{}
-			}
-			if err := m.AdapterConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DedupId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DedupId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HandleReportResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowReportTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HandleReportResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HandleReportResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Status == nil {
-				m.Status = &google_rpc.Status{}
-			}
-			if err := m.Status.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *InstanceMsg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowReportTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: InstanceMsg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: InstanceMsg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
-			}
-			m.Int64Primitive = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Int64Primitive |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.BoolPrimitive = bool(v != 0)
-		case 5:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
-			iNdEx += 8
-			m.DoublePrimitive = float64(math.Float64frombits(v))
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Int64Map == nil {
-				m.Int64Map = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (int64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Int64Map[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.TimeStamp == nil {
-				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
-			}
-			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Duration == nil {
-				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
-			}
-			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res1", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res1 == nil {
-				m.Res1 = &Res1Msg{}
-			}
-			if err := m.Res1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 72295727:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Res1Msg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowReportTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Res1Msg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Res1Msg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
-			}
-			m.Int64Primitive = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Int64Primitive |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BoolPrimitive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.BoolPrimitive = bool(v != 0)
-		case 5:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DoublePrimitive", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
-			iNdEx += 8
-			m.DoublePrimitive = float64(math.Float64frombits(v))
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StringPrimitive", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StringPrimitive = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Map", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Int64Map == nil {
-				m.Int64Map = make(map[string]int64)
-			}
-			var mapkey string
-			var mapvalue int64
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (int64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Int64Map[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.TimeStamp == nil {
-				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
-			}
-			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Duration == nil {
-				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
-			}
-			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res2", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res2 == nil {
-				m.Res2 = &Res2Msg{}
-			}
-			if err := m.Res2.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Res2Map", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Res2Map == nil {
-				m.Res2Map = make(map[string]*Res2Msg)
-			}
-			var mapkey string
-			var mapvalue *Res2Msg
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= (int(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if mapmsglen < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &Res2Msg{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Res2Map[mapkey] = mapvalue
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Res2Msg) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowReportTesterTemplateHandlerService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Res2Msg: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Res2Msg: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dimensions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Dimensions == nil {
-				m.Dimensions = make(map[string]istio_policy_v1beta1.ValueType)
-			}
-			var mapkey string
-			var mapvalue istio_policy_v1beta1.ValueType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowReportTesterTemplateHandlerService
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowReportTesterTemplateHandlerService
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= (istio_policy_v1beta1.ValueType(b) & 0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipReportTesterTemplateHandlerService(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthReportTesterTemplateHandlerService
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Dimensions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Int64Primitive", wireType)
-			}
-			m.Int64Primitive = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Int64Primitive |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TimeStamp", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.TimeStamp == nil {
-				m.TimeStamp = &istio_mixer_adapter_model_v1beta11.TimeStamp{}
-			}
-			if err := m.TimeStamp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Duration == nil {
-				m.Duration = &istio_mixer_adapter_model_v1beta11.Duration{}
-			}
-			if err := m.Duration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IpAddr", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.IpAddr == nil {
-				m.IpAddr = &istio_mixer_adapter_model_v1beta11.IPAddress{}
-			}
-			if err := m.IpAddr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DnsName", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.DnsName == nil {
-				m.DnsName = &istio_mixer_adapter_model_v1beta11.DNSName{}
-			}
-			if err := m.DnsName.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 13:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EmailAddr", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.EmailAddr == nil {
-				m.EmailAddr = &istio_mixer_adapter_model_v1beta11.EmailAddress{}
-			}
-			if err := m.EmailAddr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 14:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uri", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowReportTesterTemplateHandlerService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthReportTesterTemplateHandlerService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Uri == nil {
-				m.Uri = &istio_mixer_adapter_model_v1beta11.Uri{}
-			}
-			if err := m.Uri.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7589,82 +7757,83 @@ func init() {
 }
 
 var fileDescriptorReportTesterTemplateHandlerService = []byte{
-	// 1226 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x58, 0xcd, 0x6f, 0x1b, 0x45,
-	0x14, 0xcf, 0xc6, 0x89, 0xed, 0x9d, 0x7c, 0xb4, 0x0c, 0x41, 0xdd, 0x58, 0xb0, 0x0d, 0x16, 0x0a,
-	0x56, 0xa9, 0x76, 0x95, 0xa5, 0x34, 0x51, 0x03, 0xa1, 0x09, 0x89, 0xda, 0x54, 0x4a, 0x14, 0x6d,
-	0xc2, 0x87, 0x0a, 0x8a, 0x99, 0x78, 0x27, 0x66, 0x84, 0xf7, 0x83, 0x99, 0x71, 0x54, 0x9f, 0xe0,
-	0xc2, 0x1d, 0x09, 0xc1, 0xdf, 0x00, 0x27, 0x2e, 0x48, 0x5c, 0x38, 0x71, 0x42, 0x9c, 0x0a, 0x27,
-	0x8e, 0xc4, 0x70, 0xe0, 0xd8, 0x23, 0x17, 0x10, 0xda, 0xd9, 0xb5, 0xbd, 0x6b, 0xbb, 0xc9, 0xae,
-	0x53, 0x2b, 0xcd, 0xc9, 0xde, 0xdd, 0xf7, 0x7e, 0xf3, 0xbe, 0x7e, 0xef, 0x3d, 0x0d, 0xb8, 0x63,
-	0x93, 0x07, 0x98, 0xea, 0x1c, 0xdb, 0x5e, 0x0d, 0x71, 0xac, 0x33, 0x64, 0x7b, 0x35, 0xac, 0x53,
-	0xec, 0xb9, 0x94, 0xeb, 0xa6, 0xf8, 0xd9, 0xc3, 0x8c, 0x63, 0xba, 0x17, 0x8a, 0x94, 0x3f, 0x42,
-	0x8e, 0x55, 0xc3, 0xb4, 0xcc, 0x30, 0x3d, 0x22, 0x15, 0xac, 0x79, 0xd4, 0xe5, 0x2e, 0x7c, 0x91,
-	0x30, 0x4e, 0x5c, 0x4d, 0xc0, 0x69, 0xc8, 0x42, 0x1e, 0xc7, 0x54, 0x0b, 0xd0, 0xb4, 0x00, 0xad,
-	0x70, 0x3d, 0x38, 0x2b, 0xfc, 0xa8, 0xdb, 0xae, 0x85, 0x6b, 0xfa, 0xd1, 0xc2, 0x01, 0xe6, 0x68,
-	0x41, 0xc7, 0x0f, 0x38, 0x76, 0x18, 0x71, 0x1d, 0x16, 0x00, 0x16, 0x66, 0xab, 0xae, 0x5b, 0xad,
-	0x61, 0x5d, 0x3c, 0x1d, 0xd4, 0x0f, 0x75, 0xe4, 0x34, 0xc2, 0x4f, 0x57, 0xc2, 0x4f, 0xd4, 0xab,
-	0xe8, 0x8c, 0x23, 0x5e, 0x6f, 0xe9, 0xcc, 0x9f, 0x74, 0x02, 0x6f, 0x78, 0xa1, 0xb1, 0x85, 0xab,
-	0x9e, 0x5b, 0x23, 0x95, 0x46, 0xfb, 0xd3, 0x11, 0xaa, 0xd5, 0x71, 0xb9, 0x23, 0x50, 0xfc, 0x61,
-	0x14, 0x8c, 0xed, 0x35, 0x3c, 0x0c, 0x5f, 0x03, 0xe3, 0xe2, 0xa3, 0x22, 0xcd, 0x49, 0xa5, 0x69,
-	0xe3, 0xaa, 0x16, 0xb8, 0x19, 0xe8, 0x6b, 0xa1, 0xbe, 0xf6, 0x8e, 0x2f, 0xe2, 0xcb, 0x9b, 0x81,
-	0x34, 0x7c, 0x17, 0x00, 0x8b, 0xd8, 0xa1, 0x43, 0xca, 0xe8, 0x5c, 0xa6, 0x34, 0x61, 0x2c, 0x6a,
-	0xa7, 0x86, 0x48, 0xf3, 0x31, 0xb4, 0xf5, 0xb6, 0xe6, 0x86, 0xc3, 0x69, 0xc3, 0x8c, 0x40, 0xc1,
-	0x37, 0xc1, 0x18, 0xc5, 0x6c, 0x41, 0x99, 0x98, 0x93, 0x4a, 0x13, 0xc6, 0x2b, 0x09, 0x20, 0x4d,
-	0xcc, 0x16, 0x84, 0x69, 0x42, 0xb1, 0xb0, 0x0f, 0x2e, 0x75, 0xe1, 0xc3, 0xcb, 0x20, 0xf3, 0x31,
-	0x6e, 0x08, 0x0f, 0x65, 0xd3, 0xff, 0xdb, 0xf1, 0x7a, 0x34, 0x8d, 0xd7, 0xb7, 0x46, 0x97, 0xa4,
-	0xe2, 0xbf, 0x19, 0x90, 0x6f, 0x1d, 0x39, 0x68, 0xf4, 0xde, 0xef, 0x13, 0xbd, 0xe5, 0x14, 0xae,
-	0x26, 0x88, 0xa0, 0x91, 0x2e, 0x82, 0x46, 0x3b, 0x82, 0x06, 0xdc, 0x05, 0x79, 0xff, 0xb7, 0x6c,
-	0x23, 0x4f, 0x99, 0x14, 0xb6, 0x2d, 0xa5, 0xb1, 0xcd, 0x47, 0xdb, 0x42, 0x5e, 0x60, 0x58, 0x8e,
-	0x06, 0x4f, 0xc3, 0x4e, 0x4b, 0xa1, 0x0a, 0x26, 0xa3, 0x07, 0xf7, 0x01, 0x5f, 0x8d, 0x82, 0xa7,
-	0x0c, 0x4c, 0x24, 0xff, 0xff, 0x49, 0x22, 0xff, 0xc6, 0x39, 0xe5, 0xdf, 0x38, 0x2d, 0xff, 0x43,
-	0x27, 0xc0, 0xf7, 0x12, 0x78, 0xf6, 0xae, 0x68, 0x91, 0x41, 0xf7, 0x34, 0xf1, 0x27, 0x75, 0xcc,
-	0x38, 0xdc, 0x00, 0x32, 0x71, 0x18, 0x47, 0x4e, 0x05, 0x33, 0x45, 0x12, 0x3e, 0xbd, 0x9c, 0xb0,
-	0x23, 0x98, 0x1d, 0x4d, 0xb8, 0x0c, 0xa6, 0x43, 0xc1, 0x72, 0xc5, 0x75, 0x0e, 0x49, 0x35, 0xcc,
-	0xd7, 0x8c, 0x16, 0x34, 0x45, 0xad, 0xd5, 0x2f, 0xb5, 0x55, 0xa7, 0x61, 0x4e, 0x85, 0xb2, 0x6f,
-	0x09, 0x51, 0x38, 0x0b, 0xf2, 0x16, 0xb6, 0xea, 0x5e, 0x99, 0x58, 0x4a, 0x46, 0x78, 0x9b, 0x13,
-	0xcf, 0x9b, 0x56, 0x71, 0x0d, 0xcc, 0xc4, 0xad, 0x66, 0x9e, 0xeb, 0x30, 0x0c, 0xaf, 0x81, 0x6c,
-	0xd0, 0x62, 0x45, 0x78, 0x26, 0x0c, 0xd8, 0x3a, 0x87, 0x7a, 0x15, 0x6d, 0x57, 0x7c, 0x31, 0x43,
-	0x89, 0xe2, 0xb7, 0x59, 0x30, 0xb1, 0x19, 0x5a, 0xba, 0xc5, 0xaa, 0x83, 0xa6, 0x7f, 0xbf, 0x4f,
-	0xfa, 0x57, 0x12, 0x84, 0x2a, 0x72, 0xf4, 0x89, 0x1d, 0x60, 0x1e, 0x4c, 0x13, 0x87, 0xdf, 0xbc,
-	0xb1, 0x43, 0x89, 0x4d, 0x38, 0x39, 0xc2, 0x22, 0x16, 0x19, 0xb3, 0xeb, 0x2d, 0x7c, 0x09, 0x4c,
-	0x1d, 0xb8, 0x6e, 0xad, 0x23, 0x36, 0x36, 0x27, 0x95, 0xf2, 0x66, 0xfc, 0x25, 0x2c, 0x81, 0x4b,
-	0x96, 0x5b, 0x3f, 0xa8, 0xe1, 0x8e, 0xdc, 0xf8, 0x9c, 0x54, 0x92, 0xcc, 0xee, 0xd7, 0xbe, 0x24,
-	0xe3, 0x94, 0x38, 0xd5, 0x8e, 0x64, 0x56, 0x24, 0xa1, 0xfb, 0x35, 0x7c, 0x0f, 0xe4, 0x85, 0x2d,
-	0x5b, 0xc8, 0x53, 0x72, 0xc2, 0xff, 0xd7, 0x53, 0xfa, 0xbf, 0x19, 0xaa, 0x07, 0xde, 0xb7, 0xd1,
-	0xe0, 0x3d, 0x20, 0x73, 0x62, 0xe3, 0x5d, 0x8e, 0x6c, 0x4f, 0x91, 0x45, 0x46, 0xaf, 0xf7, 0x85,
-	0x16, 0xb3, 0xb3, 0x9d, 0xa3, 0xbd, 0x96, 0x8e, 0xd9, 0x51, 0x87, 0x77, 0x40, 0xde, 0xaa, 0x53,
-	0xc4, 0x89, 0xeb, 0x28, 0xe0, 0x84, 0xa6, 0x11, 0x87, 0x5a, 0x0f, 0x55, 0xcc, 0xb6, 0x32, 0x5c,
-	0x89, 0x0d, 0xb5, 0x6b, 0x09, 0xbb, 0xe9, 0x16, 0xab, 0x06, 0x33, 0x0d, 0x3e, 0x07, 0xc6, 0x1c,
-	0x64, 0x63, 0xe5, 0xbb, 0x5f, 0x7e, 0x2c, 0x8a, 0x80, 0x8a, 0xc7, 0xa1, 0xf7, 0xd4, 0x65, 0x30,
-	0x15, 0x0b, 0x73, 0x1f, 0xf4, 0x99, 0x28, 0x7a, 0x26, 0xda, 0x26, 0x7e, 0xca, 0x81, 0x5c, 0xe8,
-	0xc5, 0xa0, 0x3c, 0xb9, 0xdf, 0x87, 0x27, 0xb7, 0x92, 0x07, 0xef, 0x82, 0x73, 0x64, 0xaf, 0x87,
-	0x23, 0x4b, 0x29, 0x7c, 0xbf, 0x80, 0xfc, 0x30, 0xd2, 0xf1, 0xc3, 0x68, 0xf1, 0xc3, 0x80, 0x66,
-	0xcf, 0xc6, 0xb2, 0x98, 0x22, 0x54, 0xe7, 0xb3, 0xb0, 0x9c, 0x85, 0x5c, 0x85, 0xc3, 0x53, 0xb7,
-	0x9d, 0xdb, 0xf1, 0x6d, 0x27, 0x4d, 0x4c, 0x23, 0x24, 0xfe, 0x75, 0x5c, 0x90, 0xd8, 0x38, 0x1f,
-	0x12, 0x1b, 0x4f, 0x8a, 0xc4, 0x4f, 0x65, 0xd1, 0x6f, 0x80, 0x1c, 0xf1, 0xca, 0xc8, 0xb2, 0x68,
-	0x58, 0xf7, 0x49, 0x4c, 0xda, 0xdc, 0x59, 0xb5, 0x2c, 0x8a, 0x19, 0x33, 0xb3, 0xc4, 0xf3, 0xff,
-	0xc2, 0x0d, 0x90, 0xb7, 0x1c, 0x56, 0x16, 0xf3, 0x61, 0xf2, 0x84, 0x5c, 0x77, 0xd9, 0xb3, 0xbd,
-	0xbb, 0x8d, 0x6c, 0x6c, 0xe6, 0x2c, 0x87, 0xf9, 0x7f, 0xe0, 0x36, 0x00, 0xd8, 0x46, 0xa4, 0x16,
-	0x18, 0x34, 0x25, 0x80, 0xf4, 0x04, 0x40, 0x1b, 0xbe, 0x52, 0xcb, 0x26, 0x19, 0xb7, 0x9e, 0xe0,
-	0x12, 0xc8, 0xd4, 0x29, 0x51, 0xa6, 0x05, 0xd0, 0x7c, 0x02, 0xa0, 0xb7, 0x29, 0x31, 0x7d, 0x95,
-	0xa1, 0xef, 0xaf, 0x9f, 0x8f, 0xfb, 0xcc, 0x0b, 0x36, 0x89, 0x1d, 0x44, 0x91, 0xdd, 0xe1, 0x59,
-	0x70, 0x40, 0x58, 0xb8, 0x1f, 0xf6, 0x29, 0xdc, 0xdb, 0x29, 0xb6, 0x14, 0x81, 0x3d, 0x40, 0xf9,
-	0xca, 0xc9, 0x66, 0x90, 0x9c, 0x70, 0x06, 0xc9, 0x67, 0x99, 0x41, 0xf7, 0x7b, 0x66, 0xd0, 0x4a,
-	0xea, 0x08, 0x3c, 0x6e, 0x12, 0x3d, 0xdf, 0x4d, 0x4a, 0x39, 0x4a, 0xb3, 0x42, 0x17, 0xcd, 0xe4,
-	0x08, 0x73, 0xee, 0xc6, 0xd6, 0xa9, 0x1b, 0x09, 0x5b, 0x7d, 0xcc, 0xaa, 0xf0, 0xb2, 0xe0, 0x8d,
-	0x24, 0xb5, 0x16, 0x6b, 0xc3, 0xf2, 0x59, 0x7a, 0x78, 0x54, 0xb9, 0x78, 0x9c, 0x05, 0xcf, 0xf4,
-	0xd8, 0xf5, 0x98, 0x5a, 0xb4, 0xfa, 0xd4, 0xe2, 0xfa, 0x20, 0x7e, 0x5f, 0xf0, 0x7a, 0xdc, 0xef,
-	0xa9, 0xc7, 0xb5, 0x81, 0xa2, 0x30, 0xac, 0x9a, 0x34, 0xd2, 0xd5, 0xa4, 0xd1, 0x5b, 0x93, 0x06,
-	0xfc, 0xa0, 0x67, 0x99, 0x59, 0x1d, 0xc8, 0xc7, 0xfe, 0x6b, 0xcd, 0x39, 0x56, 0x7c, 0xc1, 0x3b,
-	0x75, 0x6b, 0xb9, 0x17, 0xdf, 0x5a, 0x06, 0x0b, 0x63, 0x84, 0x63, 0x5f, 0x65, 0x04, 0xc7, 0x8c,
-	0x21, 0x73, 0xcc, 0x78, 0xf2, 0x1c, 0x1b, 0xbc, 0x12, 0xaf, 0xc4, 0xf7, 0x0a, 0xb9, 0xbd, 0x29,
-	0xcc, 0x76, 0x6d, 0x0a, 0x72, 0x67, 0xfa, 0xbf, 0xd0, 0x33, 0xfd, 0xe5, 0xe8, 0x30, 0xbf, 0xdc,
-	0x19, 0xe6, 0x72, 0x30, 0xa4, 0xcf, 0x56, 0x46, 0xc6, 0xd7, 0x5d, 0x77, 0x48, 0xbb, 0xc1, 0x55,
-	0x3b, 0xfc, 0x14, 0x4c, 0x46, 0x5f, 0xc3, 0x9b, 0x09, 0xe2, 0xdf, 0xe7, 0x2e, 0xaa, 0xb0, 0x98,
-	0x5a, 0x2f, 0xb8, 0x0d, 0x5a, 0x33, 0x1e, 0x1e, 0xab, 0x23, 0xbf, 0x1f, 0xab, 0x23, 0x8f, 0x8e,
-	0x55, 0xe9, 0xb3, 0xa6, 0x2a, 0x7d, 0xd3, 0x54, 0xa5, 0x9f, 0x9b, 0xaa, 0xf4, 0xb0, 0xa9, 0x4a,
-	0x7f, 0x34, 0x55, 0xe9, 0xef, 0xa6, 0x3a, 0xf2, 0xa8, 0xa9, 0x4a, 0x5f, 0xfc, 0xa9, 0x8e, 0xfc,
-	0xf3, 0xdb, 0x5f, 0x5f, 0x8e, 0x4a, 0x07, 0x59, 0x71, 0x23, 0xf5, 0xea, 0xff, 0x01, 0x00, 0x00,
-	0xff, 0xff, 0xac, 0x54, 0x65, 0xd9, 0x6b, 0x18, 0x00, 0x00,
+	// 1246 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x58, 0xcd, 0x6f, 0xdc, 0x44,
+	0x14, 0x8f, 0x77, 0x93, 0xdd, 0xf5, 0xe4, 0xa3, 0x65, 0x28, 0xaa, 0x63, 0x81, 0x1b, 0x56, 0x28,
+	0xac, 0xda, 0xca, 0x56, 0x4c, 0xdb, 0x44, 0x0d, 0x84, 0x26, 0x24, 0x6a, 0x53, 0x29, 0x51, 0xe4,
+	0x84, 0x0f, 0x15, 0x94, 0xc5, 0x59, 0x4f, 0x96, 0x11, 0xeb, 0x0f, 0x66, 0x66, 0xa3, 0xee, 0x09,
+	0x2e, 0xdc, 0x91, 0x10, 0xfc, 0x0d, 0xdc, 0xb8, 0x20, 0x71, 0x80, 0x3f, 0x00, 0x71, 0xaa, 0x10,
+	0x07, 0x8e, 0x64, 0xcb, 0x81, 0x63, 0x8f, 0x5c, 0x40, 0x68, 0xc7, 0xde, 0xb5, 0xbd, 0xeb, 0x26,
+	0xf6, 0xa6, 0x21, 0xe4, 0xb4, 0x6b, 0xcf, 0x7b, 0x6f, 0xde, 0xfb, 0xbd, 0xf7, 0xf3, 0x7b, 0x33,
+	0xe0, 0xae, 0x8d, 0x1f, 0x22, 0xa2, 0x31, 0x64, 0x7b, 0x0d, 0x93, 0x21, 0x8d, 0x9a, 0xb6, 0xd7,
+	0x40, 0x1a, 0x41, 0x9e, 0x4b, 0x98, 0x66, 0xf0, 0x9f, 0x1d, 0x44, 0x19, 0x22, 0x3b, 0x81, 0x48,
+	0xf5, 0x23, 0xd3, 0xb1, 0x1a, 0x88, 0x54, 0x29, 0x22, 0x07, 0xb8, 0x86, 0x54, 0x8f, 0xb8, 0xcc,
+	0x85, 0x2f, 0x63, 0xca, 0xb0, 0xab, 0x72, 0x73, 0xaa, 0x69, 0x99, 0x1e, 0x43, 0x44, 0xf5, 0xad,
+	0xa9, 0xbe, 0x35, 0xf9, 0xba, 0xbf, 0x57, 0xb0, 0xa8, 0xd9, 0xae, 0x85, 0x1a, 0xda, 0xc1, 0xdc,
+	0x1e, 0x62, 0xe6, 0x9c, 0x86, 0x1e, 0x32, 0xe4, 0x50, 0xec, 0x3a, 0xd4, 0x37, 0x28, 0x4f, 0xd7,
+	0x5d, 0xb7, 0xde, 0x40, 0x1a, 0x7f, 0xda, 0x6b, 0xee, 0x6b, 0xa6, 0xd3, 0x0a, 0x96, 0x2e, 0x07,
+	0x4b, 0xc4, 0xab, 0x69, 0x94, 0x99, 0xac, 0xd9, 0xd5, 0x99, 0x3d, 0x6a, 0x07, 0xd6, 0xf2, 0x02,
+	0x67, 0xe5, 0x2b, 0x9e, 0xdb, 0xc0, 0xb5, 0x56, 0x6f, 0xe9, 0xc0, 0x6c, 0x34, 0x51, 0x35, 0x14,
+	0x28, 0x7f, 0x27, 0x80, 0xe7, 0xef, 0xf1, 0x38, 0x7d, 0x08, 0x0c, 0xf4, 0x49, 0x13, 0x51, 0x06,
+	0xd7, 0x80, 0x88, 0x1d, 0xca, 0x4c, 0xa7, 0x86, 0xa8, 0x24, 0xcc, 0xe4, 0x2b, 0xe3, 0xfa, 0xab,
+	0xea, 0xb1, 0x91, 0xab, 0x3b, 0x2d, 0x0f, 0x19, 0xa1, 0x26, 0x5c, 0x04, 0x53, 0x81, 0x60, 0xb5,
+	0xe6, 0x3a, 0xfb, 0xb8, 0x2e, 0xe5, 0x66, 0x84, 0xca, 0xb8, 0x7e, 0x49, 0xf5, 0x23, 0x53, 0xbb,
+	0x41, 0xab, 0xcb, 0x4e, 0xcb, 0x98, 0x0c, 0x64, 0xdf, 0xe2, 0xa2, 0x70, 0x1a, 0x94, 0x2c, 0x64,
+	0x35, 0xbd, 0x2a, 0xb6, 0xa4, 0xfc, 0x8c, 0x50, 0x11, 0x8d, 0x22, 0x7f, 0x5e, 0xb7, 0xca, 0x2b,
+	0xe0, 0x52, 0xdc, 0x6b, 0xea, 0xb9, 0x0e, 0x45, 0xf0, 0x2a, 0x28, 0xf8, 0x38, 0x49, 0x02, 0xdf,
+	0x07, 0x76, 0xf7, 0x21, 0x5e, 0x4d, 0xdd, 0xe6, 0x2b, 0x46, 0x20, 0x51, 0xfe, 0xa1, 0x00, 0xc6,
+	0xd7, 0x03, 0x4f, 0x37, 0x68, 0x1d, 0x2e, 0x81, 0x31, 0x0e, 0x4f, 0xa0, 0x5a, 0x49, 0x0c, 0x97,
+	0x23, 0xad, 0x06, 0x70, 0xaa, 0xef, 0x74, 0xe4, 0x0d, 0x5f, 0x0d, 0xee, 0x02, 0x60, 0x61, 0x3b,
+	0xc8, 0xad, 0x94, 0xe3, 0x98, 0x2d, 0xa5, 0xc0, 0x2c, 0xe2, 0x83, 0xba, 0xda, 0x33, 0xb0, 0xe6,
+	0x30, 0xd2, 0x32, 0x22, 0x16, 0xe1, 0x2c, 0x98, 0xc2, 0x0e, 0xbb, 0x75, 0x63, 0x8b, 0x60, 0x1b,
+	0x33, 0x7c, 0x80, 0x38, 0x28, 0x79, 0xa3, 0xef, 0x2d, 0x7c, 0x05, 0x4c, 0xee, 0xb9, 0x6e, 0x23,
+	0x14, 0x1b, 0x9d, 0x11, 0x2a, 0x25, 0x23, 0xfe, 0x12, 0x56, 0xc0, 0x05, 0xcb, 0x6d, 0xee, 0x35,
+	0x50, 0x28, 0x37, 0x36, 0x23, 0x54, 0x04, 0xa3, 0xff, 0x75, 0x47, 0x92, 0x32, 0x82, 0x9d, 0x7a,
+	0x28, 0x59, 0xe0, 0xd9, 0xe8, 0x7f, 0x0d, 0xdf, 0x03, 0x25, 0xee, 0xcb, 0x86, 0xe9, 0x49, 0x45,
+	0x1e, 0xff, 0xeb, 0x19, 0xe3, 0x5f, 0x0f, 0xd4, 0xfd, 0xe8, 0x7b, 0xd6, 0xe0, 0x7d, 0x20, 0x32,
+	0x6c, 0xa3, 0x6d, 0x66, 0xda, 0x9e, 0x24, 0xf2, 0xfc, 0x5c, 0x4f, 0x91, 0x9f, 0x9d, 0xae, 0x8e,
+	0x11, 0xaa, 0xc3, 0xbb, 0xa0, 0x64, 0x35, 0x89, 0xc9, 0xb0, 0xeb, 0x48, 0x80, 0x9b, 0xba, 0x96,
+	0xc2, 0xd4, 0x6a, 0xa0, 0x62, 0xf4, 0x94, 0xe1, 0x12, 0x18, 0x25, 0x88, 0xce, 0x49, 0xe3, 0xdc,
+	0xc8, 0xd5, 0x14, 0xa1, 0x1a, 0x88, 0xce, 0x6d, 0xd0, 0xba, 0xc1, 0xf5, 0xe0, 0x0b, 0x60, 0xd4,
+	0x31, 0x6d, 0x24, 0x7d, 0xfb, 0xf3, 0x8f, 0x65, 0x0e, 0x28, 0x7f, 0x94, 0xeb, 0xe0, 0x42, 0x5f,
+	0x19, 0xc0, 0x8b, 0x20, 0xff, 0x31, 0x6a, 0xf1, 0xc2, 0x14, 0x8d, 0xce, 0xdf, 0xb0, 0x58, 0x73,
+	0x43, 0x15, 0xeb, 0xed, 0xdc, 0x82, 0x20, 0x2f, 0x82, 0xc9, 0x18, 0xde, 0x09, 0xdb, 0x5c, 0x8a,
+	0x6e, 0x93, 0x8f, 0x28, 0x97, 0x7f, 0x2d, 0x82, 0x62, 0x10, 0xce, 0x89, 0x99, 0xf3, 0x20, 0x81,
+	0x39, 0xb7, 0xd3, 0xc3, 0x79, 0xce, 0x59, 0xb3, 0x33, 0xc0, 0x9a, 0x85, 0x0c, 0xb1, 0x9f, 0x43,
+	0xc6, 0xe8, 0xd9, 0x18, 0xa3, 0x77, 0x19, 0xa3, 0x43, 0x03, 0x94, 0x3a, 0xbf, 0x55, 0xdb, 0xf4,
+	0xa4, 0x09, 0x0e, 0xd5, 0x7c, 0x06, 0xa8, 0xb8, 0xad, 0x2e, 0x52, 0x45, 0xe2, 0x3f, 0x9d, 0x0f,
+	0xba, 0xc9, 0xfb, 0x60, 0x22, 0xea, 0x7e, 0x82, 0xee, 0x9d, 0xb8, 0x8b, 0x59, 0xc0, 0x8d, 0xd0,
+	0xfa, 0xf1, 0x18, 0xa7, 0xb5, 0x7e, 0xc6, 0xb4, 0xd6, 0x9f, 0x15, 0xad, 0xff, 0x97, 0x34, 0x58,
+	0x03, 0x45, 0xec, 0x55, 0x4d, 0xcb, 0x22, 0x01, 0x13, 0xd2, 0xb8, 0xb4, 0xbe, 0xb5, 0x6c, 0x59,
+	0x04, 0x51, 0x6a, 0x14, 0xb0, 0xd7, 0xf9, 0x0b, 0xd7, 0x40, 0xc9, 0x72, 0x68, 0x95, 0xf7, 0x90,
+	0x89, 0x23, 0x92, 0xde, 0xe7, 0xcf, 0xe6, 0xf6, 0xa6, 0x69, 0x23, 0xa3, 0x68, 0x39, 0xb4, 0xf3,
+	0x07, 0x6e, 0x02, 0x80, 0x6c, 0x13, 0x37, 0x7c, 0x87, 0x26, 0xb9, 0x21, 0x2d, 0x85, 0xa1, 0xb5,
+	0x8e, 0x52, 0xd7, 0x27, 0x11, 0x75, 0x9f, 0xe0, 0x02, 0xc8, 0x37, 0x09, 0x96, 0xa6, 0xb8, 0xa1,
+	0xd9, 0x14, 0x86, 0xde, 0x26, 0xd8, 0xe8, 0xa8, 0xfc, 0x67, 0x54, 0x2c, 0x7f, 0x9f, 0x03, 0xa3,
+	0x9d, 0x51, 0x15, 0xde, 0x8c, 0x96, 0xf8, 0x94, 0x7e, 0x25, 0x30, 0xe6, 0x4f, 0xcd, 0x71, 0x7d,
+	0x3e, 0xda, 0x06, 0x95, 0xfd, 0x6e, 0x42, 0x65, 0xcf, 0xa7, 0x1c, 0x8f, 0x8f, 0x2c, 0xeb, 0x37,
+	0x63, 0x23, 0xc5, 0xb5, 0x94, 0x1f, 0x37, 0xee, 0x1a, 0x57, 0x94, 0x77, 0xd3, 0x40, 0x78, 0x33,
+	0x0a, 0x61, 0xea, 0xa8, 0x39, 0x72, 0x7f, 0xe7, 0x41, 0xa9, 0xbb, 0xe5, 0xb0, 0xe8, 0xbd, 0x9f,
+	0x80, 0xde, 0x62, 0x86, 0x50, 0x53, 0x20, 0xa8, 0x67, 0x43, 0x50, 0xef, 0x21, 0xa8, 0xc3, 0xed,
+	0x81, 0x1e, 0xb3, 0x90, 0xc5, 0xb7, 0xe4, 0x26, 0x73, 0xca, 0x69, 0x91, 0xeb, 0xc7, 0xb6, 0x87,
+	0xe5, 0x38, 0x6d, 0x32, 0x01, 0x13, 0xc9, 0xff, 0x3f, 0x02, 0xcf, 0xbf, 0x7e, 0x46, 0xf9, 0xd7,
+	0x8f, 0xcb, 0xff, 0xa9, 0x13, 0xe0, 0xf3, 0xb1, 0x4e, 0x1b, 0xf7, 0x4f, 0x2c, 0x5b, 0x26, 0x31,
+	0xed, 0xb0, 0x69, 0xfb, 0x1b, 0x04, 0x41, 0x7e, 0x98, 0x10, 0xe4, 0x9d, 0x0c, 0xa7, 0x21, 0x6e,
+	0x7b, 0x88, 0x16, 0x28, 0xa6, 0x9b, 0x6c, 0xc5, 0x94, 0x93, 0xad, 0x78, 0x92, 0xc9, 0xf6, 0xc1,
+	0xc0, 0x64, 0xbb, 0x94, 0x19, 0x81, 0xa7, 0xcd, 0xb7, 0x2f, 0xf6, 0x37, 0x76, 0x31, 0xda, 0xaa,
+	0xe5, 0xbe, 0x56, 0x2d, 0x46, 0xba, 0xef, 0xbd, 0xd8, 0x37, 0xf6, 0x46, 0x4a, 0x72, 0xc7, 0xbc,
+	0x0a, 0x3e, 0xb6, 0x6f, 0xa4, 0xa9, 0xb5, 0xd8, 0x4c, 0x27, 0x9e, 0x64, 0x20, 0x8c, 0x2a, 0x97,
+	0x0f, 0x0b, 0xe0, 0xb9, 0x01, 0xbf, 0x9e, 0x52, 0x8b, 0x56, 0x42, 0x2d, 0xae, 0x0e, 0x13, 0xf7,
+	0x39, 0xaf, 0xc7, 0xdd, 0x81, 0x7a, 0x5c, 0x19, 0x0a, 0x85, 0xd3, 0xaa, 0x49, 0x3d, 0x5b, 0x4d,
+	0xea, 0x83, 0x35, 0xa9, 0xc3, 0x0f, 0x06, 0xda, 0xd7, 0xf2, 0x50, 0x31, 0x26, 0xf7, 0xb1, 0x33,
+	0xac, 0x78, 0xd9, 0x3b, 0xb6, 0xc7, 0xdd, 0x8f, 0xf7, 0xb8, 0xe1, 0x60, 0x8c, 0x70, 0xec, 0xab,
+	0x3c, 0xe7, 0x98, 0x7e, 0xca, 0x1c, 0xd3, 0x9f, 0x3d, 0xc7, 0x86, 0xaf, 0xc4, 0xcb, 0xf1, 0xb3,
+	0x89, 0xd8, 0x3b, 0x6d, 0x4c, 0xf7, 0x9d, 0x36, 0xc4, 0xf0, 0x04, 0xf1, 0xd2, 0xc0, 0x09, 0x42,
+	0x8c, 0x1e, 0x08, 0x2e, 0x86, 0x07, 0x02, 0xd1, 0x1f, 0xf4, 0x4f, 0x56, 0x46, 0xfa, 0xd7, 0x7d,
+	0x97, 0xd6, 0xdb, 0xfe, 0x05, 0x3d, 0xfc, 0x14, 0x4c, 0x44, 0x5f, 0xc3, 0x5b, 0x29, 0xf0, 0x4f,
+	0xb8, 0xfc, 0x96, 0xe7, 0x33, 0xeb, 0xf9, 0xd7, 0xcf, 0x2b, 0xfa, 0xa3, 0x43, 0x65, 0xe4, 0xb7,
+	0x43, 0x65, 0xe4, 0xc9, 0xa1, 0x22, 0x7c, 0xd6, 0x56, 0x84, 0x6f, 0xda, 0x8a, 0xf0, 0x53, 0x5b,
+	0x11, 0x1e, 0xb5, 0x15, 0xe1, 0xf7, 0xb6, 0x22, 0xfc, 0xd9, 0x56, 0x46, 0x9e, 0xb4, 0x15, 0xe1,
+	0x8b, 0xc7, 0xca, 0xc8, 0x5f, 0xbf, 0xfc, 0xf1, 0x65, 0x4e, 0xd8, 0x2b, 0xf0, 0x2b, 0xf0, 0xd7,
+	0xfe, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x63, 0xd5, 0x92, 0x14, 0xa1, 0x18, 0x00, 0x00,
 }
