@@ -63,15 +63,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleListEntry method.
 type HandleListEntryRequest struct {
-	// ListEntry instances.
+	// 'listentry' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -121,8 +122,8 @@ func (m *HandleListEntryResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'listentry' template . This is passed to infrastructure backends during request-time using
-// HandleListEntryService
+// Contains instance payload for 'listentry' template. This is passed to infrastructure backends during request-time
+// through HandleListEntryService.HandleListEntry.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -150,8 +151,8 @@ func (m *InstanceMsg) GetValue() string {
 	return ""
 }
 
-// Type InstanceMsg for template 'listentry'. This is passed to infrastructure backends during request-time using
-// HandleListEntryService
+// Contains inferred type information about specific instance of 'listentry' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 }
 
@@ -159,24 +160,9 @@ func (m *Type) Reset()                    { *m = Type{} }
 func (*Type) ProtoMessage()               {}
 func (*Type) Descriptor() ([]byte, []int) { return fileDescriptorTemplateHandlerService, []int{3} }
 
-// The `listentry` template is used to verify the presence/absence of a string
-// within a list.
-//
-// When writing the configuration, the value for the fields associated with this template can either be a
-// literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-// then the expression's [inferred type](https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking) must match the datatype of the field.
-//
-// Example config:
-// ```
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: listentry
-// metadata:
-//   name: appversion
-//   namespace: istio-system
-// spec:
-//   value: source.labels["version"]
-// ```
+// Represents instance configuration schema for 'listentry' template.
 type InstanceParam struct {
+	// Specifies the entry to verify in the list.
 	Value string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 

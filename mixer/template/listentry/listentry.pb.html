@@ -27,12 +27,11 @@ spec:
 <h2 id="Services">Services</h2>
 <h3 id="HandleListEntryService">HandleListEntryService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;listentry&rsquo;</p>
+<p>HandleListEntryService is implemented by backends that wants to handle request-time &lsquo;listentry&rsquo; instances.</p>
 
 <pre id="HandleListEntryService.HandleListEntry"><code class="language-proto">rpc HandleListEntry(HandleListEntryRequest) returns (HandleListEntryResponse)
 </code></pre>
-<p>HandleListEntry is called by Mixer at request-time to deliver &lsquo;listentry&rsquo; instances to
-to the backend.</p>
+<p>HandleListEntry is called by Mixer at request-time to deliver &lsquo;listentry&rsquo; instances to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
@@ -53,7 +52,7 @@ to the backend.</p>
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>ListEntry instances.</p>
+<p>&lsquo;listentry&rsquo; instances.</p>
 
 </td>
 </tr>
@@ -61,11 +60,12 @@ to the backend.</p>
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
-<p>Adapter specific configuration.
-Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
-opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
-call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
-as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+<p>Adapter specific handler configuration.</p>
+
+<p>Note: Backends can also implement <em>InfrastructureBackend</em>
+service and therefore opt to receive handler configuration during session creation through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config will have type</em>url as &lsquo;google.protobuf.Any.type<em>url&rsquo; and would contain string
+value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 
 </td>
 </tr>
@@ -73,7 +73,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Id to dedupe identical requests.</p>
+<p>Id to dedupe identical requests from Mixer.</p>
 
 </td>
 </tr>
@@ -106,8 +106,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;listentry&rsquo; template . This is passed to infrastructure backends during request-time using
-andleListEntryService</p>
+<p>Contains instance payload for &lsquo;listentry&rsquo; template. This is passed to infrastructure backends during request-time
+through HandleListEntryService.HandleListEntry.</p>
 
 <table class="message-fields">
 <thead>
@@ -139,23 +139,7 @@ andleListEntryService</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>The <code>listentry</code> template is used to verify the presence/absence of a string
-within a list.</p>
-
-<p>When writing the configuration, the value for the fields associated with this template can either be a
-literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking">inferred type</a> must match the datatype of the field.</p>
-
-<p>Example config:</p>
-
-<pre><code>apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: listentry
-metadata:
-  name: appversion
-  namespace: istio-system
-spec:
-  value: source.labels[&quot;version&quot;]
-</code></pre>
+<p>Represents instance configuration schema for &lsquo;listentry&rsquo; template.</p>
 
 <table class="message-fields">
 <thead>
@@ -170,6 +154,8 @@ spec:
 <td><code>value</code></td>
 <td><code>string</code></td>
 <td>
+<p>Specifies the entry to verify in the list.</p>
+
 </td>
 </tr>
 </tbody>
@@ -177,8 +163,8 @@ spec:
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;listentry&rsquo;. This is passed to infrastructure backends during request-time using
-andleListEntryService</p>
+<p>Contains inferred type information about specific instance of &lsquo;listentry&rsquo; template. This is passed to
+infrastructure backends during configuration-time through <em>InfrastructureBackend.CreateSession</em>.</p>
 
 </section>
 <h3 id="google.rpc.Status">google.rpc.Status</h3>

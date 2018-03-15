@@ -46,27 +46,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_R
 
 
 
-/* Infrastructure backend service for template 'reportnothing'*/
+// HandleReportNothingService is implemented by backends that wants to handle request-time 'reportnothing' instances.
 service HandleReportNothingService {
-    // HandleReportNothing is called by Mixer at request-time to deliver 'reportnothing' instances to
-    // to the backend.
+    // HandleReportNothing is called by Mixer at request-time to deliver 'reportnothing' instances to the backend.
     rpc HandleReportNothing(HandleReportNothingRequest) returns (HandleReportNothingResponse);
 }
 
 // Request message for HandleReportNothing method.
 message HandleReportNothingRequest {
 
-    // ReportNothing instances.
+    // 'reportnothing' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -76,8 +76,8 @@ message HandleReportNothingResponse {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for 'reportnothing' template . This is passed to infrastructure backends during request-time using
-HandleReportNothingService */
+// Contains instance payload for 'reportnothing' template. This is passed to infrastructure backends during request-time
+// through HandleReportNothingService.HandleReportNothing.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -90,8 +90,8 @@ message InstanceMsg {
 
 
 
-/* Type InstanceMsg for template 'reportnothing'. This is passed to infrastructure backends during request-time using
-HandleReportNothingService */
+// Contains inferred type information about specific instance of 'reportnothing' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   
 }
@@ -100,19 +100,7 @@ message Type {
 
 
 
-// ReportNothing represents an empty block of data that is used for Report-capable
-// adapters which don't require any parameters. This is primarily intended for testing
-// scenarios.
-// 
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: reportnothing
-// metadata:
-//   name: reportrequest
-//   namespace: istio-system
-// spec:
-// ```
+// Represents instance configuration schema for 'reportnothing' template.
 message InstanceParam {
   
   

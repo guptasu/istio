@@ -71,15 +71,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleMetric method.
 type HandleMetricRequest struct {
-	// Metric instances.
+	// 'metric' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -129,8 +130,8 @@ func (m *HandleMetricResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'metric' template . This is passed to infrastructure backends during request-time using
-// HandleMetricService
+// Contains instance payload for 'metric' template. This is passed to infrastructure backends during request-time
+// through HandleMetricService.HandleMetric.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -189,8 +190,8 @@ func (m *InstanceMsg) GetMonitoredResourceDimensions() map[string]*istio_mixer_a
 	return nil
 }
 
-// Type InstanceMsg for template 'metric'. This is passed to infrastructure backends during request-time using
-// HandleMetricService
+// Contains inferred type information about specific instance of 'metric' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 	// The value being reported.
 	Value istio_policy_v1beta1.ValueType `protobuf:"varint,1,opt,name=value,proto3,enum=istio.policy.v1beta1.ValueType" json:"value,omitempty"`
@@ -227,33 +228,19 @@ func (m *Type) GetMonitoredResourceDimensions() map[string]istio_policy_v1beta1.
 	return nil
 }
 
-// The `metric` template represents a single piece of data to report.
-//
-// When writing the configuration, the value for the fields associated with this template can either be a
-// literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-// then the expression's [inferred type](https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking) must match the datatype of the field.
-//
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: metric
-// metadata:
-//   name: requestsize
-//   namespace: istio-system
-// spec:
-//   value: request.size | 0
-//   dimensions:
-//     source_service: source.service | "unknown"
-//     source_version: source.labels["version"] | "unknown"
-//     destination_service: destination.service | "unknown"
-//     destination_version: destination.labels["version"] | "unknown"
-//     response_code: response.code | 200
-//   monitored_resource_type: '"UNSPECIFIED"'
-// ```
+// Represents instance configuration schema for 'metric' template.
 type InstanceParam struct {
-	Value                       string            `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
-	Dimensions                  map[string]string `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	MonitoredResourceType       string            `protobuf:"bytes,3,opt,name=monitored_resource_type,json=monitoredResourceType,proto3" json:"monitored_resource_type,omitempty"`
+	// The value being reported.
+	Value string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	// The unique identity of the particular metric to report.
+	Dimensions map[string]string `protobuf:"bytes,2,rep,name=dimensions" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Optional. An expression to compute the type of the monitored resource this metric is being reported on.
+	// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+	// these fields will be ignored by the adapter.
+	MonitoredResourceType string `protobuf:"bytes,3,opt,name=monitored_resource_type,json=monitoredResourceType,proto3" json:"monitored_resource_type,omitempty"`
+	// Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
+	// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+	// these fields will be ignored by the adapter.
 	MonitoredResourceDimensions map[string]string `protobuf:"bytes,4,rep,name=monitored_resource_dimensions,json=monitoredResourceDimensions" json:"monitored_resource_dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 

@@ -33,12 +33,11 @@ spec:
 <h2 id="Services">Services</h2>
 <h3 id="HandleMetricService">HandleMetricService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;metric&rsquo;</p>
+<p>HandleMetricService is implemented by backends that wants to handle request-time &lsquo;metric&rsquo; instances.</p>
 
 <pre id="HandleMetricService.HandleMetric"><code class="language-proto">rpc HandleMetric(HandleMetricRequest) returns (HandleMetricResponse)
 </code></pre>
-<p>HandleMetric is called by Mixer at request-time to deliver &lsquo;metric&rsquo; instances to
-to the backend.</p>
+<p>HandleMetric is called by Mixer at request-time to deliver &lsquo;metric&rsquo; instances to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
@@ -59,7 +58,7 @@ to the backend.</p>
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>Metric instances.</p>
+<p>&lsquo;metric&rsquo; instances.</p>
 
 </td>
 </tr>
@@ -67,11 +66,12 @@ to the backend.</p>
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
-<p>Adapter specific configuration.
-Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
-opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
-call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
-as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+<p>Adapter specific handler configuration.</p>
+
+<p>Note: Backends can also implement <em>InfrastructureBackend</em>
+service and therefore opt to receive handler configuration during session creation through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config will have type</em>url as &lsquo;google.protobuf.Any.type<em>url&rsquo; and would contain string
+value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 
 </td>
 </tr>
@@ -79,7 +79,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Id to dedupe identical requests.</p>
+<p>Id to dedupe identical requests from Mixer.</p>
 
 </td>
 </tr>
@@ -112,8 +112,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;metric&rsquo; template . This is passed to infrastructure backends during request-time using
-andleMetricService</p>
+<p>Contains instance payload for &lsquo;metric&rsquo; template. This is passed to infrastructure backends during request-time
+through HandleMetricService.HandleMetric.</p>
 
 <table class="message-fields">
 <thead>
@@ -173,29 +173,7 @@ these fields will be ignored by the adapter.</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>The <code>metric</code> template represents a single piece of data to report.</p>
-
-<p>When writing the configuration, the value for the fields associated with this template can either be a
-literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking">inferred type</a> must match the datatype of the field.</p>
-
-<p>Example config:</p>
-
-<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: metric
-metadata:
-  name: requestsize
-  namespace: istio-system
-spec:
-  value: request.size | 0
-  dimensions:
-    source_service: source.service | &quot;unknown&quot;
-    source_version: source.labels[&quot;version&quot;] | &quot;unknown&quot;
-    destination_service: destination.service | &quot;unknown&quot;
-    destination_version: destination.labels[&quot;version&quot;] | &quot;unknown&quot;
-    response_code: response.code | 200
-  monitored_resource_type: '&quot;UNSPECIFIED&quot;'
-</code></pre>
+<p>Represents instance configuration schema for &lsquo;metric&rsquo; template.</p>
 
 <table class="message-fields">
 <thead>
@@ -210,24 +188,36 @@ spec:
 <td><code>value</code></td>
 <td><code>string</code></td>
 <td>
+<p>The value being reported.</p>
+
 </td>
 </tr>
 <tr id="InstanceParam.dimensions">
 <td><code>dimensions</code></td>
 <td><code>map&lt;string,&nbsp;string&gt;</code></td>
 <td>
+<p>The unique identity of the particular metric to report.</p>
+
 </td>
 </tr>
 <tr id="InstanceParam.monitored_resource_type">
 <td><code>monitoredResourceType</code></td>
 <td><code>string</code></td>
 <td>
+<p>Optional. An expression to compute the type of the monitored resource this metric is being reported on.
+If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+these fields will be ignored by the adapter.</p>
+
 </td>
 </tr>
 <tr id="InstanceParam.monitored_resource_dimensions">
 <td><code>monitoredResourceDimensions</code></td>
 <td><code>map&lt;string,&nbsp;string&gt;</code></td>
 <td>
+<p>Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
+If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+these fields will be ignored by the adapter.</p>
+
 </td>
 </tr>
 </tbody>
@@ -235,8 +225,8 @@ spec:
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;metric&rsquo;. This is passed to infrastructure backends during request-time using
-andleMetricService</p>
+<p>Contains inferred type information about specific instance of &lsquo;metric&rsquo; template. This is passed to
+infrastructure backends during configuration-time through <em>InfrastructureBackend.CreateSession</em>.</p>
 
 <table class="message-fields">
 <thead>

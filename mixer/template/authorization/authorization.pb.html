@@ -39,12 +39,11 @@ spec:
 <h2 id="Services">Services</h2>
 <h3 id="HandleAuthorizationService">HandleAuthorizationService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;authorization&rsquo;</p>
+<p>HandleAuthorizationService is implemented by backends that wants to handle request-time &lsquo;authorization&rsquo; instances.</p>
 
 <pre id="HandleAuthorizationService.HandleAuthorization"><code class="language-proto">rpc HandleAuthorization(HandleAuthorizationRequest) returns (HandleAuthorizationResponse)
 </code></pre>
-<p>HandleAuthorization is called by Mixer at request-time to deliver &lsquo;authorization&rsquo; instances to
-to the backend.</p>
+<p>HandleAuthorization is called by Mixer at request-time to deliver &lsquo;authorization&rsquo; instances to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
@@ -63,30 +62,40 @@ to the backend.</p>
 <td><code>namespace</code></td>
 <td><code>string</code></td>
 <td>
+<p>Namespace the target action is taking place in.</p>
+
 </td>
 </tr>
 <tr id="ActionInstanceParam.service">
 <td><code>service</code></td>
 <td><code>string</code></td>
 <td>
+<p>The Service the action is being taken on.</p>
+
 </td>
 </tr>
 <tr id="ActionInstanceParam.method">
 <td><code>method</code></td>
 <td><code>string</code></td>
 <td>
+<p>What action is being taken.</p>
+
 </td>
 </tr>
 <tr id="ActionInstanceParam.path">
 <td><code>path</code></td>
 <td><code>string</code></td>
 <td>
+<p>HTTP REST path within the service</p>
+
 </td>
 </tr>
 <tr id="ActionInstanceParam.properties">
 <td><code>properties</code></td>
 <td><code>map&lt;string,&nbsp;string&gt;</code></td>
 <td>
+<p>Additional data about the action for use in policy.</p>
+
 </td>
 </tr>
 </tbody>
@@ -189,7 +198,7 @@ to the backend.</p>
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>Authorization instances.</p>
+<p>&lsquo;authorization&rsquo; instances.</p>
 
 </td>
 </tr>
@@ -197,11 +206,12 @@ to the backend.</p>
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
-<p>Adapter specific configuration.
-Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
-opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
-call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
-as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+<p>Adapter specific handler configuration.</p>
+
+<p>Note: Backends can also implement <em>InfrastructureBackend</em>
+service and therefore opt to receive handler configuration during session creation through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config will have type</em>url as &lsquo;google.protobuf.Any.type<em>url&rsquo; and would contain string
+value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 
 </td>
 </tr>
@@ -209,7 +219,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Id to dedupe identical requests.</p>
+<p>Id to dedupe identical requests from Mixer.</p>
 
 </td>
 </tr>
@@ -242,8 +252,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;authorization&rsquo; template . This is passed to infrastructure backends during request-time using
-andleAuthorizationService</p>
+<p>Contains instance payload for &lsquo;authorization&rsquo; template. This is passed to infrastructure backends during request-time
+through HandleAuthorizationService.HandleAuthorization.</p>
 
 <table class="message-fields">
 <thead>
@@ -284,35 +294,7 @@ the caller identity.</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>The <code>authorization</code> template defines parameters for performing policy
-enforcement within Istio. It is primarily concerned with enabling Mixer
-adapters to make decisions about who is allowed to do what.
-In this template, the &ldquo;who&rdquo; is defined in a Subject message. The &ldquo;what&rdquo; is
-defined in an Action message. During a Mixer Check call, these values
-will be populated based on configuration from request attributes and
-passed to individual authorization adapters to adjudicate.</p>
-
-<p>Example config:</p>
-
-<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: authorization
-metadata:
-  name: authinfo
-  namespace: istio-system
-spec:
- subject:
-   user: source.user | request.auth.token[user] | &quot;&quot;
-   groups: request.auth.token[groups]
-   properties:
-    iss: request.auth.token[&quot;iss&quot;]
- action:
-   namespace: destination.namespace | &quot;default&quot;
-   service: destination.service | &quot;&quot;
-   path: request.path | &quot;/&quot;
-   method: request.method | &quot;post&quot;
-   properties:
-     version: destination.labels[version] | &quot;&quot;
-</code></pre>
+<p>Represents instance configuration schema for &lsquo;authorization&rsquo; template.</p>
 
 <table class="message-fields">
 <thead>
@@ -327,12 +309,17 @@ spec:
 <td><code>subject</code></td>
 <td><code><a href="#SubjectInstanceParam">SubjectInstanceParam</a></code></td>
 <td>
+<p>A subject contains a list of attributes that identify
+the caller identity.</p>
+
 </td>
 </tr>
 <tr id="InstanceParam.action">
 <td><code>action</code></td>
 <td><code><a href="#ActionInstanceParam">ActionInstanceParam</a></code></td>
 <td>
+<p>An action defines &ldquo;how a resource is accessed&rdquo;.</p>
+
 </td>
 </tr>
 </tbody>
@@ -353,18 +340,27 @@ spec:
 <td><code>user</code></td>
 <td><code>string</code></td>
 <td>
+<p>The user name/ID that the subject represents.</p>
+
 </td>
 </tr>
 <tr id="SubjectInstanceParam.groups">
 <td><code>groups</code></td>
 <td><code>string</code></td>
 <td>
+<p>Groups the subject belongs to depending on the authentication mechanism,
+&ldquo;groups&rdquo; are normally populated from JWT claim or client certificate.
+The operator can define how it is populated when creating an instance of
+the template.</p>
+
 </td>
 </tr>
 <tr id="SubjectInstanceParam.properties">
 <td><code>properties</code></td>
 <td><code>map&lt;string,&nbsp;string&gt;</code></td>
 <td>
+<p>Additional attributes about the subject.</p>
+
 </td>
 </tr>
 </tbody>
@@ -441,8 +437,8 @@ the caller identity.</p>
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;authorization&rsquo;. This is passed to infrastructure backends during request-time using
-andleAuthorizationService</p>
+<p>Contains inferred type information about specific instance of &lsquo;authorization&rsquo; template. This is passed to
+infrastructure backends during configuration-time through <em>InfrastructureBackend.CreateSession</em>.</p>
 
 <table class="message-fields">
 <thead>

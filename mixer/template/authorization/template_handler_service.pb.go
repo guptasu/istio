@@ -84,15 +84,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleAuthorization method.
 type HandleAuthorizationRequest struct {
-	// Authorization instances.
+	// 'authorization' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -142,8 +143,8 @@ func (m *HandleAuthorizationResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'authorization' template . This is passed to infrastructure backends during request-time using
-// HandleAuthorizationService
+// Contains instance payload for 'authorization' template. This is passed to infrastructure backends during request-time
+// through HandleAuthorizationService.HandleAuthorization.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -273,8 +274,8 @@ func (m *ActionMsg) GetProperties() map[string]*istio_mixer_adapter_model_v1beta
 	return nil
 }
 
-// Type InstanceMsg for template 'authorization'. This is passed to infrastructure backends during request-time using
-// HandleAuthorizationService
+// Contains inferred type information about specific instance of 'authorization' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 	// A subject contains a list of attributes that identify
 	// the caller identity.
@@ -338,39 +339,13 @@ func (m *ActionType) GetProperties() map[string]istio_policy_v1beta1.ValueType {
 	return nil
 }
 
-// The `authorization` template defines parameters for performing policy
-// enforcement within Istio. It is primarily concerned with enabling Mixer
-// adapters to make decisions about who is allowed to do what.
-// In this template, the "who" is defined in a Subject message. The "what" is
-// defined in an Action message. During a Mixer Check call, these values
-// will be populated based on configuration from request attributes and
-// passed to individual authorization adapters to adjudicate.
-//
-// Example config:
-//
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: authorization
-// metadata:
-//   name: authinfo
-//   namespace: istio-system
-// spec:
-//  subject:
-//    user: source.user | request.auth.token[user] | ""
-//    groups: request.auth.token[groups]
-//    properties:
-//     iss: request.auth.token["iss"]
-//  action:
-//    namespace: destination.namespace | "default"
-//    service: destination.service | ""
-//    path: request.path | "/"
-//    method: request.method | "post"
-//    properties:
-//      version: destination.labels[version] | ""
-//  ```
+// Represents instance configuration schema for 'authorization' template.
 type InstanceParam struct {
+	// A subject contains a list of attributes that identify
+	// the caller identity.
 	Subject *SubjectInstanceParam `protobuf:"bytes,1,opt,name=subject" json:"subject,omitempty"`
-	Action  *ActionInstanceParam  `protobuf:"bytes,2,opt,name=action" json:"action,omitempty"`
+	// An action defines "how a resource is accessed".
+	Action *ActionInstanceParam `protobuf:"bytes,2,opt,name=action" json:"action,omitempty"`
 }
 
 func (m *InstanceParam) Reset()      { *m = InstanceParam{} }
@@ -394,8 +369,14 @@ func (m *InstanceParam) GetAction() *ActionInstanceParam {
 }
 
 type SubjectInstanceParam struct {
-	User       string            `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
-	Groups     string            `protobuf:"bytes,2,opt,name=groups,proto3" json:"groups,omitempty"`
+	// The user name/ID that the subject represents.
+	User string `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	// Groups the subject belongs to depending on the authentication mechanism,
+	// "groups" are normally populated from JWT claim or client certificate.
+	// The operator can define how it is populated when creating an instance of
+	// the template.
+	Groups string `protobuf:"bytes,2,opt,name=groups,proto3" json:"groups,omitempty"`
+	// Additional attributes about the subject.
 	Properties map[string]string `protobuf:"bytes,3,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
@@ -427,10 +408,15 @@ func (m *SubjectInstanceParam) GetProperties() map[string]string {
 }
 
 type ActionInstanceParam struct {
-	Namespace  string            `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Service    string            `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
-	Method     string            `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`
-	Path       string            `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
+	// Namespace the target action is taking place in.
+	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	// The Service the action is being taken on.
+	Service string `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
+	// What action is being taken.
+	Method string `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`
+	// HTTP REST path within the service
+	Path string `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
+	// Additional data about the action for use in policy.
 	Properties map[string]string `protobuf:"bytes,5,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 

@@ -6,12 +6,11 @@ number_of_entries: 14
 <h2 id="Services">Services</h2>
 <h3 id="HandleReportService">HandleReportService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;report&rsquo;</p>
+<p>HandleReportService is implemented by backends that wants to handle request-time &lsquo;report&rsquo; instances.</p>
 
 <pre id="HandleReportService.HandleReport"><code class="language-proto">rpc HandleReport(HandleReportRequest) returns (HandleReportResponse)
 </code></pre>
-<p>HandleReport is called by Mixer at request-time to deliver &lsquo;report&rsquo; instances to
-to the backend.</p>
+<p>HandleReport is called by Mixer at request-time to deliver &lsquo;report&rsquo; instances to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
@@ -32,7 +31,7 @@ to the backend.</p>
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>Report instances.</p>
+<p>&lsquo;report&rsquo; instances.</p>
 
 </td>
 </tr>
@@ -40,11 +39,12 @@ to the backend.</p>
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
-<p>Adapter specific configuration.
-Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
-opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
-call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
-as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+<p>Adapter specific handler configuration.</p>
+
+<p>Note: Backends can also implement <em>InfrastructureBackend</em>
+service and therefore opt to receive handler configuration during session creation through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config will have type</em>url as &lsquo;google.protobuf.Any.type<em>url&rsquo; and would contain string
+value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 
 </td>
 </tr>
@@ -52,7 +52,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Id to dedupe identical requests.</p>
+<p>Id to dedupe identical requests from Mixer.</p>
 
 </td>
 </tr>
@@ -85,8 +85,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;report&rsquo; template . This is passed to infrastructure backends during request-time using
-andleReportService</p>
+<p>Contains instance payload for &lsquo;report&rsquo; template. This is passed to infrastructure backends during request-time
+through HandleReportService.HandleReport.</p>
 
 <table class="message-fields">
 <thead>
@@ -170,6 +170,8 @@ andleReportService</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
+<p>Represents instance configuration schema for &lsquo;report&rsquo; template.</p>
+
 <table class="message-fields">
 <thead>
 <tr>
@@ -604,8 +606,8 @@ andleReportService</p>
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;report&rsquo;. This is passed to infrastructure backends during request-time using
-andleReportService</p>
+<p>Contains inferred type information about specific instance of &lsquo;report&rsquo; template. This is passed to
+infrastructure backends during configuration-time through <em>InfrastructureBackend.CreateSession</em>.</p>
 
 <table class="message-fields">
 <thead>

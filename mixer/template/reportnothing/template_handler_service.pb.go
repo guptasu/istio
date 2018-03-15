@@ -59,15 +59,16 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Request message for HandleReportNothing method.
 type HandleReportNothingRequest struct {
-	// ReportNothing instances.
+	// 'reportnothing' instances.
 	Instances []*Type `protobuf:"bytes,1,rep,name=instances" json:"instances,omitempty"`
-	// Adapter specific configuration.
-	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-	// opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-	// call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-	// as "google.protobuf.StringValue".
+	// Adapter specific handler configuration.
+	//
+	// Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+	// service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+	// call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+	// value of session_id (returned from InfrastructureBackend.CreateSession).
 	AdapterConfig *google_protobuf1.Any `protobuf:"bytes,2,opt,name=adapter_config,json=adapterConfig" json:"adapter_config,omitempty"`
-	// Id to dedupe identical requests.
+	// Id to dedupe identical requests from Mixer.
 	DedupId string `protobuf:"bytes,3,opt,name=dedup_id,json=dedupId,proto3" json:"dedup_id,omitempty"`
 }
 
@@ -117,8 +118,8 @@ func (m *HandleReportNothingResponse) GetStatus() *google_rpc.Status {
 	return nil
 }
 
-// Request-time payload for 'reportnothing' template . This is passed to infrastructure backends during request-time using
-// HandleReportNothingService
+// Contains instance payload for 'reportnothing' template. This is passed to infrastructure backends during request-time
+// through HandleReportNothingService.HandleReportNothing.
 type InstanceMsg struct {
 	// Name of the instance as specified in configuration.
 	Name string `protobuf:"bytes,72295727,opt,name=name,proto3" json:"name,omitempty"`
@@ -137,8 +138,8 @@ func (m *InstanceMsg) GetName() string {
 	return ""
 }
 
-// Type InstanceMsg for template 'reportnothing'. This is passed to infrastructure backends during request-time using
-// HandleReportNothingService
+// Contains inferred type information about specific instance of 'reportnothing' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 type Type struct {
 }
 
@@ -146,19 +147,7 @@ func (m *Type) Reset()                    { *m = Type{} }
 func (*Type) ProtoMessage()               {}
 func (*Type) Descriptor() ([]byte, []int) { return fileDescriptorTemplateHandlerService, []int{3} }
 
-// ReportNothing represents an empty block of data that is used for Report-capable
-// adapters which don't require any parameters. This is primarily intended for testing
-// scenarios.
-//
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: reportnothing
-// metadata:
-//   name: reportrequest
-//   namespace: istio-system
-// spec:
-// ```
+// Represents instance configuration schema for 'reportnothing' template.
 type InstanceParam struct {
 }
 

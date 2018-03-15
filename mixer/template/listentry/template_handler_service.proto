@@ -50,27 +50,27 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_C
 
 
 
-/* Infrastructure backend service for template 'listentry'*/
+// HandleListEntryService is implemented by backends that wants to handle request-time 'listentry' instances.
 service HandleListEntryService {
-    // HandleListEntry is called by Mixer at request-time to deliver 'listentry' instances to
-    // to the backend.
+    // HandleListEntry is called by Mixer at request-time to deliver 'listentry' instances to the backend.
     rpc HandleListEntry(HandleListEntryRequest) returns (HandleListEntryResponse);
 }
 
 // Request message for HandleListEntry method.
 message HandleListEntryRequest {
 
-    // ListEntry instances.
+    // 'listentry' instances.
     repeated Type instances = 1;
 
-    // Adapter specific configuration.
-    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend] service and therefore
-    // opt to receive handler configuration only through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
-    // call. In that case, adapter_config would contain the session_id string value with google.protobuf.Any.type_url
-    // as "google.protobuf.StringValue".
+    // Adapter specific handler configuration.
+    //
+    // Note: Backends can also implement [InfrastructureBackend][https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#InfrastructureBackend]
+    // service and therefore opt to receive handler configuration during session creation through [InfrastructureBackend.CreateSession][TODO: Link to this fragment]
+    // call. In that case, adapter_config will have type_url as 'google.protobuf.Any.type_url' and would contain string
+    // value of session_id (returned from InfrastructureBackend.CreateSession).
     google.protobuf.Any adapter_config = 2;
 
-    // Id to dedupe identical requests.
+    // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
 }
 
@@ -80,8 +80,8 @@ message HandleListEntryResponse {
     google.rpc.Status status = 1;
 }
 
-/* Request-time payload for 'listentry' template . This is passed to infrastructure backends during request-time using
-HandleListEntryService */
+// Contains instance payload for 'listentry' template. This is passed to infrastructure backends during request-time
+// through HandleListEntryService.HandleListEntry.
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -97,8 +97,8 @@ message InstanceMsg {
 
 
 
-/* Type InstanceMsg for template 'listentry'. This is passed to infrastructure backends during request-time using
-HandleListEntryService */
+// Contains inferred type information about specific instance of 'listentry' template. This is passed to
+// infrastructure backends during configuration-time through [InfrastructureBackend.CreateSession][TODO: Link to this fragment].
 message Type {
   
 }
@@ -107,25 +107,10 @@ message Type {
 
 
 
-// The `listentry` template is used to verify the presence/absence of a string
-// within a list.
-// 
-// When writing the configuration, the value for the fields associated with this template can either be a
-// literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-// then the expression's [inferred type](https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking) must match the datatype of the field.
-// 
-// Example config:
-// ```
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: listentry
-// metadata:
-//   name: appversion
-//   namespace: istio-system
-// spec:
-//   value: source.labels["version"]
-// ```
+// Represents instance configuration schema for 'listentry' template.
 message InstanceParam {
   
+  // Specifies the entry to verify in the list.
   string value = 1;
   
   

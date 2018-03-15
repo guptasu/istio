@@ -23,12 +23,11 @@ spec:
 <h2 id="Services">Services</h2>
 <h3 id="HandleReportNothingService">HandleReportNothingService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;reportnothing&rsquo;</p>
+<p>HandleReportNothingService is implemented by backends that wants to handle request-time &lsquo;reportnothing&rsquo; instances.</p>
 
 <pre id="HandleReportNothingService.HandleReportNothing"><code class="language-proto">rpc HandleReportNothing(HandleReportNothingRequest) returns (HandleReportNothingResponse)
 </code></pre>
-<p>HandleReportNothing is called by Mixer at request-time to deliver &lsquo;reportnothing&rsquo; instances to
-to the backend.</p>
+<p>HandleReportNothing is called by Mixer at request-time to deliver &lsquo;reportnothing&rsquo; instances to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
@@ -49,7 +48,7 @@ to the backend.</p>
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>ReportNothing instances.</p>
+<p>&lsquo;reportnothing&rsquo; instances.</p>
 
 </td>
 </tr>
@@ -57,11 +56,12 @@ to the backend.</p>
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
-<p>Adapter specific configuration.
-Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
-opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
-call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
-as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+<p>Adapter specific handler configuration.</p>
+
+<p>Note: Backends can also implement <em>InfrastructureBackend</em>
+service and therefore opt to receive handler configuration during session creation through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config will have type</em>url as &lsquo;google.protobuf.Any.type<em>url&rsquo; and would contain string
+value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 
 </td>
 </tr>
@@ -69,7 +69,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Id to dedupe identical requests.</p>
+<p>Id to dedupe identical requests from Mixer.</p>
 
 </td>
 </tr>
@@ -102,8 +102,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;reportnothing&rsquo; template . This is passed to infrastructure backends during request-time using
-andleReportNothingService</p>
+<p>Contains instance payload for &lsquo;reportnothing&rsquo; template. This is passed to infrastructure backends during request-time
+through HandleReportNothingService.HandleReportNothing.</p>
 
 <table class="message-fields">
 <thead>
@@ -127,25 +127,13 @@ andleReportNothingService</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>ReportNothing represents an empty block of data that is used for Report-capable
-adapters which don&rsquo;t require any parameters. This is primarily intended for testing
-scenarios.</p>
-
-<p>Example config:</p>
-
-<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: reportnothing
-metadata:
-  name: reportrequest
-  namespace: istio-system
-spec:
-</code></pre>
+<p>Represents instance configuration schema for &lsquo;reportnothing&rsquo; template.</p>
 
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;reportnothing&rsquo;. This is passed to infrastructure backends during request-time using
-andleReportNothingService</p>
+<p>Contains inferred type information about specific instance of &lsquo;reportnothing&rsquo; template. This is passed to
+infrastructure backends during configuration-time through <em>InfrastructureBackend.CreateSession</em>.</p>
 
 </section>
 <h3 id="google.rpc.Status">google.rpc.Status</h3>
