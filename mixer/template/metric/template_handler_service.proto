@@ -16,21 +16,10 @@
 
 syntax = "proto3";
 
-package metric;
-
-import "mixer/adapter/model/v1beta1/extensions.proto";
-import "google/protobuf/any.proto";
-import "google/rpc/status.proto";
-import "mixer/adapter/model/v1beta1/type.proto";
-
-import "policy/v1beta1/value_type.proto";
-
-option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_REPORT;
-
-
 
 // The `metric` template is designed to let you describe runtime metric to dispatch to
 // monitoring backends.
+//
 // The `metric` template represents a single piece of data to report.
 // 
 // When writing the configuration, the value for the fields associated with this template can either be a
@@ -54,22 +43,21 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_R
 //     response_code: response.code | 200
 //   monitored_resource_type: '"UNSPECIFIED"'
 // ```
-message Type {
-  
-  // The value being reported.
-  istio.policy.v1beta1.ValueType value = 1;
-  // The unique identity of the particular metric to report.
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
-  // Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
-// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-// these fields will be ignored by the adapter.
-  map<string, istio.policy.v1beta1.ValueType> monitored_resource_dimensions = 4;
-}
+package metric;
+
+import "mixer/adapter/model/v1beta1/extensions.proto";
+import "google/protobuf/any.proto";
+import "google/rpc/status.proto";
+import "mixer/adapter/model/v1beta1/type.proto";
+
+import "policy/v1beta1/value_type.proto";
+
+option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_REPORT;
 
 
 
 /* Infrastructure backend service for template 'metric'*/
-service MetricService {
+service HandleMetricService {
     // HandleMetric is called by Mixer at request-time to deliver 'metric' instances to
     // to the backend.
     rpc HandleMetric(HandleMetricRequest) returns (HandleMetricResponse);
@@ -98,8 +86,54 @@ message HandleMetricResponse {
     google.rpc.Status status = 1;
 }
 
-// InstanceMsg is constructed by Mixer for the 'metric' template.
-//
+/* Request-time payload for 'metric' template . This is passed to infrastructure backends during request-time using
+HandleMetricService */
+message InstanceMsg {
+  // Name of the instance as specified in configuration.
+  string name = 72295727;
+  
+  // The value being reported.
+  istio.mixer.adapter.model.v1beta1.Value value = 1;
+  
+  // The unique identity of the particular metric to report.
+  map<string, istio.mixer.adapter.model.v1beta1.Value> dimensions = 2;
+  
+  // Optional. An expression to compute the type of the monitored resource this metric is being reported on.
+// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+// these fields will be ignored by the adapter.
+  string monitored_resource_type = 3;
+  
+  // Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
+// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+// these fields will be ignored by the adapter.
+  map<string, istio.mixer.adapter.model.v1beta1.Value> monitored_resource_dimensions = 4;
+  
+}
+
+
+
+
+
+
+
+/* Type InstanceMsg for template 'metric'. This is passed to infrastructure backends during request-time using
+HandleMetricService */
+message Type {
+  
+  // The value being reported.
+  istio.policy.v1beta1.ValueType value = 1;
+  // The unique identity of the particular metric to report.
+  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
+  // Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
+// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
+// these fields will be ignored by the adapter.
+  map<string, istio.policy.v1beta1.ValueType> monitored_resource_dimensions = 4;
+}
+
+
+
+
+
 // The `metric` template represents a single piece of data to report.
 // 
 // When writing the configuration, the value for the fields associated with this template can either be a
@@ -123,32 +157,6 @@ message HandleMetricResponse {
 //     response_code: response.code | 200
 //   monitored_resource_type: '"UNSPECIFIED"'
 // ```
-message InstanceMsg {
-  // Name of the instance as specified in configuration.
-  string name = 72295727;
-  
-  // The value being reported.
-  istio.policy.v1beta1.ValueType value = 1;
-  
-  // The unique identity of the particular metric to report.
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 2;
-  
-  // Optional. An expression to compute the type of the monitored resource this metric is being reported on.
-// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-// these fields will be ignored by the adapter.
-  string monitored_resource_type = 3;
-  
-  // Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
-// If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-// these fields will be ignored by the adapter.
-  map<string, istio.policy.v1beta1.ValueType> monitored_resource_dimensions = 4;
-  
-}
-
-
-
-
-
 message InstanceParam {
   
   string value = 1;
@@ -161,6 +169,5 @@ message InstanceParam {
   
   
 }
-
 
 

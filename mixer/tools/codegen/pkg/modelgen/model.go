@@ -26,8 +26,6 @@ import (
 	tmpl "istio.io/api/mixer/adapter/model/v1beta1"
 )
 
-const fullProtoNameOfValueTypeEnum = "istio.policy.v1beta1.ValueType"
-const fullGoNameOfValueTypeEnum = "istio_policy_v1beta1.ValueType"
 const fullProtoNameOfValueMsg = "istio.mixer.adapter.model.v1beta1.Value"
 
 type typeMetadata struct {
@@ -419,7 +417,7 @@ func getTypeNameRec(g *FileDescriptorSetParser, field *descriptor.FieldDescripto
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 		if field.GetTypeName()[1:] == fullProtoNameOfValueMsg {
 			if valueTypeAllowed {
-				return TypeInfo{Name: fullProtoNameOfValueTypeEnum, IsValueType: true}, TypeInfo{Name: fullGoNameOfValueTypeEnum, IsValueType: true}, nil
+				return TypeInfo{Name: fullProtoNameOfValueMsg, IsValueType: true}, TypeInfo{Name: "interface{}", IsValueType: true}, nil
 			}
 			return TypeInfo{}, TypeInfo{}, createInvalidTypeError(field.GetName(), valueTypeAllowed, nil)
 		}

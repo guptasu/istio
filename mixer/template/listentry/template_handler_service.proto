@@ -16,21 +16,12 @@
 
 syntax = "proto3";
 
-package quota;
 
-import "mixer/adapter/model/v1beta1/extensions.proto";
-import "google/protobuf/any.proto";
-import "google/rpc/status.proto";
-import "mixer/adapter/model/v1beta1/type.proto";
-
-import "policy/v1beta1/value_type.proto";
-
-option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_QUOTA;
-
-
-
-// The `quota` template represents an item for which to check quota.
-// The `quota` template represents a piece of data to check Quota for.
+// The `listentry` template is designed to let you perform list check operations
+// with the [list](https://istio.io/docs/reference/config/adapters/list.html) adapter.
+//
+// The `listentry` template is used to verify the presence/absence of a string
+// within a list.
 // 
 // When writing the configuration, the value for the fields associated with this template can either be a
 // literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
@@ -39,36 +30,37 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_Q
 // Example config:
 // ```
 // apiVersion: "config.istio.io/v1alpha2"
-// kind: quota
+// kind: listentry
 // metadata:
-//   name: requestcount
+//   name: appversion
 //   namespace: istio-system
 // spec:
-//   dimensions:
-//     source: source.labels["app"] | source.service | "unknown"
-//     sourceVersion: source.labels["version"] | "unknown"
-//     destination: destination.labels["app"] | destination.service | "unknown"
-//     destinationVersion: destination.labels["version"] | "unknown"
+//   value: source.labels["version"]
 // ```
-message Type {
-  
-  // The unique identity of the particular quota to manipulate.
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 1;
-}
+package listentry;
+
+import "mixer/adapter/model/v1beta1/extensions.proto";
+import "google/protobuf/any.proto";
+import "google/rpc/status.proto";
+import "mixer/adapter/model/v1beta1/type.proto";
 
 
 
-/* Infrastructure backend service for template 'quota'*/
-service QuotaService {
-    // HandleQuota is called by Mixer at request-time to deliver 'quota' instances to
+option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_CHECK;
+
+
+
+/* Infrastructure backend service for template 'listentry'*/
+service HandleListEntryService {
+    // HandleListEntry is called by Mixer at request-time to deliver 'listentry' instances to
     // to the backend.
-    rpc HandleQuota(HandleQuotaRequest) returns (HandleQuotaResponse);
+    rpc HandleListEntry(HandleListEntryRequest) returns (HandleListEntryResponse);
 }
 
-// Request message for HandleQuota method.
-message HandleQuotaRequest {
+// Request message for HandleListEntry method.
+message HandleListEntryRequest {
 
-    // Quota instances.
+    // ListEntry instances.
     repeated Type instances = 1;
 
     // Adapter specific configuration.
@@ -82,15 +74,41 @@ message HandleQuotaRequest {
     string dedup_id = 3;
 }
 
-// Response message for HandleQuota method.
-message HandleQuotaResponse {
-    // The success/failure status of HandleQuota call.
+// Response message for HandleListEntry method.
+message HandleListEntryResponse {
+    // The success/failure status of HandleListEntry call.
     google.rpc.Status status = 1;
 }
 
-// InstanceMsg is constructed by Mixer for the 'quota' template.
-//
-// The `quota` template represents a piece of data to check Quota for.
+/* Request-time payload for 'listentry' template . This is passed to infrastructure backends during request-time using
+HandleListEntryService */
+message InstanceMsg {
+  // Name of the instance as specified in configuration.
+  string name = 72295727;
+  
+  // Specifies the entry to verify in the list.
+  string value = 1;
+  
+}
+
+
+
+
+
+
+
+/* Type InstanceMsg for template 'listentry'. This is passed to infrastructure backends during request-time using
+HandleListEntryService */
+message Type {
+  
+}
+
+
+
+
+
+// The `listentry` template is used to verify the presence/absence of a string
+// within a list.
 // 
 // When writing the configuration, the value for the fields associated with this template can either be a
 // literal or an [expression](https://istio.io/docs/reference/config/mixer/expression-language.html). Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
@@ -99,36 +117,18 @@ message HandleQuotaResponse {
 // Example config:
 // ```
 // apiVersion: "config.istio.io/v1alpha2"
-// kind: quota
+// kind: listentry
 // metadata:
-//   name: requestcount
+//   name: appversion
 //   namespace: istio-system
 // spec:
-//   dimensions:
-//     source: source.labels["app"] | source.service | "unknown"
-//     sourceVersion: source.labels["version"] | "unknown"
-//     destination: destination.labels["app"] | destination.service | "unknown"
-//     destinationVersion: destination.labels["version"] | "unknown"
+//   value: source.labels["version"]
 // ```
-message InstanceMsg {
-  // Name of the instance as specified in configuration.
-  string name = 72295727;
-  
-  // The unique identity of the particular quota to manipulate.
-  map<string, istio.policy.v1beta1.ValueType> dimensions = 1;
-  
-}
-
-
-
-
-
 message InstanceParam {
   
-  map<string, string> dimensions = 1;
+  string value = 1;
   
   
 }
-
 
 

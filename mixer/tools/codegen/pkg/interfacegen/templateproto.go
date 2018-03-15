@@ -19,6 +19,9 @@ var augmentedProtoTmpl = `// Copyright 2017 Istio Authors
 
 syntax = "proto3";
 
+{{.Comment}}{{if ne .TemplateMessage.Comment ""}}
+//
+{{.TemplateMessage.Comment}}{{end}}
 package {{.PackageName}};
 
 import "mixer/adapter/model/v1beta1/extensions.proto";
@@ -31,31 +34,9 @@ $$additional_imports$$
 option (istio.mixer.adapter.model.v1beta1.template_variety) = {{.VarietyName}};
 
 {{if ne .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
-{{.Comment}}
-{{.TemplateMessage.Comment}}
-message Type {
-  {{range .TemplateMessage.Fields -}}
-  {{- if valueTypeOrResMsg .ProtoType}}
-  {{.Comment}}
-  {{valueTypeOrResMsgFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
-  {{- end}}
-  {{- end}}
-}
-
-{{range .ResourceMessages}}
-{{.Comment}}
-message {{getResourcMessageTypeName .Name}} {
-  {{range .Fields}}
-  {{- if valueTypeOrResMsg .ProtoType}}
-  {{.Comment}}
-  {{valueTypeOrResMsgFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
-  {{- end}}
-  {{- end}}
-}
-{{end}}
 
 /* Infrastructure backend service for template '{{.TemplateName}}'*/
-service {{.InterfaceName}}Service {
+service Handle{{.InterfaceName}}Service {
     // Handle{{.InterfaceName}} is called by Mixer at request-time to deliver '{{.TemplateName}}' instances to
     // to the backend.
     rpc Handle{{.InterfaceName}}(Handle{{.InterfaceName}}Request) returns (Handle{{.InterfaceName}}Response);
@@ -84,9 +65,8 @@ message Handle{{.InterfaceName}}Response {
     google.rpc.Status status = 1;
 }
 
-// InstanceMsg is constructed by Mixer for the '{{.TemplateName}}' template.{{if ne .TemplateMessage.Comment ""}}
-//
-{{.TemplateMessage.Comment}}{{end}}
+/* Request-time payload for '{{.TemplateName}}' template . This is passed to infrastructure backends during request-time using
+Handle{{.InterfaceName}}Service */
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -108,6 +88,34 @@ message {{.Name}}Msg {
 
 {{end}}
 
+{{if ne .VarietyName "TEMPLATE_VARIETY_ATTRIBUTE_GENERATOR"}}
+
+/* Type InstanceMsg for template '{{.TemplateName}}'. This is passed to infrastructure backends during request-time using
+Handle{{.InterfaceName}}Service */
+message Type {
+  {{range .TemplateMessage.Fields -}}
+  {{- if valueTypeOrResMsg .ProtoType}}
+  {{.Comment}}
+  {{valueTypeOrResMsgFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
+  {{- end}}
+  {{- end}}
+}
+
+{{range .ResourceMessages}}
+{{.Comment}}
+message {{getResourcMessageTypeName .Name}} {
+  {{range .Fields}}
+  {{- if valueTypeOrResMsg .ProtoType}}
+  {{.Comment}}
+  {{valueTypeOrResMsgFieldTypeName .ProtoType}} {{.ProtoName}} = {{.Number}};{{reportTypeUsed .ProtoType}}
+  {{- end}}
+  {{- end}}
+}
+{{end}}
+
+{{end}}
+
+{{.TemplateMessage.Comment}}
 message InstanceParam {
   {{range .TemplateMessage.Fields}}
   {{stringify .ProtoType}} {{.ProtoName}} = {{.Number}};
@@ -129,5 +137,4 @@ message {{getResourcMessageInterfaceParamTypeName  .Name}} {
   {{end}}
 }
 {{end}}
-
 `
