@@ -1,11 +1,13 @@
 ---
-title: quota
+title: listentry
 layout: protoc-gen-docs
-number_of_entries: 8
+number_of_entries: 7
 ---
-<p>The <code>quota</code> template represents an item for which to check quota.</p>
+<p>The <code>listentry</code> template is designed to let you perform list check operations
+with the <a href="https://istio.io/docs/reference/config/adapters/list.html">list</a> adapter.</p>
 
-<p>The <code>quota</code> template represents a piece of data to check Quota for.</p>
+<p>The <code>listentry</code> template is used to verify the presence/absence of a string
+within a list.</p>
 
 <p>When writing the configuration, the value for the fields associated with this template can either be a
 literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
@@ -14,33 +16,29 @@ then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixe
 <p>Example config:</p>
 
 <pre><code>apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: quota
+kind: listentry
 metadata:
-  name: requestcount
+  name: appversion
   namespace: istio-system
 spec:
-  dimensions:
-    source: source.labels[&quot;app&quot;] | source.service | &quot;unknown&quot;
-    sourceVersion: source.labels[&quot;version&quot;] | &quot;unknown&quot;
-    destination: destination.labels[&quot;app&quot;] | destination.service | &quot;unknown&quot;
-    destinationVersion: destination.labels[&quot;version&quot;] | &quot;unknown&quot;
+  value: source.labels[&quot;version&quot;]
 </code></pre>
 
 <h2 id="Services">Services</h2>
-<h3 id="HandleQuotaService">HandleQuotaService</h3>
+<h3 id="HandleListEntryService">HandleListEntryService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;quota&rsquo;</p>
+<p>Infrastructure backend service for template &lsquo;listentry&rsquo;</p>
 
-<pre id="HandleQuotaService.HandleQuota"><code class="language-proto">rpc HandleQuota(HandleQuotaRequest) returns (HandleQuotaResponse)
+<pre id="HandleListEntryService.HandleListEntry"><code class="language-proto">rpc HandleListEntry(HandleListEntryRequest) returns (HandleListEntryResponse)
 </code></pre>
-<p>HandleQuota is called by Mixer at request-time to deliver &lsquo;quota&rsquo; instances to
+<p>HandleListEntry is called by Mixer at request-time to deliver &lsquo;listentry&rsquo; instances to
 to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
-<h3 id="HandleQuotaRequest">HandleQuotaRequest</h3>
+<h3 id="HandleListEntryRequest">HandleListEntryRequest</h3>
 <section>
-<p>Request message for HandleQuota method.</p>
+<p>Request message for HandleListEntry method.</p>
 
 <table class="message-fields">
 <thead>
@@ -51,15 +49,15 @@ to the backend.</p>
 </tr>
 </thead>
 <tbody>
-<tr id="HandleQuotaRequest.instances">
+<tr id="HandleListEntryRequest.instances">
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>Quota instances.</p>
+<p>ListEntry instances.</p>
 
 </td>
 </tr>
-<tr id="HandleQuotaRequest.adapter_config">
+<tr id="HandleListEntryRequest.adapter_config">
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
@@ -71,7 +69,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 
 </td>
 </tr>
-<tr id="HandleQuotaRequest.dedup_id">
+<tr id="HandleListEntryRequest.dedup_id">
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
@@ -82,9 +80,9 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </tbody>
 </table>
 </section>
-<h3 id="HandleQuotaResponse">HandleQuotaResponse</h3>
+<h3 id="HandleListEntryResponse">HandleListEntryResponse</h3>
 <section>
-<p>Response message for HandleQuota method.</p>
+<p>Response message for HandleListEntry method.</p>
 
 <table class="message-fields">
 <thead>
@@ -95,11 +93,11 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </tr>
 </thead>
 <tbody>
-<tr id="HandleQuotaResponse.status">
+<tr id="HandleListEntryResponse.status">
 <td><code>status</code></td>
 <td><code><a href="#google.rpc.Status">google.rpc.Status</a></code></td>
 <td>
-<p>The success/failure status of HandleQuota call.</p>
+<p>The success/failure status of HandleListEntry call.</p>
 
 </td>
 </tr>
@@ -108,8 +106,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;quota&rsquo; template . This is passed to infrastructure backends during request-time using
-andleQuotaService</p>
+<p>Request-time payload for &lsquo;listentry&rsquo; template . This is passed to infrastructure backends during request-time using
+andleListEntryService</p>
 
 <table class="message-fields">
 <thead>
@@ -128,11 +126,11 @@ andleQuotaService</p>
 
 </td>
 </tr>
-<tr id="InstanceMsg.dimensions">
-<td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<tr id="InstanceMsg.value">
+<td><code>value</code></td>
+<td><code>string</code></td>
 <td>
-<p>The unique identity of the particular quota to manipulate.</p>
+<p>Specifies the entry to verify in the list.</p>
 
 </td>
 </tr>
@@ -141,7 +139,8 @@ andleQuotaService</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>The <code>quota</code> template represents a piece of data to check Quota for.</p>
+<p>The <code>listentry</code> template is used to verify the presence/absence of a string
+within a list.</p>
 
 <p>When writing the configuration, the value for the fields associated with this template can either be a
 literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
@@ -150,16 +149,12 @@ then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixe
 <p>Example config:</p>
 
 <pre><code>apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: quota
+kind: listentry
 metadata:
-  name: requestcount
+  name: appversion
   namespace: istio-system
 spec:
-  dimensions:
-    source: source.labels[&quot;app&quot;] | source.service | &quot;unknown&quot;
-    sourceVersion: source.labels[&quot;version&quot;] | &quot;unknown&quot;
-    destination: destination.labels[&quot;app&quot;] | destination.service | &quot;unknown&quot;
-    destinationVersion: destination.labels[&quot;version&quot;] | &quot;unknown&quot;
+  value: source.labels[&quot;version&quot;]
 </code></pre>
 
 <table class="message-fields">
@@ -171,9 +166,9 @@ spec:
 </tr>
 </thead>
 <tbody>
-<tr id="InstanceParam.dimensions">
-<td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;string&gt;</code></td>
+<tr id="InstanceParam.value">
+<td><code>value</code></td>
+<td><code>string</code></td>
 <td>
 </td>
 </tr>
@@ -182,28 +177,9 @@ spec:
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;quota&rsquo;. This is passed to infrastructure backends during request-time using
-andleQuotaService</p>
+<p>Type InstanceMsg for template &lsquo;listentry&rsquo;. This is passed to infrastructure backends during request-time using
+andleListEntryService</p>
 
-<table class="message-fields">
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="Type.dimensions">
-<td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
-<td>
-<p>The unique identity of the particular quota to manipulate.</p>
-
-</td>
-</tr>
-</tbody>
-</table>
 </section>
 <h3 id="google.rpc.Status">google.rpc.Status</h3>
 <section>
@@ -297,108 +273,6 @@ user-facing error message should be localized and sent in the
 <td>
 <p>A list of messages that carry the error details.  There is a common set of
 message types for APIs to use.</p>
-
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-<h3 id="istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</h3>
-<section>
-<p>ValueType describes the types that values in the Istio system can take. These
-are used to describe the type of Attributes at run time, describe the type of
-the result of evaluating an expression, and to describe the runtime type of
-fields of other descriptors.</p>
-
-<table class="enum-values">
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="istio.policy.v1beta1.ValueType.VALUE_TYPE_UNSPECIFIED">
-<td><code>VALUE_TYPE_UNSPECIFIED</code></td>
-<td>
-<p>Invalid, default value.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.STRING">
-<td><code>STRING</code></td>
-<td>
-<p>An undiscriminated variable-length string.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.INT64">
-<td><code>INT64</code></td>
-<td>
-<p>An undiscriminated 64-bit signed integer.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.DOUBLE">
-<td><code>DOUBLE</code></td>
-<td>
-<p>An undiscriminated 64-bit floating-point value.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.BOOL">
-<td><code>BOOL</code></td>
-<td>
-<p>An undiscriminated boolean value.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.TIMESTAMP">
-<td><code>TIMESTAMP</code></td>
-<td>
-<p>A point in time.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.IP_ADDRESS">
-<td><code>IP_ADDRESS</code></td>
-<td>
-<p>An IP address.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.EMAIL_ADDRESS">
-<td><code>EMAIL_ADDRESS</code></td>
-<td>
-<p>An email address.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.URI">
-<td><code>URI</code></td>
-<td>
-<p>A URI.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.DNS_NAME">
-<td><code>DNS_NAME</code></td>
-<td>
-<p>A DNS name.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.DURATION">
-<td><code>DURATION</code></td>
-<td>
-<p>A span between two points in time.</p>
-
-</td>
-</tr>
-<tr id="istio.policy.v1beta1.ValueType.STRING_MAP">
-<td><code>STRING_MAP</code></td>
-<td>
-<p>A map string -&gt; string, typically used by headers.</p>
 
 </td>
 </tr>
