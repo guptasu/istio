@@ -1,14 +1,98 @@
 ---
-title: Authorization
-overview: A template used to represent an access control query.
-location: https://istio.io/docs/reference/config/template/authorization.html
+title: authorization
 layout: protoc-gen-docs
-number_of_entries: 3
+number_of_entries: 14
 ---
 <p>The <code>authorization</code> template defines parameters for performing policy
 enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 
-<h2 id="Action">Action</h2>
+<p>The <code>authorization</code> template defines parameters for performing policy
+enforcement within Istio. It is primarily concerned with enabling Mixer
+adapters to make decisions about who is allowed to do what.
+In this template, the &ldquo;who&rdquo; is defined in a Subject message. The &ldquo;what&rdquo; is
+defined in an Action message. During a Mixer Check call, these values
+will be populated based on configuration from request attributes and
+passed to individual authorization adapters to adjudicate.</p>
+
+<p>Example config:</p>
+
+<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
+kind: authorization
+metadata:
+  name: authinfo
+  namespace: istio-system
+spec:
+ subject:
+   user: source.user | request.auth.token[user] | &quot;&quot;
+   groups: request.auth.token[groups]
+   properties:
+    iss: request.auth.token[&quot;iss&quot;]
+ action:
+   namespace: destination.namespace | &quot;default&quot;
+   service: destination.service | &quot;&quot;
+   path: request.path | &quot;/&quot;
+   method: request.method | &quot;post&quot;
+   properties:
+     version: destination.labels[version] | &quot;&quot;
+</code></pre>
+
+<h2 id="Services">Services</h2>
+<h3 id="HandleAuthorizationService">HandleAuthorizationService</h3>
+<section>
+<p>Infrastructure backend service for template &lsquo;authorization&rsquo;</p>
+
+<pre id="HandleAuthorizationService.HandleAuthorization"><code class="language-proto">rpc HandleAuthorization(HandleAuthorizationRequest) returns (HandleAuthorizationResponse)
+</code></pre>
+<p>HandleAuthorization is called by Mixer at request-time to deliver &lsquo;authorization&rsquo; instances to
+to the backend.</p>
+
+</section>
+<h2 id="Types">Types</h2>
+<h3 id="ActionInstanceParam">ActionInstanceParam</h3>
+<section>
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="ActionInstanceParam.namespace">
+<td><code>namespace</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="ActionInstanceParam.service">
+<td><code>service</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="ActionInstanceParam.method">
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="ActionInstanceParam.path">
+<td><code>path</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="ActionInstanceParam.properties">
+<td><code>properties</code></td>
+<td><code>map&lt;string,&nbsp;string&gt;</code></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="ActionMsg">ActionMsg</h3>
 <section>
 <p>An action defines &ldquo;how a resource is accessed&rdquo;.</p>
 
@@ -21,7 +105,7 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 </tr>
 </thead>
 <tbody>
-<tr id="Action.namespace">
+<tr id="ActionMsg.namespace">
 <td><code>namespace</code></td>
 <td><code>string</code></td>
 <td>
@@ -29,7 +113,7 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 
 </td>
 </tr>
-<tr id="Action.service">
+<tr id="ActionMsg.service">
 <td><code>service</code></td>
 <td><code>string</code></td>
 <td>
@@ -37,7 +121,7 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 
 </td>
 </tr>
-<tr id="Action.method">
+<tr id="ActionMsg.method">
 <td><code>method</code></td>
 <td><code>string</code></td>
 <td>
@@ -45,7 +129,7 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 
 </td>
 </tr>
-<tr id="Action.path">
+<tr id="ActionMsg.path">
 <td><code>path</code></td>
 <td><code>string</code></td>
 <td>
@@ -53,7 +137,7 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 
 </td>
 </tr>
-<tr id="Action.properties">
+<tr id="ActionMsg.properties">
 <td><code>properties</code></td>
 <td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
 <td>
@@ -64,10 +148,9 @@ enforcement within Istio. It is primarily concerned with enabling Mixer</p>
 </tbody>
 </table>
 </section>
-<h2 id="Subject">Subject</h2>
+<h3 id="ActionType">ActionType</h3>
 <section>
-<p>A subject contains a list of attributes that identify
-the caller identity.</p>
+<p>An action defines &ldquo;how a resource is accessed&rdquo;.</p>
 
 <table class="message-fields">
 <thead>
@@ -78,37 +161,128 @@ the caller identity.</p>
 </tr>
 </thead>
 <tbody>
-<tr id="Subject.user">
-<td><code>user</code></td>
-<td><code>string</code></td>
-<td>
-<p>The user name/ID that the subject represents.</p>
-
-</td>
-</tr>
-<tr id="Subject.groups">
-<td><code>groups</code></td>
-<td><code>string</code></td>
-<td>
-<p>Groups the subject belongs to depending on the authentication mechanism,
-&ldquo;groups&rdquo; are normally populated from JWT claim or client certificate.
-The operator can define how it is populated when creating an instance of
-the template.</p>
-
-</td>
-</tr>
-<tr id="Subject.properties">
+<tr id="ActionType.properties">
 <td><code>properties</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
 <td>
-<p>Additional attributes about the subject.</p>
+<p>Additional data about the action for use in policy.</p>
 
 </td>
 </tr>
 </tbody>
 </table>
 </section>
-<h2 id="Template">Template</h2>
+<h3 id="HandleAuthorizationRequest">HandleAuthorizationRequest</h3>
+<section>
+<p>Request message for HandleAuthorization method.</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="HandleAuthorizationRequest.instances">
+<td><code>instances</code></td>
+<td><code><a href="#Type">Type[]</a></code></td>
+<td>
+<p>Authorization instances.</p>
+
+</td>
+</tr>
+<tr id="HandleAuthorizationRequest.adapter_config">
+<td><code>adapterConfig</code></td>
+<td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
+<td>
+<p>Adapter specific configuration.
+Note: Backends can also implement <em>InfrastructureBackend</em> service and therefore
+opt to receive handler configuration only through <em>InfrastructureBackend.CreateSession</em>
+call. In that case, adapter<em>config would contain the session</em>id string value with google.protobuf.Any.type_url
+as &ldquo;google.protobuf.StringValue&rdquo;.</p>
+
+</td>
+</tr>
+<tr id="HandleAuthorizationRequest.dedup_id">
+<td><code>dedupId</code></td>
+<td><code>string</code></td>
+<td>
+<p>Id to dedupe identical requests.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="HandleAuthorizationResponse">HandleAuthorizationResponse</h3>
+<section>
+<p>Response message for HandleAuthorization method.</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="HandleAuthorizationResponse.status">
+<td><code>status</code></td>
+<td><code><a href="#google.rpc.Status">google.rpc.Status</a></code></td>
+<td>
+<p>The success/failure status of HandleAuthorization call.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="InstanceMsg">InstanceMsg</h3>
+<section>
+<p>Request-time payload for &lsquo;authorization&rsquo; template . This is passed to infrastructure backends during request-time using
+andleAuthorizationService</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="InstanceMsg.name">
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>
+<p>Name of the instance as specified in configuration.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.subject">
+<td><code>subject</code></td>
+<td><code><a href="#SubjectMsg">SubjectMsg</a></code></td>
+<td>
+<p>A subject contains a list of attributes that identify
+the caller identity.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.action">
+<td><code>action</code></td>
+<td><code><a href="#ActionMsg">ActionMsg</a></code></td>
+<td>
+<p>An action defines &ldquo;how a resource is accessed&rdquo;.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="InstanceParam">InstanceParam</h3>
 <section>
 <p>The <code>authorization</code> template defines parameters for performing policy
 enforcement within Istio. It is primarily concerned with enabling Mixer
@@ -149,20 +323,350 @@ spec:
 </tr>
 </thead>
 <tbody>
-<tr id="Template.subject">
+<tr id="InstanceParam.subject">
 <td><code>subject</code></td>
-<td><code><a href="#Subject">Subject</a></code></td>
+<td><code><a href="#SubjectInstanceParam">SubjectInstanceParam</a></code></td>
+<td>
+</td>
+</tr>
+<tr id="InstanceParam.action">
+<td><code>action</code></td>
+<td><code><a href="#ActionInstanceParam">ActionInstanceParam</a></code></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="SubjectInstanceParam">SubjectInstanceParam</h3>
+<section>
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="SubjectInstanceParam.user">
+<td><code>user</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="SubjectInstanceParam.groups">
+<td><code>groups</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="SubjectInstanceParam.properties">
+<td><code>properties</code></td>
+<td><code>map&lt;string,&nbsp;string&gt;</code></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="SubjectMsg">SubjectMsg</h3>
+<section>
+<p>A subject contains a list of attributes that identify
+the caller identity.</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="SubjectMsg.user">
+<td><code>user</code></td>
+<td><code>string</code></td>
+<td>
+<p>The user name/ID that the subject represents.</p>
+
+</td>
+</tr>
+<tr id="SubjectMsg.groups">
+<td><code>groups</code></td>
+<td><code>string</code></td>
+<td>
+<p>Groups the subject belongs to depending on the authentication mechanism,
+&ldquo;groups&rdquo; are normally populated from JWT claim or client certificate.
+The operator can define how it is populated when creating an instance of
+the template.</p>
+
+</td>
+</tr>
+<tr id="SubjectMsg.properties">
+<td><code>properties</code></td>
+<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<td>
+<p>Additional attributes about the subject.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="SubjectType">SubjectType</h3>
+<section>
+<p>A subject contains a list of attributes that identify
+the caller identity.</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="SubjectType.properties">
+<td><code>properties</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
+<td>
+<p>Additional attributes about the subject.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="Type">Type</h3>
+<section>
+<p>Type InstanceMsg for template &lsquo;authorization&rsquo;. This is passed to infrastructure backends during request-time using
+andleAuthorizationService</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="Type.subject">
+<td><code>subject</code></td>
+<td><code><a href="#SubjectType">SubjectType</a></code></td>
 <td>
 <p>A subject contains a list of attributes that identify
 the caller identity.</p>
 
 </td>
 </tr>
-<tr id="Template.action">
+<tr id="Type.action">
 <td><code>action</code></td>
-<td><code><a href="#Action">Action</a></code></td>
+<td><code><a href="#ActionType">ActionType</a></code></td>
 <td>
 <p>An action defines &ldquo;how a resource is accessed&rdquo;.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="google.rpc.Status">google.rpc.Status</h3>
+<section>
+<p>The <code>Status</code> type defines a logical error model that is suitable for different
+programming environments, including REST APIs and RPC APIs. It is used by
+<a href="https://github.com/grpc">gRPC</a>. The error model is designed to be:</p>
+
+<ul>
+<li>Simple to use and understand for most users</li>
+<li>Flexible enough to meet unexpected needs</li>
+</ul>
+
+<h4 id="overview">Overview</h4>
+
+<p>The <code>Status</code> message contains three pieces of data: error code, error message,
+and error details. The error code should be an enum value of
+<em>google.rpc.Code</em>, but it may accept additional error codes if needed.  The
+error message should be a developer-facing English message that helps
+developers <em>understand</em> and <em>resolve</em> the error. If a localized user-facing
+error message is needed, put the localized message in the error details or
+localize it in the client. The optional error details may contain arbitrary
+information about the error. There is a predefined set of error detail types
+in the package <code>google.rpc</code> that can be used for common error conditions.</p>
+
+<h4 id="language-mapping">Language mapping</h4>
+
+<p>The <code>Status</code> message is the logical representation of the error model, but it
+is not necessarily the actual wire format. When the <code>Status</code> message is
+exposed in different client libraries and different wire protocols, it can be
+mapped differently. For example, it will likely be mapped to some exceptions
+in Java, but more likely mapped to some error codes in C.</p>
+
+<h4 id="other-uses">Other uses</h4>
+
+<p>The error model and the <code>Status</code> message can be used in a variety of
+environments, either with or without APIs, to provide a
+consistent developer experience across different environments.</p>
+
+<p>Example uses of this error model include:</p>
+
+<ul>
+<li><p>Partial errors. If a service needs to return partial errors to the client,
+it may embed the <code>Status</code> in the normal response to indicate the partial
+errors.</p></li>
+
+<li><p>Workflow errors. A typical workflow has multiple steps. Each step may
+have a <code>Status</code> message for error reporting.</p></li>
+
+<li><p>Batch operations. If a client uses batch request and batch response, the
+<code>Status</code> message should be used directly inside batch response, one for
+each error sub-response.</p></li>
+
+<li><p>Asynchronous operations. If an API call embeds asynchronous operation
+results in its response, the status of those operations should be
+represented directly using the <code>Status</code> message.</p></li>
+
+<li><p>Logging. If some API errors are stored in logs, the message <code>Status</code> could
+be used directly after any stripping needed for security/privacy reasons.</p></li>
+</ul>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="google.rpc.Status.code">
+<td><code>code</code></td>
+<td><code>int32</code></td>
+<td>
+<p>The status code, which should be an enum value of <em>google.rpc.Code</em>.</p>
+
+</td>
+</tr>
+<tr id="google.rpc.Status.message">
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>
+<p>A developer-facing error message, which should be in English. Any
+user-facing error message should be localized and sent in the
+<a href="#google.rpc.Status.details">google.rpc.Status.details</a> field, or localized by the client.</p>
+
+</td>
+</tr>
+<tr id="google.rpc.Status.details">
+<td><code>details</code></td>
+<td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any[]</a></code></td>
+<td>
+<p>A list of messages that carry the error details.  There is a common set of
+message types for APIs to use.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</h3>
+<section>
+<p>ValueType describes the types that values in the Istio system can take. These
+are used to describe the type of Attributes at run time, describe the type of
+the result of evaluating an expression, and to describe the runtime type of
+fields of other descriptors.</p>
+
+<table class="enum-values">
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="istio.policy.v1beta1.ValueType.VALUE_TYPE_UNSPECIFIED">
+<td><code>VALUE_TYPE_UNSPECIFIED</code></td>
+<td>
+<p>Invalid, default value.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.STRING">
+<td><code>STRING</code></td>
+<td>
+<p>An undiscriminated variable-length string.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.INT64">
+<td><code>INT64</code></td>
+<td>
+<p>An undiscriminated 64-bit signed integer.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.DOUBLE">
+<td><code>DOUBLE</code></td>
+<td>
+<p>An undiscriminated 64-bit floating-point value.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.BOOL">
+<td><code>BOOL</code></td>
+<td>
+<p>An undiscriminated boolean value.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.TIMESTAMP">
+<td><code>TIMESTAMP</code></td>
+<td>
+<p>A point in time.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.IP_ADDRESS">
+<td><code>IP_ADDRESS</code></td>
+<td>
+<p>An IP address.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.EMAIL_ADDRESS">
+<td><code>EMAIL_ADDRESS</code></td>
+<td>
+<p>An email address.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.URI">
+<td><code>URI</code></td>
+<td>
+<p>A URI.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.DNS_NAME">
+<td><code>DNS_NAME</code></td>
+<td>
+<p>A DNS name.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.DURATION">
+<td><code>DURATION</code></td>
+<td>
+<p>A span between two points in time.</p>
+
+</td>
+</tr>
+<tr id="istio.policy.v1beta1.ValueType.STRING_MAP">
+<td><code>STRING_MAP</code></td>
+<td>
+<p>A map string -&gt; string, typically used by headers.</p>
 
 </td>
 </tr>

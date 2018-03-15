@@ -1,50 +1,58 @@
 ---
-title: metric
+title: tracespan
 layout: protoc-gen-docs
 number_of_entries: 8
 ---
-<p>The <code>metric</code> template is designed to let you describe runtime metric to dispatch to
-monitoring backends.</p>
-
-<p>The <code>metric</code> template represents a single piece of data to report.</p>
+<p>TraceSpan represents an individual span within a distributed trace.</p>
 
 <p>When writing the configuration, the value for the fields associated with this template can either be a
-literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
-then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking">inferred type</a> must match the datatype of the field.</p>
+ literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
+ then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixer/expression-language.html#type-checking">inferred type</a> must match the datatype of the field.</p>
 
 <p>Example config:</p>
 
-<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: metric
-metadata:
-  name: requestsize
-  namespace: istio-system
-spec:
-  value: request.size | 0
-  dimensions:
-    source_service: source.service | &quot;unknown&quot;
-    source_version: source.labels[&quot;version&quot;] | &quot;unknown&quot;
-    destination_service: destination.service | &quot;unknown&quot;
-    destination_version: destination.labels[&quot;version&quot;] | &quot;unknown&quot;
-    response_code: response.code | 200
-  monitored_resource_type: '&quot;UNSPECIFIED&quot;'
+<pre><code> apiVersion: &quot;config.istio.io/v1alpha2&quot;
+ kind: tracespan
+ metadata:
+   name: default
+   namespace: istio-system
+ spec:
+   traceId: request.headers[&quot;x-b3-traceid&quot;]
+   spanId: request.headers[&quot;x-b3-spanid&quot;] | &quot;&quot;
+   parentSpanId: request.headers[&quot;x-b3-parentspanid&quot;] | &quot;&quot;
+   spanName: request.path | &quot;/&quot;
+   startTime: request.time
+   endTime: response.time
+   spanTags:
+     http.method: request.method | &quot;&quot;
+     http.status_code: response.code | 200
+     http.url: request.path | &quot;&quot;
+     request.size: request.size | 0
+     response.size: response.size | 0
+     source.ip: source.ip | ip(&quot;0.0.0.0&quot;)
+     source.service: source.service | &quot;&quot;
+     source.user: source.user | &quot;&quot;
+     source.version: source.labels[&quot;version&quot;] | &quot;&quot;
 </code></pre>
+
+<p>See also: <a href="https://istio.io/docs/tasks/telemetry/distributed-tracing.html">Distributed Tracing</a>
+ for information on tracing within Istio.</p>
 
 <h2 id="Services">Services</h2>
-<h3 id="HandleMetricService">HandleMetricService</h3>
+<h3 id="HandleTraceSpanService">HandleTraceSpanService</h3>
 <section>
-<p>Infrastructure backend service for template &lsquo;metric&rsquo;</p>
+<p>Infrastructure backend service for template &lsquo;tracespan&rsquo;</p>
 
-<pre id="HandleMetricService.HandleMetric"><code class="language-proto">rpc HandleMetric(HandleMetricRequest) returns (HandleMetricResponse)
+<pre id="HandleTraceSpanService.HandleTraceSpan"><code class="language-proto">rpc HandleTraceSpan(HandleTraceSpanRequest) returns (HandleTraceSpanResponse)
 </code></pre>
-<p>HandleMetric is called by Mixer at request-time to deliver &lsquo;metric&rsquo; instances to
+<p>HandleTraceSpan is called by Mixer at request-time to deliver &lsquo;tracespan&rsquo; instances to
 to the backend.</p>
 
 </section>
 <h2 id="Types">Types</h2>
-<h3 id="HandleMetricRequest">HandleMetricRequest</h3>
+<h3 id="HandleTraceSpanRequest">HandleTraceSpanRequest</h3>
 <section>
-<p>Request message for HandleMetric method.</p>
+<p>Request message for HandleTraceSpan method.</p>
 
 <table class="message-fields">
 <thead>
@@ -55,15 +63,15 @@ to the backend.</p>
 </tr>
 </thead>
 <tbody>
-<tr id="HandleMetricRequest.instances">
+<tr id="HandleTraceSpanRequest.instances">
 <td><code>instances</code></td>
 <td><code><a href="#Type">Type[]</a></code></td>
 <td>
-<p>Metric instances.</p>
+<p>TraceSpan instances.</p>
 
 </td>
 </tr>
-<tr id="HandleMetricRequest.adapter_config">
+<tr id="HandleTraceSpanRequest.adapter_config">
 <td><code>adapterConfig</code></td>
 <td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any</a></code></td>
 <td>
@@ -75,7 +83,7 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 
 </td>
 </tr>
-<tr id="HandleMetricRequest.dedup_id">
+<tr id="HandleTraceSpanRequest.dedup_id">
 <td><code>dedupId</code></td>
 <td><code>string</code></td>
 <td>
@@ -86,9 +94,9 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </tbody>
 </table>
 </section>
-<h3 id="HandleMetricResponse">HandleMetricResponse</h3>
+<h3 id="HandleTraceSpanResponse">HandleTraceSpanResponse</h3>
 <section>
-<p>Response message for HandleMetric method.</p>
+<p>Response message for HandleTraceSpan method.</p>
 
 <table class="message-fields">
 <thead>
@@ -99,11 +107,11 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </tr>
 </thead>
 <tbody>
-<tr id="HandleMetricResponse.status">
+<tr id="HandleTraceSpanResponse.status">
 <td><code>status</code></td>
 <td><code><a href="#google.rpc.Status">google.rpc.Status</a></code></td>
 <td>
-<p>The success/failure status of HandleMetric call.</p>
+<p>The success/failure status of HandleTraceSpan call.</p>
 
 </td>
 </tr>
@@ -112,8 +120,8 @@ as &ldquo;google.protobuf.StringValue&rdquo;.</p>
 </section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
-<p>Request-time payload for &lsquo;metric&rsquo; template . This is passed to infrastructure backends during request-time using
-andleMetricService</p>
+<p>Request-time payload for &lsquo;tracespan&rsquo; template . This is passed to infrastructure backends during request-time using
+andleTraceSpanService</p>
 
 <table class="message-fields">
 <thead>
@@ -132,39 +140,82 @@ andleMetricService</p>
 
 </td>
 </tr>
-<tr id="InstanceMsg.value">
-<td><code>value</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
-<td>
-<p>The value being reported.</p>
-
-</td>
-</tr>
-<tr id="InstanceMsg.dimensions">
-<td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
-<td>
-<p>The unique identity of the particular metric to report.</p>
-
-</td>
-</tr>
-<tr id="InstanceMsg.monitored_resource_type">
-<td><code>monitoredResourceType</code></td>
+<tr id="InstanceMsg.trace_id">
+<td><code>traceId</code></td>
 <td><code>string</code></td>
 <td>
-<p>Optional. An expression to compute the type of the monitored resource this metric is being reported on.
-If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-these fields will be ignored by the adapter.</p>
+<p>Trace ID is the unique identifier for a trace. All spans from the same
+trace share the same Trace ID.</p>
+
+<p>Required.</p>
 
 </td>
 </tr>
-<tr id="InstanceMsg.monitored_resource_dimensions">
-<td><code>monitoredResourceDimensions</code></td>
+<tr id="InstanceMsg.span_id">
+<td><code>spanId</code></td>
+<td><code>string</code></td>
+<td>
+<p>Span ID is the unique identifier for a span within a trace. It is assigned
+when the span is created.</p>
+
+<p>Optional.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.parent_span_id">
+<td><code>parentSpanId</code></td>
+<td><code>string</code></td>
+<td>
+<p>Parent Span ID is the unique identifier for a parent span of this span
+instance. If this is a root span, then this field MUST be empty.</p>
+
+<p>Optional.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.span_name">
+<td><code>spanName</code></td>
+<td><code>string</code></td>
+<td>
+<p>Span name is a description of the span&rsquo;s operation.</p>
+
+<p>For example, the name can be a qualified method name or a file name
+and a line number where the operation is called. A best practice is to use
+the same display name within an application and at the same call point.
+This makes it easier to correlate spans in different traces.</p>
+
+<p>Required.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.start_time">
+<td><code>startTime</code></td>
+<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
+<td>
+<p>The start time of the span.</p>
+
+<p>Required.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.end_time">
+<td><code>endTime</code></td>
+<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
+<td>
+<p>The end time of the span.</p>
+
+<p>Required.</p>
+
+</td>
+</tr>
+<tr id="InstanceMsg.span_tags">
+<td><code>spanTags</code></td>
 <td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
 <td>
-<p>Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
-If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-these fields will be ignored by the adapter.</p>
+<p>Span tags are a set of <key, value> pairs that provide metadata for the
+entire span. The values can be specified in the form of expressions.</p>
+
+<p>Optional.</p>
 
 </td>
 </tr>
@@ -173,7 +224,7 @@ these fields will be ignored by the adapter.</p>
 </section>
 <h3 id="InstanceParam">InstanceParam</h3>
 <section>
-<p>The <code>metric</code> template represents a single piece of data to report.</p>
+<p>TraceSpan represents an individual span within a distributed trace.</p>
 
 <p>When writing the configuration, the value for the fields associated with this template can either be a
 literal or an <a href="https://istio.io/docs/reference/config/mixer/expression-language.html">expression</a>. Please note that if the datatype of a field is not istio.mixer.adapter.model.v1beta1.Value,
@@ -181,21 +232,32 @@ then the expression&rsquo;s <a href="https://istio.io/docs/reference/config/mixe
 
 <p>Example config:</p>
 
-<pre><code class="language-yaml">apiVersion: &quot;config.istio.io/v1alpha2&quot;
-kind: metric
+<pre><code>apiVersion: &quot;config.istio.io/v1alpha2&quot;
+kind: tracespan
 metadata:
-  name: requestsize
+  name: default
   namespace: istio-system
 spec:
-  value: request.size | 0
-  dimensions:
-    source_service: source.service | &quot;unknown&quot;
-    source_version: source.labels[&quot;version&quot;] | &quot;unknown&quot;
-    destination_service: destination.service | &quot;unknown&quot;
-    destination_version: destination.labels[&quot;version&quot;] | &quot;unknown&quot;
-    response_code: response.code | 200
-  monitored_resource_type: '&quot;UNSPECIFIED&quot;'
+  traceId: request.headers[&quot;x-b3-traceid&quot;]
+  spanId: request.headers[&quot;x-b3-spanid&quot;] | &quot;&quot;
+  parentSpanId: request.headers[&quot;x-b3-parentspanid&quot;] | &quot;&quot;
+  spanName: request.path | &quot;/&quot;
+  startTime: request.time
+  endTime: response.time
+  spanTags:
+    http.method: request.method | &quot;&quot;
+    http.status_code: response.code | 200
+    http.url: request.path | &quot;&quot;
+    request.size: request.size | 0
+    response.size: response.size | 0
+    source.ip: source.ip | ip(&quot;0.0.0.0&quot;)
+    source.service: source.service | &quot;&quot;
+    source.user: source.user | &quot;&quot;
+    source.version: source.labels[&quot;version&quot;] | &quot;&quot;
 </code></pre>
+
+<p>See also: <a href="https://istio.io/docs/tasks/telemetry/distributed-tracing.html">Distributed Tracing</a>
+for information on tracing within Istio.</p>
 
 <table class="message-fields">
 <thead>
@@ -206,26 +268,44 @@ spec:
 </tr>
 </thead>
 <tbody>
-<tr id="InstanceParam.value">
-<td><code>value</code></td>
+<tr id="InstanceParam.trace_id">
+<td><code>traceId</code></td>
 <td><code>string</code></td>
 <td>
 </td>
 </tr>
-<tr id="InstanceParam.dimensions">
-<td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;string&gt;</code></td>
-<td>
-</td>
-</tr>
-<tr id="InstanceParam.monitored_resource_type">
-<td><code>monitoredResourceType</code></td>
+<tr id="InstanceParam.span_id">
+<td><code>spanId</code></td>
 <td><code>string</code></td>
 <td>
 </td>
 </tr>
-<tr id="InstanceParam.monitored_resource_dimensions">
-<td><code>monitoredResourceDimensions</code></td>
+<tr id="InstanceParam.parent_span_id">
+<td><code>parentSpanId</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="InstanceParam.span_name">
+<td><code>spanName</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="InstanceParam.start_time">
+<td><code>startTime</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="InstanceParam.end_time">
+<td><code>endTime</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+</tr>
+<tr id="InstanceParam.span_tags">
+<td><code>spanTags</code></td>
 <td><code>map&lt;string,&nbsp;string&gt;</code></td>
 <td>
 </td>
@@ -235,8 +315,8 @@ spec:
 </section>
 <h3 id="Type">Type</h3>
 <section>
-<p>Type InstanceMsg for template &lsquo;metric&rsquo;. This is passed to infrastructure backends during request-time using
-andleMetricService</p>
+<p>Type InstanceMsg for template &lsquo;tracespan&rsquo;. This is passed to infrastructure backends during request-time using
+andleTraceSpanService</p>
 
 <table class="message-fields">
 <thead>
@@ -247,29 +327,14 @@ andleMetricService</p>
 </tr>
 </thead>
 <tbody>
-<tr id="Type.value">
-<td><code>value</code></td>
-<td><code><a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a></code></td>
-<td>
-<p>The value being reported.</p>
-
-</td>
-</tr>
-<tr id="Type.dimensions">
-<td><code>dimensions</code></td>
+<tr id="Type.span_tags">
+<td><code>spanTags</code></td>
 <td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
 <td>
-<p>The unique identity of the particular metric to report.</p>
+<p>Span tags are a set of <key, value> pairs that provide metadata for the
+entire span. The values can be specified in the form of expressions.</p>
 
-</td>
-</tr>
-<tr id="Type.monitored_resource_dimensions">
-<td><code>monitoredResourceDimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
-<td>
-<p>Optional. A set of expressions that will form the dimensions of the monitored resource this metric is being reported on.
-If the metric backend supports monitored resources, these fields are used to populate that resource. Otherwise
-these fields will be ignored by the adapter.</p>
+<p>Optional.</p>
 
 </td>
 </tr>
