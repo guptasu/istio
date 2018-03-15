@@ -16,7 +16,24 @@
 
 syntax = "proto3";
 
-package reportnothing;
+
+// The `checknothing` template represents an empty block of data, which can useful
+// in different testing scenarios.
+//
+// CheckNothing represents an empty block of data that is used for Check-capable
+// adapters which don't require any parameters. This is primarily intended for testing
+// scenarios.
+// 
+// Example config:
+// ```yaml
+// apiVersion: "config.istio.io/v1alpha2"
+// kind: checknothing
+// metadata:
+//   name: denyrequest
+//   namespace: istio-system
+// spec:
+// ```
+package checknothing;
 
 import "mixer/adapter/model/v1beta1/extensions.proto";
 import "google/protobuf/any.proto";
@@ -25,42 +42,21 @@ import "mixer/adapter/model/v1beta1/type.proto";
 
 
 
-option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_REPORT;
+option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_CHECK;
 
 
 
-// The `reportnothing` template represents an empty block of data, which can useful
-// in different testing scenarios.
-// ReportNothing represents an empty block of data that is used for Report-capable
-// adapters which don't require any parameters. This is primarily intended for testing
-// scenarios.
-// 
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: reportnothing
-// metadata:
-//   name: reportrequest
-//   namespace: istio-system
-// spec:
-// ```
-message Type {
-  
-}
-
-
-
-/* Infrastructure backend service for template 'reportnothing'*/
-service ReportNothingService {
-    // HandleReportNothing is called by Mixer at request-time to deliver 'reportnothing' instances to
+/* Infrastructure backend service for template 'checknothing'*/
+service HandleCheckNothingService {
+    // HandleCheckNothing is called by Mixer at request-time to deliver 'checknothing' instances to
     // to the backend.
-    rpc HandleReportNothing(HandleReportNothingRequest) returns (HandleReportNothingResponse);
+    rpc HandleCheckNothing(HandleCheckNothingRequest) returns (HandleCheckNothingResponse);
 }
 
-// Request message for HandleReportNothing method.
-message HandleReportNothingRequest {
+// Request message for HandleCheckNothing method.
+message HandleCheckNothingRequest {
 
-    // ReportNothing instances.
+    // CheckNothing instances.
     repeated Type instances = 1;
 
     // Adapter specific configuration.
@@ -74,27 +70,14 @@ message HandleReportNothingRequest {
     string dedup_id = 3;
 }
 
-// Response message for HandleReportNothing method.
-message HandleReportNothingResponse {
-    // The success/failure status of HandleReportNothing call.
+// Response message for HandleCheckNothing method.
+message HandleCheckNothingResponse {
+    // The success/failure status of HandleCheckNothing call.
     google.rpc.Status status = 1;
 }
 
-// InstanceMsg is constructed by Mixer for the 'reportnothing' template.
-//
-// ReportNothing represents an empty block of data that is used for Report-capable
-// adapters which don't require any parameters. This is primarily intended for testing
-// scenarios.
-// 
-// Example config:
-// ```yaml
-// apiVersion: "config.istio.io/v1alpha2"
-// kind: reportnothing
-// metadata:
-//   name: reportrequest
-//   namespace: istio-system
-// spec:
-// ```
+/* Request-time payload for 'checknothing' template . This is passed to infrastructure backends during request-time using
+HandleCheckNothingService */
 message InstanceMsg {
   // Name of the instance as specified in configuration.
   string name = 72295727;
@@ -105,10 +88,34 @@ message InstanceMsg {
 
 
 
+
+
+/* Type InstanceMsg for template 'checknothing'. This is passed to infrastructure backends during request-time using
+HandleCheckNothingService */
+message Type {
+  
+}
+
+
+
+
+
+// CheckNothing represents an empty block of data that is used for Check-capable
+// adapters which don't require any parameters. This is primarily intended for testing
+// scenarios.
+// 
+// Example config:
+// ```yaml
+// apiVersion: "config.istio.io/v1alpha2"
+// kind: checknothing
+// metadata:
+//   name: denyrequest
+//   namespace: istio-system
+// spec:
+// ```
 message InstanceParam {
   
   
 }
-
 
 

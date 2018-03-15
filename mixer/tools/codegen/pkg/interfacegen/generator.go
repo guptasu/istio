@@ -36,6 +36,7 @@ const (
 	resourceMsgTypeSuffix      = "Type"
 	resourceMsgInstParamSuffix = "InstanceParam"
 	fullGoNameOfValueTypeEnum  = "istio_policy_v1beta1.ValueType"
+	fullProtoNameOfValueTypeEnum  = "istio.policy.v1beta1.ValueType"
 	goFileImportFmt            = `"%s"`
 	protoFileImportFmt         = `import "%s";`
 	protoValueTypeImport       = "policy/v1beta1/value_type.proto"
@@ -194,12 +195,20 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model, pkgName stri
 			"valueTypeOrResMsg": valueTypeOrResMsg,
 			"valueTypeOrResMsgFieldTypeName": func(protoTypeInfo modelgen.TypeInfo) string {
 				if protoTypeInfo.IsResourceMessage {
-
 					return trimPackageName(protoTypeInfo.Name) + resourceMsgTypeSuffix
 				}
 				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsResourceMessage {
 					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name)+resourceMsgTypeSuffix)
 				}
+
+				// convert Value msg to ValueType enum for use inside inferred type msg.
+				if protoTypeInfo.IsValueType {
+					return fullProtoNameOfValueTypeEnum
+				}
+				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsValueType {
+					return toProtoMap(protoTypeInfo.MapKey.Name, fullProtoNameOfValueTypeEnum)
+				}
+
 				return protoTypeInfo.Name
 			},
 			"stringify": stringify,
@@ -228,6 +237,7 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model, pkgName stri
 				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsResourceMessage {
 					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name)+resourceMsgSuffix)
 				}
+				fmt.Println("############", protoTypeInfo.Name)
 				return protoTypeInfo.Name
 			},
 		},
