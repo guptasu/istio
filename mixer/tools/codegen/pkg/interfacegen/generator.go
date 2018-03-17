@@ -29,6 +29,7 @@ import (
 	"golang.org/x/tools/imports"
 
 	"istio.io/istio/mixer/tools/codegen/pkg/modelgen"
+	tmpl "istio.io/istio/mixer/tools/codegen/pkg/interfacegen/template"
 )
 
 const (
@@ -63,7 +64,7 @@ func valueTypeOrResMsg(ti modelgen.TypeInfo) bool {
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
 func (g *Generator) Generate(fdsFile string) error {
-	return g.generateInternal(fdsFile, interfaceTemplate, augmentedProtoTmpl)
+	return g.generateInternal(fdsFile, tmpl.InterfaceTemplate, tmpl.AugmentedProtoTmpl)
 }
 
 // Generate creates a Go interfaces for adapters to implement for a given Template.
