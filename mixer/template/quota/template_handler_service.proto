@@ -66,8 +66,11 @@ service HandleQuotaService {
 
 // Request message for HandleQuota method.
 message HandleQuotaRequest {
-    // 'quota' instances.
-    repeated Type instances = 1;
+
+    
+    // 'quota' instance.
+    InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -79,6 +82,10 @@ message HandleQuotaRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    // Expresses the quota allocation request.
+    istio.mixer.adapter.model.v1beta1.QuotaRequest quota_request = 4;
+    
 }
 
 // Contains instance payload for 'quota' template. This is passed to infrastructure backends during request-time

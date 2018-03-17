@@ -60,8 +60,11 @@ service HandleCheckNothingService {
 
 // Request message for HandleCheckNothing method.
 message HandleCheckNothingRequest {
-    // 'checknothing' instances.
-    repeated Type instances = 1;
+
+    
+    // 'checknothing' instance.
+    InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -73,6 +76,8 @@ message HandleCheckNothingRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'checknothing' template. This is passed to infrastructure backends during request-time

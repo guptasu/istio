@@ -54,8 +54,14 @@ service Handle{{.InterfaceName}}Service {
 
 // Request message for Handle{{.InterfaceName}} method.
 message Handle{{.InterfaceName}}Request {
+
+    {{if eq .VarietyName "TEMPLATE_VARIETY_REPORT" -}}
     // '{{.TemplateName}}' instances.
-    repeated Type instances = 1;
+    repeated InstanceMsg instances = 1;
+    {{else}}
+    // '{{.TemplateName}}' instance.
+    InstanceMsg instances = 1;
+    {{end}}
 
     // Adapter specific handler configuration.
     //
@@ -67,6 +73,11 @@ message Handle{{.InterfaceName}}Request {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    {{if eq .VarietyName "TEMPLATE_VARIETY_QUOTA" -}}
+    // Expresses the quota allocation request.
+    istio.mixer.adapter.model.v1beta1.QuotaRequest quota_request = 4;
+    {{end}}
 }
 
 // Contains instance payload for '{{.TemplateName}}' template. This is passed to infrastructure backends during request-time

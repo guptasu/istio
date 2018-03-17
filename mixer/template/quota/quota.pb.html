@@ -1,7 +1,7 @@
 ---
 title: quota
 layout: protoc-gen-docs
-number_of_entries: 7
+number_of_entries: 8
 ---
 <p>The <code>quota</code> template represents an item for which to check quota.</p>
 
@@ -52,9 +52,9 @@ spec:
 <tbody>
 <tr id="HandleQuotaRequest.instances">
 <td><code>instances</code></td>
-<td><code><a href="#Type">Type[]</a></code></td>
+<td><code><a href="#InstanceMsg">InstanceMsg</a></code></td>
 <td>
-<p>&lsquo;quota&rsquo; instances.</p>
+<p>&lsquo;quota&rsquo; instance.</p>
 
 </td>
 </tr>
@@ -76,6 +76,14 @@ value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 <td><code>string</code></td>
 <td>
 <p>Id to dedupe identical requests from Mixer.</p>
+
+</td>
+</tr>
+<tr id="HandleQuotaRequest.quota_request">
+<td><code>quotaRequest</code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.QuotaRequest">istio.mixer.adapter.model.v1beta1.QuotaRequest</a></code></td>
+<td>
+<p>Expresses the quota allocation request.</p>
 
 </td>
 </tr>
@@ -158,6 +166,30 @@ infrastructure backends during configuration-time through <em>InfrastructureBack
 <td><code>map&lt;string,&nbsp;<a href="#istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</a>&gt;</code></td>
 <td>
 <p>The unique identity of the particular quota to manipulate.</p>
+
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.QuotaRequest">istio.mixer.adapter.model.v1beta1.QuotaRequest</h3>
+<section>
+<p>Expresses the quota allocation request.</p>
+
+<table class="message-fields">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="istio.mixer.adapter.model.v1beta1.QuotaRequest.quotas">
+<td><code>quotas</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.mixer.adapter.model.v1beta1.QuotaRequest.QuotaParams">istio.mixer.adapter.model.v1beta1.QuotaRequest.QuotaParams</a>&gt;</code></td>
+<td>
+<p>The individual quotas to allocate</p>
 
 </td>
 </tr>

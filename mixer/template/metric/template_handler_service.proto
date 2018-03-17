@@ -70,8 +70,10 @@ service HandleMetricService {
 
 // Request message for HandleMetric method.
 message HandleMetricRequest {
+
     // 'metric' instances.
-    repeated Type instances = 1;
+    repeated InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -83,6 +85,8 @@ message HandleMetricRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'metric' template. This is passed to infrastructure backends during request-time

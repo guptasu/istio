@@ -45,8 +45,11 @@ service HandleCheckService {
 
 // Request message for HandleCheck method.
 message HandleCheckRequest {
-    // 'check' instances.
-    repeated Type instances = 1;
+
+    
+    // 'check' instance.
+    InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -58,6 +61,8 @@ message HandleCheckRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'check' template. This is passed to infrastructure backends during request-time

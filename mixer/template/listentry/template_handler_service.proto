@@ -64,8 +64,11 @@ service HandleListEntryService {
 
 // Request message for HandleListEntry method.
 message HandleListEntryRequest {
-    // 'listentry' instances.
-    repeated Type instances = 1;
+
+    
+    // 'listentry' instance.
+    InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -77,6 +80,8 @@ message HandleListEntryRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'listentry' template. This is passed to infrastructure backends during request-time

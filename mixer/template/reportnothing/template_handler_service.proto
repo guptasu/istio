@@ -60,8 +60,10 @@ service HandleReportNothingService {
 
 // Request message for HandleReportNothing method.
 message HandleReportNothingRequest {
+
     // 'reportnothing' instances.
-    repeated Type instances = 1;
+    repeated InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -73,6 +75,8 @@ message HandleReportNothingRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'reportnothing' template. This is passed to infrastructure backends during request-time

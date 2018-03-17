@@ -75,8 +75,10 @@ service HandleLogEntryService {
 
 // Request message for HandleLogEntry method.
 message HandleLogEntryRequest {
+
     // 'logentry' instances.
-    repeated Type instances = 1;
+    repeated InstanceMsg instances = 1;
+    
 
     // Adapter specific handler configuration.
     //
@@ -88,6 +90,8 @@ message HandleLogEntryRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
+
+    
 }
 
 // Contains instance payload for 'logentry' template. This is passed to infrastructure backends during request-time
