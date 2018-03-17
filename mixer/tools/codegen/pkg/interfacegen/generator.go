@@ -237,7 +237,6 @@ func (g *Generator) getAugmentedProtoContent(model *modelgen.Model, pkgName stri
 				if protoTypeInfo.IsMap && protoTypeInfo.MapValue.IsResourceMessage {
 					return toProtoMap(protoTypeInfo.MapKey.Name, trimPackageName(protoTypeInfo.MapValue.Name)+resourceMsgSuffix)
 				}
-				fmt.Println("############", protoTypeInfo.Name)
 				return protoTypeInfo.Name
 			},
 		},
