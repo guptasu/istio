@@ -60,6 +60,11 @@ import "google/protobuf/any.proto";
 import "google/rpc/status.proto";
 import "mixer/adapter/model/v1beta1/type.proto";
 
+import "mixer/adapter/model/v1beta1/check.proto";
+import "mixer/adapter/model/v1beta1/report.proto";
+import "mixer/adapter/model/v1beta1/quota.proto";
+
+
 import "policy/v1beta1/value_type.proto";
 
 option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_REPORT;
@@ -69,12 +74,12 @@ option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_R
 // HandleTraceSpanService is implemented by backends that wants to handle request-time 'tracespan' instances.
 service HandleTraceSpanService {
     // HandleTraceSpan is called by Mixer at request-time to deliver 'tracespan' instances to the backend.
-    rpc HandleTraceSpan(HandleTraceSpanRequest) returns (HandleTraceSpanResponse);
+    rpc HandleTraceSpan(HandleTraceSpanRequest) returns (istio.mixer.adapter.model.v1beta1.ReportResult);
+    
 }
 
 // Request message for HandleTraceSpan method.
 message HandleTraceSpanRequest {
-
     // 'tracespan' instances.
     repeated Type instances = 1;
 
@@ -88,12 +93,6 @@ message HandleTraceSpanRequest {
 
     // Id to dedupe identical requests from Mixer.
     string dedup_id = 3;
-}
-
-// Response message for HandleTraceSpan method.
-message HandleTraceSpanResponse {
-    // The success/failure status of HandleTraceSpan call.
-    google.rpc.Status status = 1;
 }
 
 // Contains instance payload for 'tracespan' template. This is passed to infrastructure backends during request-time

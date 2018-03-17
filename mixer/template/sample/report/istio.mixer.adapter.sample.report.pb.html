@@ -1,14 +1,14 @@
 ---
 title: istio.mixer.adapter.sample.report
 layout: protoc-gen-docs
-number_of_entries: 14
+number_of_entries: 19
 ---
 <h2 id="Services">Services</h2>
 <h3 id="HandleReportService">HandleReportService</h3>
 <section>
 <p>HandleReportService is implemented by backends that wants to handle request-time &lsquo;report&rsquo; instances.</p>
 
-<pre id="HandleReportService.HandleReport"><code class="language-proto">rpc HandleReport(HandleReportRequest) returns (HandleReportResponse)
+<pre id="HandleReportService.HandleReport"><code class="language-proto">rpc HandleReport(HandleReportRequest) returns (istio.mixer.adapter.model.v1beta1.ReportResult)
 </code></pre>
 <p>HandleReport is called by Mixer at request-time to deliver &lsquo;report&rsquo; instances to the backend.</p>
 
@@ -59,30 +59,6 @@ value of session</em>id (returned from InfrastructureBackend.CreateSession).</p>
 </tbody>
 </table>
 </section>
-<h3 id="HandleReportResponse">HandleReportResponse</h3>
-<section>
-<p>Response message for HandleReport method.</p>
-
-<table class="message-fields">
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="HandleReportResponse.status">
-<td><code>status</code></td>
-<td><code><a href="#google.rpc.Status">google.rpc.Status</a></code></td>
-<td>
-<p>The success/failure status of HandleReport call.</p>
-
-</td>
-</tr>
-</tbody>
-</table>
-</section>
 <h3 id="InstanceMsg">InstanceMsg</h3>
 <section>
 <p>Contains instance payload for &lsquo;report&rsquo; template. This is passed to infrastructure backends during request-time
@@ -107,13 +83,13 @@ through HandleReportService.HandleReport.</p>
 </tr>
 <tr id="InstanceMsg.value">
 <td><code>value</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="InstanceMsg.dimensions">
 <td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
 <td>
 </td>
 </tr>
@@ -149,13 +125,13 @@ through HandleReportService.HandleReport.</p>
 </tr>
 <tr id="InstanceMsg.timeStamp">
 <td><code>timeStamp</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="InstanceMsg.duration">
 <td><code>duration</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
 <td>
 </td>
 </tr>
@@ -337,13 +313,13 @@ through HandleReportService.HandleReport.</p>
 <tbody>
 <tr id="Res1Msg.value">
 <td><code>value</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res1Msg.dimensions">
 <td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
 <td>
 </td>
 </tr>
@@ -379,13 +355,13 @@ through HandleReportService.HandleReport.</p>
 </tr>
 <tr id="Res1Msg.timeStamp">
 <td><code>timeStamp</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res1Msg.duration">
 <td><code>duration</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
 <td>
 </td>
 </tr>
@@ -523,13 +499,13 @@ through HandleReportService.HandleReport.</p>
 <tbody>
 <tr id="Res2Msg.value">
 <td><code>value</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.dimensions">
 <td><code>dimensions</code></td>
-<td><code>map&lt;string,&nbsp;<a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
+<td><code>map&lt;string,&nbsp;<a href="#istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</a>&gt;</code></td>
 <td>
 </td>
 </tr>
@@ -541,37 +517,37 @@ through HandleReportService.HandleReport.</p>
 </tr>
 <tr id="Res2Msg.timeStamp">
 <td><code>timeStamp</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.duration">
 <td><code>duration</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Duration">istio.mixer.adapter.model.v1beta1.Duration</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.ip_addr">
 <td><code>ipAddr</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#IPAddress">istio.mixer.adapter.model.v1beta1.IPAddress</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.IPAddress">istio.mixer.adapter.model.v1beta1.IPAddress</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.dns_name">
 <td><code>dnsName</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#DNSName">istio.mixer.adapter.model.v1beta1.DNSName</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.DNSName">istio.mixer.adapter.model.v1beta1.DNSName</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.email_addr">
 <td><code>emailAddr</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#EmailAddress">istio.mixer.adapter.model.v1beta1.EmailAddress</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.EmailAddress">istio.mixer.adapter.model.v1beta1.EmailAddress</a></code></td>
 <td>
 </td>
 </tr>
 <tr id="Res2Msg.uri">
 <td><code>uri</code></td>
-<td><code><a href="https://istio.io/docs/reference/config/mixer/istio.mixer.adapter.model.v1beta1.html#Uri">istio.mixer.adapter.model.v1beta1.Uri</a></code></td>
+<td><code><a href="#istio.mixer.adapter.model.v1beta1.Uri">istio.mixer.adapter.model.v1beta1.Uri</a></code></td>
 <td>
 </td>
 </tr>
@@ -639,103 +615,43 @@ infrastructure backends during configuration-time through <em>InfrastructureBack
 </tbody>
 </table>
 </section>
-<h3 id="google.rpc.Status">google.rpc.Status</h3>
+<h3 id="istio.mixer.adapter.model.v1beta1.DNSName">istio.mixer.adapter.model.v1beta1.DNSName</h3>
 <section>
-<p>The <code>Status</code> type defines a logical error model that is suitable for different
-programming environments, including REST APIs and RPC APIs. It is used by
-<a href="https://github.com/grpc">gRPC</a>. The error model is designed to be:</p>
+<p>DNSName is used inside templates for fields that are of ValueType &ldquo;DNS_NAME&rdquo;</p>
 
-<ul>
-<li>Simple to use and understand for most users</li>
-<li>Flexible enough to meet unexpected needs</li>
-</ul>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.Duration">istio.mixer.adapter.model.v1beta1.Duration</h3>
+<section>
+<p>Duration is used inside templates for fields that are of ValueType &ldquo;DURATION&rdquo;</p>
 
-<h4 id="overview">Overview</h4>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.EmailAddress">istio.mixer.adapter.model.v1beta1.EmailAddress</h3>
+<section>
+<p>EmailAddress is used inside templates for fields that are of ValueType &ldquo;EMAIL_ADDRESS&rdquo;
+DO NOT USE !! Under Development</p>
 
-<p>The <code>Status</code> message contains three pieces of data: error code, error message,
-and error details. The error code should be an enum value of
-<em>google.rpc.Code</em>, but it may accept additional error codes if needed.  The
-error message should be a developer-facing English message that helps
-developers <em>understand</em> and <em>resolve</em> the error. If a localized user-facing
-error message is needed, put the localized message in the error details or
-localize it in the client. The optional error details may contain arbitrary
-information about the error. There is a predefined set of error detail types
-in the package <code>google.rpc</code> that can be used for common error conditions.</p>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.IPAddress">istio.mixer.adapter.model.v1beta1.IPAddress</h3>
+<section>
+<p>IPAddress is used inside templates for fields that are of ValueType &ldquo;IP_ADDRESS&rdquo;</p>
 
-<h4 id="language-mapping">Language mapping</h4>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.TimeStamp">istio.mixer.adapter.model.v1beta1.TimeStamp</h3>
+<section>
+<p>TimeStamp is used inside templates for fields that are of ValueType &ldquo;TIMESTAMP&rdquo;</p>
 
-<p>The <code>Status</code> message is the logical representation of the error model, but it
-is not necessarily the actual wire format. When the <code>Status</code> message is
-exposed in different client libraries and different wire protocols, it can be
-mapped differently. For example, it will likely be mapped to some exceptions
-in Java, but more likely mapped to some error codes in C.</p>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.Uri">istio.mixer.adapter.model.v1beta1.Uri</h3>
+<section>
+<p>Uri is used inside templates for fields that are of ValueType &ldquo;URI&rdquo;
+DO NOT USE ! Under Development</p>
 
-<h4 id="other-uses">Other uses</h4>
+</section>
+<h3 id="istio.mixer.adapter.model.v1beta1.Value">istio.mixer.adapter.model.v1beta1.Value</h3>
+<section>
+<p>Value is used inside templates for fields that have dynamic types. The actual datatype
+of the field depends on the datatype of the expression used in the operator configuration.</p>
 
-<p>The error model and the <code>Status</code> message can be used in a variety of
-environments, either with or without APIs, to provide a
-consistent developer experience across different environments.</p>
-
-<p>Example uses of this error model include:</p>
-
-<ul>
-<li><p>Partial errors. If a service needs to return partial errors to the client,
-it may embed the <code>Status</code> in the normal response to indicate the partial
-errors.</p></li>
-
-<li><p>Workflow errors. A typical workflow has multiple steps. Each step may
-have a <code>Status</code> message for error reporting.</p></li>
-
-<li><p>Batch operations. If a client uses batch request and batch response, the
-<code>Status</code> message should be used directly inside batch response, one for
-each error sub-response.</p></li>
-
-<li><p>Asynchronous operations. If an API call embeds asynchronous operation
-results in its response, the status of those operations should be
-represented directly using the <code>Status</code> message.</p></li>
-
-<li><p>Logging. If some API errors are stored in logs, the message <code>Status</code> could
-be used directly after any stripping needed for security/privacy reasons.</p></li>
-</ul>
-
-<table class="message-fields">
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="google.rpc.Status.code">
-<td><code>code</code></td>
-<td><code>int32</code></td>
-<td>
-<p>The status code, which should be an enum value of <em>google.rpc.Code</em>.</p>
-
-</td>
-</tr>
-<tr id="google.rpc.Status.message">
-<td><code>message</code></td>
-<td><code>string</code></td>
-<td>
-<p>A developer-facing error message, which should be in English. Any
-user-facing error message should be localized and sent in the
-<a href="#google.rpc.Status.details">google.rpc.Status.details</a> field, or localized by the client.</p>
-
-</td>
-</tr>
-<tr id="google.rpc.Status.details">
-<td><code>details</code></td>
-<td><code><a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">google.protobuf.Any[]</a></code></td>
-<td>
-<p>A list of messages that carry the error details.  There is a common set of
-message types for APIs to use.</p>
-
-</td>
-</tr>
-</tbody>
-</table>
 </section>
 <h3 id="istio.policy.v1beta1.ValueType">istio.policy.v1beta1.ValueType</h3>
 <section>
