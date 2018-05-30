@@ -41,6 +41,7 @@ type Validator struct {
 	af              ast.AttributeDescriptorFinder
 	c               *validatorCache
 	donec           chan struct{}
+	e               *config.Ephemeral
 }
 
 // New creates a new store.Validator instance which validates runtime semantics of
@@ -73,7 +74,9 @@ func New(tc checker.TypeChecker, identityAttribute string, s store.Store,
 			configData: configData,
 		},
 		donec: make(chan struct{}),
+		e:     config.NewEphemeral(templateInfo, adapterInfo),
 	}
+	v.e.SetState(data)
 	go store.WatchChanges(ch, v.donec, time.Second, v.c.applyChanges)
 	v.af = v.newAttributeDescriptorFinder(manifests)
 	return v, nil
@@ -312,14 +315,17 @@ func (v *Validator) validateUpdate(ev *store.Event) error {
 
 // Validate implements store.Validator interface.
 func (v *Validator) Validate(ev *store.Event) error {
-	var err error
-	if ev.Type == store.Delete {
-		err = v.validateDelete(ev.Key)
-	} else {
-		err = v.validateUpdate(ev)
-	}
-	if err == nil {
-		v.c.putCache(ev)
-	}
+
+	v.e.ApplyEvent(ev)
+	_, err := v.e.BuildSnapshot()
+
+	//if ev.Type == store.Delete {
+	//	err = v.validateDelete(ev.Key)
+	//} else {
+	//	err = v.validateUpdate(ev)
+	//}
+	//if err == nil {
+	//	v.c.putCache(ev)
+	//}
 	return err
 }
