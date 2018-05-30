@@ -1598,25 +1598,25 @@ func runTests(t *testing.T) {
 
 			if test.Initial != nil {
 				e.SetState(test.Initial)
-				s = e.BuildSnapshot()
+				s, _ = e.BuildSnapshot()
 			}
 
 			if test.Events1 != nil {
 				for _, event := range test.Events1 {
 					e.ApplyEvent(event)
 				}
-				s = e.BuildSnapshot()
+				s, _ = e.BuildSnapshot()
 			}
 
 			if test.Events2 != nil {
 				for _, event := range test.Events2 {
 					e.ApplyEvent(event)
 				}
-				s = e.BuildSnapshot()
+				s, _ = e.BuildSnapshot()
 			}
 
 			if s == nil {
-				s = e.BuildSnapshot()
+				s, _ = e.BuildSnapshot()
 			}
 
 			str := s.String()

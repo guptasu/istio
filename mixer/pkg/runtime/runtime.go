@@ -165,7 +165,7 @@ func (c *Runtime) onConfigChange(events []*store.Event) {
 }
 
 func (c *Runtime) processNewConfig() {
-	newSnapshot := c.ephemeral.BuildSnapshot()
+	newSnapshot, _ := c.ephemeral.BuildSnapshot()
 
 	oldHandlers := c.handlers
 

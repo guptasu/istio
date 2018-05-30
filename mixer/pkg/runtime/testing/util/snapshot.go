@@ -40,5 +40,6 @@ func GetSnapshot(templates map[string]*template.Info, adapters map[string]*adapt
 
 	store.Stop()
 
-	return e.BuildSnapshot()
+	s, _ := e.BuildSnapshot()
+	return s
 }

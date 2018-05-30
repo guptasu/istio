@@ -48,6 +48,13 @@ var (
 		Help:      "The number of known instances in the current config.",
 	}, standardConfigLabels)
 
+	instanceConfigErrorCount = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "mixer",
+		Subsystem: "config",
+		Name:      "instance_config_error_count",
+		Help:      "The number of errors encountered during processing of the instance configuration.",
+	}, standardConfigLabels)
+
 	ruleConfigCount = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "mixer",
 		Subsystem: "config",
@@ -59,14 +66,14 @@ var (
 		Namespace: "mixer",
 		Subsystem: "config",
 		Name:      "rule_config_error_count",
-		Help:      "The number of errors encountered during processing of the adapter info configuration.",
+		Help:      "The number of errors encountered during processing of the rules configuration.",
 	}, standardConfigLabels)
 
 	adapterInfoConfigCount = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "mixer",
 		Subsystem: "config",
 		Name:      "adapter_info_config_count",
-		Help:      "The number of known instances in the current config.",
+		Help:      "The number of known adapters in the current config.",
 	}, standardConfigLabels)
 
 	adapterInfoConfigErrorCount = prometheus.NewCounterVec(prometheus.CounterOpts{
@@ -95,6 +102,7 @@ func init() {
 	prometheus.MustRegister(attributeCount)
 	prometheus.MustRegister(handlerConfigCount)
 	prometheus.MustRegister(instanceConfigCount)
+	prometheus.MustRegister(instanceConfigErrorCount)
 	prometheus.MustRegister(ruleConfigCount)
 	prometheus.MustRegister(ruleConfigErrorCount)
 	prometheus.MustRegister(adapterInfoConfigCount)
@@ -109,6 +117,7 @@ type Counters struct {
 	attributes             prometheus.Counter
 	handlerConfig          prometheus.Counter
 	instanceConfig         prometheus.Counter
+	instanceConfigError    prometheus.Counter
 	ruleConfig             prometheus.Counter
 	ruleConfigError        prometheus.Counter
 	adapterInfoConfig      prometheus.Counter
@@ -127,6 +136,7 @@ func newCounters(id int64) Counters {
 		attributes:                attributeCount.With(labels),
 		handlerConfig:             handlerConfigCount.With(labels),
 		instanceConfig:            instanceConfigCount.With(labels),
+		instanceConfigError:       instanceConfigErrorCount.With(labels),
 		ruleConfig:                ruleConfigCount.With(labels),
 		ruleConfigError:           ruleConfigErrorCount.With(labels),
 		adapterInfoConfig:         adapterInfoConfigCount.With(labels),
