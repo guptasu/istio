@@ -26,6 +26,7 @@ import (
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/lang/ast"
 	"istio.io/istio/mixer/pkg/lang/checker"
+	"istio.io/istio/mixer/pkg/runtime/safecall"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
@@ -369,29 +370,29 @@ func (e *Ephemeral) processRuleConfigs(
 			}
 
 			// TODO now validate the configuration with adapter's validate function
-			//var erred bool
-			//panicErr := safecall.Execute("NewBuilder/SetType/SetConfig/Validate", func() {
-			//	//ValidateBuilder(handler.Adapter.NewBuilder(), e.templates, )
-			//	bld := handler.Adapter.NewBuilder()
-			//	if bld == nil {
-			//		appenddErr(errs, counters.ruleConfigError, "nil builder from adapter: adapter='%s'", handler.Adapter.Name)
-			//		erred = true
-			//	}
-			//	bld.SetAdapterConfig(handler.Params)
-			//	err := bld.Validate()
-			//	if err != nil {
-			//		appenddErr(errs, counters.ruleConfigError, err.Error())
-			//		erred = true
-			//	}
-			//})
-			//if erred {
-			//	// exact error is already logged
-			//	continue
-			//}
-			//if panicErr != nil {
-			//	appenddErr(errs, counters.ruleConfigError, panicErr.Error())
-			//	continue
-			//}
+			var erred bool
+			panicErr := safecall.Execute("NewBuilder/SetType/SetConfig/Validate", func() {
+				//ValidateBuilder(handler.Adapter.NewBuilder(), e.templates, )
+				bld := handler.Adapter.NewBuilder()
+				if bld == nil {
+					appenddErr(errs, counters.ruleConfigError, "nil builder from adapter: adapter='%s'", handler.Adapter.Name)
+					erred = true
+				}
+				bld.SetAdapterConfig(handler.Params)
+				err := bld.Validate()
+				if err != nil {
+					appenddErr(errs, counters.ruleConfigError, err.Error())
+					erred = true
+				}
+			})
+			if erred {
+				// exact error is already logged
+				continue
+			}
+			if panicErr != nil {
+				appenddErr(errs, counters.ruleConfigError, panicErr.Error())
+				continue
+			}
 
 			action := &ActionLegacy{
 				Handler:   handler,

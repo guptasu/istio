@@ -26,8 +26,25 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/template"
-	"istio.io/istio/pkg/log"
+	//"istio.io/istio/pkg/log"
+	"context"
+
+	"github.com/gogo/protobuf/types"
 )
+
+type dummyHandlerBuilder struct {
+}
+
+func (d *dummyHandlerBuilder) SetAdapterConfig(cfg adapter.Config) {
+}
+
+func (d *dummyHandlerBuilder) Validate() *adapter.ConfigErrors {
+	return nil
+}
+
+func (d *dummyHandlerBuilder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, error) {
+	return nil, nil
+}
 
 // The tests in this package feeds incremental change events to the Ephemeral state and prints out a stable
 // view of the Snapshot constructed from these events. The author can specify an initial state, and two sets
@@ -1528,10 +1545,18 @@ var noAdapters = make(map[string]*adapter.Info)
 
 var stdAdapters = map[string]*adapter.Info{
 	"adapter1": {
-		Name: "adapter1",
+		Name:          "adapter1",
+		DefaultConfig: &types.Struct{},
+		NewBuilder: func() adapter.HandlerBuilder {
+			return &dummyHandlerBuilder{}
+		},
 	},
 	"adapter2": {
-		Name: "adapter2",
+		Name:          "adapter2",
+		DefaultConfig: &types.Struct{},
+		NewBuilder: func() adapter.HandlerBuilder {
+			return &dummyHandlerBuilder{}
+		},
 	},
 }
 
@@ -1572,10 +1597,10 @@ func TestConfigs(t *testing.T) {
 	runTests(t)
 
 	// enable debug logging and run again to ensure debug logging won't cause a crash.
-	o := log.DefaultOptions()
-	o.SetOutputLevel(log.DefaultScopeName, log.DebugLevel)
-	_ = log.Configure(o)
-	runTests(t)
+	//o := log.DefaultOptions()
+	//o.SetOutputLevel(log.DefaultScopeName, log.DebugLevel)
+	//_ = log.Configure(o)
+	//runTests(t)
 }
 
 func runTests(t *testing.T) {
