@@ -14,6 +14,14 @@
 
 package config
 
+import (
+	"fmt"
+	"istio.io/istio/mixer/pkg/adapter"
+	"istio.io/istio/mixer/pkg/template"
+	"github.com/gogo/protobuf/proto"
+	"istio.io/istio/pkg/log"
+)
+
 // isFQN returns true if the name is fully qualified.
 // every resource name is defined by Key.String()
 // shortname.kind.namespace
@@ -39,4 +47,54 @@ func canonicalize(name string, namespace string) string {
 	}
 
 	return name + "." + namespace
+}
+
+type InferredTypesMap map[string]proto.Message
+func ValidateBuilder(
+	builder adapter.HandlerBuilder,
+	templates map[string]*template.Info,
+	inferredTypes map[string]InferredTypesMap,
+	handler *Handler,
+	env adapter.Env) (err error) {
+	if builder == nil {
+		err = fmt.Errorf("nil builder from adapter: adapter='%s'", handler.Adapter.Name)
+		return
+	}
+
+	// validate if the builder supports all the necessary interfaces
+	for _, tmplName := range handler.Adapter.SupportedTemplates {
+		ti, found := templates[tmplName]
+		if !found {
+			// TODO (Issue #2512): This log is unnecessarily spammy. We should test for this during startup
+			// and log it once.
+			// One of the templates that is supported by the adapter was not found. We should log and simply
+			// move on.
+			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
+				handler.Adapter.NewBuilder, tmplName)
+			continue
+		}
+
+		if supports := ti.BuilderSupportsTemplate(builder); !supports {
+			err = fmt.Errorf("adapter does not actually support template: template='%s', interface='%s'", tmplName, ti.BldrInterfaceName)
+			return
+		}
+	}
+
+	for tmplName := range inferredTypes {
+		types := inferredTypes[tmplName]
+		// ti should be there for a valid configuration.
+		ti := templates[tmplName]
+		if ti.SetType != nil { // for case like APA template that does not have SetType
+			ti.SetType(types, builder)
+		}
+	}
+
+	builder.SetAdapterConfig(handler.Params)
+
+	var ce *adapter.ConfigErrors
+	if ce = builder.Validate(); ce != nil {
+		err = fmt.Errorf("builder validation failed: '%v'", ce)
+		return
+	}
+	return
 }

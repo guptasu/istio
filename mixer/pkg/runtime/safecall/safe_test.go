@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package handler
+package safecall
 
 import (
 	"testing"
@@ -20,7 +20,7 @@ import (
 
 func TestSafeCall(t *testing.T) {
 	worked := false
-	err := safeCall("m", func() {
+	err := Execute("m", func() {
 		worked = true
 	})
 
@@ -34,7 +34,7 @@ func TestSafeCall(t *testing.T) {
 }
 
 func TestSafeCall_Panic(t *testing.T) {
-	err := safeCall("m", func() {
+	err := Execute("m", func() {
 		panic("panic")
 	})
 
@@ -44,7 +44,7 @@ func TestSafeCall_Panic(t *testing.T) {
 }
 
 func TestSafeCall_Panic_Nil(t *testing.T) {
-	err := safeCall("m", func() {
+	err := Execute("m", func() {
 		panic(nil)
 	})
 

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package handler
+package safecall
 
 import (
 	"fmt"
 )
 
-func safeCall(name string, fn func()) (err error) {
+func Execute(name string, fn func()) (err error) {
 	// Try to detect panic, even if panic was called with nil.
 	reachedEnd := false
 	defer func() {

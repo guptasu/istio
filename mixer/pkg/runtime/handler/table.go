@@ -19,6 +19,7 @@ import (
 	"istio.io/istio/mixer/pkg/pool"
 	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/pkg/log"
+	"istio.io/istio/mixer/pkg/runtime/safecall"
 )
 
 // Table contains a set of instantiated and configured adapter handlers.
@@ -125,7 +126,7 @@ func (t *Table) Cleanup(current *Table) {
 		log.Debugf("Closing adapter %s/%v", entry.Name, entry.Handler)
 		t.counters.closedHandlers.Inc()
 		var err error
-		panicErr := safeCall("handler.Close", func() {
+		panicErr := safecall.Execute("handler.Close", func() {
 			err = entry.Handler.Close()
 		})
 
