@@ -25,6 +25,7 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/runtime/config"
+	"istio.io/istio/mixer/pkg/runtime/safecall"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
@@ -58,7 +59,7 @@ func (f *factory) build(
 	env adapter.Env) (h adapter.Handler, err error) {
 
 	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
-	panicErr := safeCall("factory.build", func() {
+	panicErr := safecall.Execute("factory.build", func() {
 		var inferredTypesByTemplates map[string]inferredTypesMap
 		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
 			return

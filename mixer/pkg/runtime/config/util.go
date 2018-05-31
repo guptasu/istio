@@ -16,9 +16,11 @@ package config
 
 import (
 	"fmt"
+
+	"github.com/gogo/protobuf/proto"
+
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/template"
-	"github.com/gogo/protobuf/proto"
 	"istio.io/istio/pkg/log"
 )
 
@@ -50,11 +52,12 @@ func canonicalize(name string, namespace string) string {
 }
 
 type InferredTypesMap map[string]proto.Message
+
 func ValidateBuilder(
 	builder adapter.HandlerBuilder,
 	templates map[string]*template.Info,
 	inferredTypes map[string]InferredTypesMap,
-	handler *Handler,
+	handler *HandlerLegacy,
 	env adapter.Env) (err error) {
 	if builder == nil {
 		err = fmt.Errorf("nil builder from adapter: adapter='%s'", handler.Adapter.Name)

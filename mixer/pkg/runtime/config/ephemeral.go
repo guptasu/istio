@@ -15,11 +15,17 @@
 package config
 
 import (
+	"fmt"
+
+	multierror "github.com/hashicorp/go-multierror"
+	"github.com/prometheus/client_golang/prometheus"
+
 	"istio.io/api/mixer/adapter/model/v1beta1"
 	config "istio.io/api/policy/v1beta1"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/lang/ast"
+	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
@@ -41,6 +47,8 @@ type Ephemeral struct {
 	// attributes from the last config state update. If the manifest hasn't changed since the last config update
 	// the attributes are reused.
 	cachedAttributes map[string]*config.AttributeManifest_AttributeInfo
+
+	tc checker.TypeChecker
 }
 
 // NewEphemeral returns a new Ephemeral instance.
@@ -56,11 +64,12 @@ func NewEphemeral(
 
 		entries: make(map[store.Key]*store.Resource),
 
+		tc:               checker.NewTypeChecker(),
 		cachedAttributes: nil,
 	}
 
 	// build the initial snapshot.
-	_ = e.BuildSnapshot()
+	_, _ = e.BuildSnapshot()
 
 	return e
 }
@@ -95,7 +104,8 @@ func (e *Ephemeral) ApplyEvent(event *store.Event) {
 }
 
 // BuildSnapshot builds a stable, fully-resolved snapshot view of the configuration.
-func (e *Ephemeral) BuildSnapshot() *Snapshot {
+func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
+	errs := &multierror.Error{}
 	id := e.nextID
 	e.nextID++
 
@@ -104,15 +114,15 @@ func (e *Ephemeral) BuildSnapshot() *Snapshot {
 	// Allocate new counters, to use with the new snapshot.
 	counters := newCounters(id)
 
-	attributes := e.processAttributeManifests(counters)
+	attributes := e.processAttributeManifests(counters, errs)
 
-	handlers := e.processHandlerConfigs(counters)
+	handlers := e.processHandlerConfigs(counters, errs)
 
-	instances := e.processInstanceConfigs(counters)
+	af := ast.NewFinder(attributes)
+	instances := e.processInstanceConfigs(af, counters, errs)
+	adapterInfos := e.processAdapterInfoConfigs(counters, errs)
 
-	adapterInfos := e.processAdapterInfoConfigs(counters)
-
-	rules := e.processRuleConfigs(handlers, instances, counters)
+	rules := e.processRuleConfigs(handlers, instances, af, counters, errs)
 
 	s := &Snapshot{
 		ID:                id,
@@ -131,10 +141,10 @@ func (e *Ephemeral) BuildSnapshot() *Snapshot {
 
 	log.Infof("Built new config.Snapshot: id='%d'", id)
 	log.Debugf("config.Snapshot contents:\n%s", s)
-	return s
+	return s, errs.ErrorOrNil()
 }
 
-func (e *Ephemeral) processAttributeManifests(counters Counters) map[string]*config.AttributeManifest_AttributeInfo {
+func (e *Ephemeral) processAttributeManifests(counters Counters, errs *multierror.Error) map[string]*config.AttributeManifest_AttributeInfo {
 	if e.cachedAttributes != nil {
 		return e.cachedAttributes
 	}
@@ -178,14 +188,13 @@ func (e *Ephemeral) processAttributeManifests(counters Counters) map[string]*con
 	return attrs
 }
 
-func (e *Ephemeral) processHandlerConfigs(counters Counters) map[string]*HandlerLegacy {
+func (e *Ephemeral) processHandlerConfigs(counters Counters, errs *multierror.Error) map[string]*HandlerLegacy {
 	handlers := make(map[string]*HandlerLegacy, len(e.adapters))
 
 	for key, resource := range e.entries {
 		var info *adapter.Info
 		var found bool
 		if info, found = e.adapters[key.Kind]; !found {
-			// This config resource is not for an adapter (or at least not for one that Mixer is currently aware of).
 			continue
 		}
 
@@ -206,7 +215,8 @@ func (e *Ephemeral) processHandlerConfigs(counters Counters) map[string]*Handler
 	return handlers
 }
 
-func (e *Ephemeral) processInstanceConfigs(counters Counters) map[string]*InstanceLegacy {
+func (e *Ephemeral) processInstanceConfigs(attributes ast.AttributeDescriptorFinder, counters Counters,
+	errs *multierror.Error) map[string]*InstanceLegacy {
 	instances := make(map[string]*InstanceLegacy, len(e.templates))
 
 	for key, resource := range e.entries {
@@ -220,6 +230,15 @@ func (e *Ephemeral) processInstanceConfigs(counters Counters) map[string]*Instan
 		instanceName := key.String()
 
 		log.Debugf("Processing incoming instance config: name='%s'\n%s", instanceName, resource.Spec)
+		if info.InferType != nil {
+			_, err := info.InferType(resource.Spec, func(s string) (config.ValueType, error) {
+				return e.tc.EvalType(s, attributes)
+			})
+			if err != nil {
+				appenddErr(errs, counters.instanceConfigError, err.Error())
+				continue
+			}
+		}
 
 		cfg := &InstanceLegacy{
 			Name:     instanceName,
@@ -234,7 +253,7 @@ func (e *Ephemeral) processInstanceConfigs(counters Counters) map[string]*Instan
 	return instances
 }
 
-func (e *Ephemeral) processAdapterInfoConfigs(counters Counters) *adapterInfoRegistry {
+func (e *Ephemeral) processAdapterInfoConfigs(counters Counters, errs *multierror.Error) *adapterInfoRegistry {
 
 	log.Debug("Begin processing adapter info configurations.")
 
@@ -262,9 +281,11 @@ func (e *Ephemeral) processAdapterInfoConfigs(counters Counters) *adapterInfoReg
 }
 
 func (e *Ephemeral) processRuleConfigs(
+
 	handlers map[string]*HandlerLegacy,
 	instances map[string]*InstanceLegacy,
-	counters Counters) []*RuleLegacy {
+	attributes ast.AttributeDescriptorFinder,
+	counters Counters, errs *multierror.Error) []*RuleLegacy {
 
 	log.Debug("Begin processing rule configurations.")
 
@@ -286,9 +307,13 @@ func (e *Ephemeral) processRuleConfigs(
 		// Once that issue is resolved, the following block should be removed.
 		rt := resourceType(resource.Metadata.Labels)
 		if cfg.Match != "" {
-			if m, err := ast.ExtractEQMatches(cfg.Match); err != nil {
-				log.Errorf("Unable to extract resource type from rule: name='%s'", ruleName)
+			if err := e.tc.AssertType(cfg.Match, attributes, config.BOOL); err != nil {
+				appenddErr(errs, counters.ruleConfigError, err.Error())
+			}
 
+			if m, err := ast.ExtractEQMatches(cfg.Match); err != nil {
+				appenddErr(errs, counters.ruleConfigError,
+					"Unable to extract resource type from rule: name='%s'", ruleName)
 				// instead of skipping the rule, add it to the list. This ensures that the behavior will
 				// stay the same when this block is removed.
 			} else {
@@ -307,9 +332,8 @@ func (e *Ephemeral) processRuleConfigs(
 			var handler *HandlerLegacy
 			handlerName := canonicalize(a.Handler, ruleKey.Namespace)
 			if handler, found = handlers[handlerName]; !found {
-				log.Errorf("Handler not found: handler='%s', action='%s[%d]'",
+				appenddErr(errs, counters.ruleConfigError, "Handler not found: handler='%s', action='%s[%d]'",
 					handlerName, ruleName, i)
-				counters.ruleConfigError.Inc()
 				continue
 			}
 
@@ -321,18 +345,17 @@ func (e *Ephemeral) processRuleConfigs(
 			for _, instanceName := range a.Instances {
 				instanceName = canonicalize(instanceName, ruleKey.Namespace)
 				if _, found = uniqueInstances[instanceName]; found {
-					log.Errorf("Action specified the same instance multiple times: action='%s[%d]', instance='%s',",
+					appenddErr(errs, counters.ruleConfigError,
+						"Action specified the same instance multiple times: action='%s[%d]', instance='%s',",
 						ruleName, i, instanceName)
-					counters.ruleConfigError.Inc()
 					continue
 				}
 				uniqueInstances[instanceName] = true
 
 				var instance *InstanceLegacy
 				if instance, found = instances[instanceName]; !found {
-					log.Errorf("Instance not found: instance='%s', action='%s[%d]'",
+					appenddErr(errs, counters.ruleConfigError, "Instance not found: instance='%s', action='%s[%d]'",
 						instanceName, ruleName, i)
-					counters.ruleConfigError.Inc()
 					continue
 				}
 
@@ -341,10 +364,34 @@ func (e *Ephemeral) processRuleConfigs(
 
 			// If there are no valid instances found for this action, then elide the action.
 			if len(actionInstances) == 0 {
-				log.Errorf("No valid instances found: action='%s[%d]'", ruleName, i)
-				counters.ruleConfigError.Inc()
+				appenddErr(errs, counters.ruleConfigError, "No valid instances found: action='%s[%d]'", ruleName, i)
 				continue
 			}
+
+			// TODO now validate the configuration with adapter's validate function
+			//var erred bool
+			//panicErr := safecall.Execute("NewBuilder/SetType/SetConfig/Validate", func() {
+			//	//ValidateBuilder(handler.Adapter.NewBuilder(), e.templates, )
+			//	bld := handler.Adapter.NewBuilder()
+			//	if bld == nil {
+			//		appenddErr(errs, counters.ruleConfigError, "nil builder from adapter: adapter='%s'", handler.Adapter.Name)
+			//		erred = true
+			//	}
+			//	bld.SetAdapterConfig(handler.Params)
+			//	err := bld.Validate()
+			//	if err != nil {
+			//		appenddErr(errs, counters.ruleConfigError, err.Error())
+			//		erred = true
+			//	}
+			//})
+			//if erred {
+			//	// exact error is already logged
+			//	continue
+			//}
+			//if panicErr != nil {
+			//	appenddErr(errs, counters.ruleConfigError, panicErr.Error())
+			//	continue
+			//}
 
 			action := &ActionLegacy{
 				Handler:   handler,
@@ -356,8 +403,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 		// If there are no valid actions found for this rule, then elide the rule.
 		if len(actions) == 0 {
-			log.Errorf("No valid actions found in rule: %s", ruleName)
-			counters.ruleConfigError.Inc()
+			appenddErr(errs, counters.ruleConfigError, "No valid actions found in rule: %s", ruleName)
 			continue
 		}
 
@@ -373,6 +419,13 @@ func (e *Ephemeral) processRuleConfigs(
 	}
 
 	return rules
+}
+
+func appenddErr(errs *multierror.Error, counter prometheus.Counter, format string, a ...interface{}) {
+	err := fmt.Errorf(format, a...)
+	log.Error(err.Error())
+	counter.Inc()
+	multierror.Append(errs, err)
 }
 
 // resourceType maps labels to rule types.

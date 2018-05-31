@@ -18,8 +18,8 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/pool"
 	"istio.io/istio/mixer/pkg/runtime/config"
-	"istio.io/istio/pkg/log"
 	"istio.io/istio/mixer/pkg/runtime/safecall"
+	"istio.io/istio/pkg/log"
 )
 
 // Table contains a set of instantiated and configured adapter handlers.
