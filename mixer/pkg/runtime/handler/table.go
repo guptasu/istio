@@ -50,7 +50,7 @@ type Entry struct {
 // NewTable returns a new table, based on the given config snapshot. The table will re-use existing handlers as much as
 // possible from the old table.
 func NewTable(old *Table, snapshot *config.Snapshot, gp *pool.GoroutinePool) *Table {
-	var f *factory
+	var f *config.Factory
 
 	// Find all handlers, as referenced by instances, and associate to handlers.
 	instancesByHandler := config.GetInstancesGroupedByHandlers(snapshot)
@@ -73,11 +73,11 @@ func NewTable(old *Table, snapshot *config.Snapshot, gp *pool.GoroutinePool) *Ta
 
 		// instantiate the new Handler
 		if f == nil {
-			f = newFactory(snapshot)
+			f = config.NewFactory(snapshot)
 		}
 
 		e := newEnv(snapshot.ID, handler.Name, gp)
-		instantiatedHandler, err := f.build(handler, instances, e)
+		instantiatedHandler, err := f.Build(handler, instances, e)
 
 		if err != nil {
 			t.counters.buildFailure.Inc()

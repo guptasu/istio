@@ -26,7 +26,6 @@ import (
 	"istio.io/istio/mixer/pkg/pool"
 	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/runtime/testing/data"
-	"istio.io/istio/mixer/pkg/runtime/testing/util"
 )
 
 // Create a standard global config with Handler H1, Instance I1 and rule R1 referencing I1 and H1.
@@ -54,7 +53,7 @@ func TestNew_EmptyOldTable(t *testing.T) {
 	adapters := data.BuildAdapters(nil)
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 	e, found := table.Get(data.FqnACheck1)
@@ -71,13 +70,13 @@ func TestNew_Reuse(t *testing.T) {
 	adapters := data.BuildAdapters(nil)
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 
 	// NewTable again using the same config, but add fault to the adapter to detect change.
 	adapters = data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "tcheck", ErrorAtBuild: true})
-	s = util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s = config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table2 := NewTable(table, s, nil)
 
@@ -94,12 +93,12 @@ func TestNew_NoReuse_DifferentConfig(t *testing.T) {
 	adapters := data.BuildAdapters(nil)
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 
 	// NewTable again using the slightly different config
-	s = util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfgI2)
+	s = config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfgI2)
 
 	table2 := NewTable(table, s, nil)
 
@@ -156,7 +155,7 @@ func TestCleanup_Basic(t *testing.T) {
 	adapters := data.BuildAdapters(l, data.FakeAdapterSettings{Name: "acheck"})
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 
@@ -233,7 +232,7 @@ func TestCleanup_WorkerNotClosed(t *testing.T) {
 				SpawnDaemon: tt.SpawnDaemon, CloseGoRoutines: tt.CloseGoRoutines})
 			templates := data.BuildTemplates(nil)
 
-			s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+			s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 			s.ID = int64(idx * 2)
 
 			oldTable := NewTable(Empty(), s, pool.NewGoroutinePool(5, false))
@@ -273,7 +272,7 @@ func TestCleanup_NoChange(t *testing.T) {
 	adapters := data.BuildAdapters(l, data.FakeAdapterSettings{Name: "acheck"})
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 
@@ -308,7 +307,7 @@ func TestCleanup_EmptyNewTable(t *testing.T) {
 	adapters := data.BuildAdapters(nil)
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 
 	table := NewTable(Empty(), s, nil)
 
@@ -321,7 +320,7 @@ func TestCleanup_WithStartupError(t *testing.T) {
 
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", HandlerDoesNotSupportTemplate: true})
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 	table := NewTable(Empty(), s, nil)
 
 	if _, found := table.Get(data.FqnACheck1); found {
@@ -344,7 +343,7 @@ func TestCleanup_CloseError(t *testing.T) {
 	adapters := data.BuildAdapters(l, data.FakeAdapterSettings{Name: "acheck", ErrorAtHandlerClose: true})
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 	table := NewTable(Empty(), s, nil)
 
 	// use different config to force cleanup
@@ -385,7 +384,7 @@ func TestCleanup_ClosePanic(t *testing.T) {
 	adapters := data.BuildAdapters(l, data.FakeAdapterSettings{Name: "acheck", PanicAtHandlerClose: true})
 	templates := data.BuildTemplates(nil)
 
-	s := util.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
+	s := config.GetSnapshot(templates, adapters, data.ServiceConfig, globalCfg)
 	table := NewTable(Empty(), s, nil)
 
 	// use different config to force cleanup

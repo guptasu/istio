@@ -12,30 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package config
 
 import (
 	"fmt"
 
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/storetest"
-	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/template"
 )
 
 // GetSnapshot creates a config.Snapshot for testing purposes, based on the supplied configuration.
-func GetSnapshot(templates map[string]*template.Info, adapters map[string]*adapter.Info, serviceConfig string, globalConfig string) *config.Snapshot {
+func GetSnapshot(templates map[string]*template.Info, adapters map[string]*adapter.Info, serviceConfig string, globalConfig string) *Snapshot {
 	store, err := storetest.SetupStoreForTest(serviceConfig, globalConfig)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to crete store: %v", err))
 	}
 
-	if err = store.Init(config.KindMap(adapters, templates)); err != nil {
+	if err = store.Init(KindMap(adapters, templates)); err != nil {
 		panic(fmt.Sprintf("Unable to initialize store: %v", err))
 	}
 
 	data := store.List()
-	e := config.NewEphemeral(templates, adapters)
+	e := NewEphemeral(templates, adapters)
 	e.SetState(data)
 
 	store.Stop()

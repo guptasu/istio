@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package handler
+package config
 
 import (
 	"context"
@@ -24,15 +24,13 @@ import (
 	istio_mixer_v1_config_descriptor "istio.io/api/policy/v1beta1"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/lang/checker"
-	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/runtime/safecall"
 	"istio.io/istio/pkg/log"
 )
 
-
-// factory is used to instantiate handlers.
-type factory struct {
-	snapshot *config.Snapshot
+// Factory is used to instantiate handlers.
+type Factory struct {
+	snapshot *Snapshot
 
 	checker checker.TypeChecker
 
@@ -40,8 +38,8 @@ type factory struct {
 	inferredTypesCache map[string]proto.Message
 }
 
-func newFactory(snapshot *config.Snapshot) *factory {
-	return &factory{
+func NewFactory(snapshot *Snapshot) *Factory {
+	return &Factory{
 		snapshot: snapshot,
 		checker:  checker.NewTypeChecker(),
 
@@ -50,14 +48,14 @@ func newFactory(snapshot *config.Snapshot) *factory {
 }
 
 // build instantiates a handler object using the passed in handler and instances configuration.
-func (f *factory) build(
-	handler *config.HandlerLegacy,
-	instances []*config.InstanceLegacy,
+func (f *Factory) Build(
+	handler *HandlerLegacy,
+	instances []*InstanceLegacy,
 	env adapter.Env) (h adapter.Handler, err error) {
 
 	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
 	panicErr := safecall.Execute("factory.build", func() {
-		var inferredTypesByTemplates map[string]config.InferredTypesMap
+		var inferredTypesByTemplates map[string]InferredTypesMap
 		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
 			return
 		}
@@ -71,7 +69,7 @@ func (f *factory) build(
 			return
 		}
 		// validate and only construct if the validation passes.
-		if err = config.ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler, env); err != nil {
+		if err = ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler, env); err != nil {
 			h = nil
 			err = fmt.Errorf("adapter validation failed : %v", err)
 			return
@@ -118,13 +116,13 @@ func (f *factory) build(
 	return
 }
 
-func (f *factory) buildHandler(builder adapter.HandlerBuilder, env adapter.Env) (handler adapter.Handler, err error) {
+func (f *Factory) buildHandler(builder adapter.HandlerBuilder, env adapter.Env) (handler adapter.Handler, err error) {
 	return builder.Build(context.Background(), env)
 }
 
-func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]config.InferredTypesMap, error) {
+func (f *Factory) inferTypes(instances []*InstanceLegacy) (map[string]InferredTypesMap, error) {
 
-	typesByTemplate := make(map[string]config.InferredTypesMap)
+	typesByTemplate := make(map[string]InferredTypesMap)
 	for _, instance := range instances {
 
 		inferredType, err := f.inferType(instance)
@@ -133,7 +131,7 @@ func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]con
 		}
 
 		if _, exists := typesByTemplate[instance.Template.Name]; !exists {
-			typesByTemplate[instance.Template.Name] = make(config.InferredTypesMap)
+			typesByTemplate[instance.Template.Name] = make(InferredTypesMap)
 		}
 
 		typesByTemplate[instance.Template.Name][instance.Name] = inferredType
@@ -141,7 +139,7 @@ func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]con
 	return typesByTemplate, nil
 }
 
-func (f *factory) inferType(instance *config.InstanceLegacy) (proto.Message, error) {
+func (f *Factory) inferType(instance *InstanceLegacy) (proto.Message, error) {
 
 	var inferredType proto.Message
 	var err error

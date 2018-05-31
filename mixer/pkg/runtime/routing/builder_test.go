@@ -26,7 +26,6 @@ import (
 	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/runtime/handler"
 	"istio.io/istio/mixer/pkg/runtime/testing/data"
-	"istio.io/istio/mixer/pkg/runtime/testing/util"
 	"istio.io/istio/mixer/pkg/template"
 )
 
@@ -561,7 +560,7 @@ func buildTableWithTemplatesAndAdapters(templates map[string]*template.Info, ada
 
 	globalConfig := data.JoinConfigs(globalConfigs...)
 
-	s := util.GetSnapshot(templates, adapters, serviceConfig, globalConfig)
+	s := config.GetSnapshot(templates, adapters, serviceConfig, globalConfig)
 	ht := handler.NewTable(handler.Empty(), s, nil)
 	expb := compiled.NewBuilder(s.Attributes)
 
