@@ -63,7 +63,7 @@ func (f *Factory) ValidateBuilder(
 		// Adapter should always be present for a valid configuration (reference integrity should already be checked).
 		info := handler.Adapter
 
-		hb := info.NewBuilder()
+		hb = info.NewBuilder()
 		if hb == nil {
 			err = errors.New("nil HandlerBuilder")
 			return
@@ -93,23 +93,12 @@ func (f *Factory) Build(
 
 	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
 	panicErr := safecall.Execute("factory.build", func() {
-		var inferredTypesByTemplates map[string]InferredTypesMap
-		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
-			return
-		}
 
-		// Adapter should always be present for a valid configuration (reference integrity should already be checked).
-		info := handler.Adapter
-
-		builder := info.NewBuilder()
-		if builder == nil {
-			err = errors.New("nil HandlerBuilder")
-			return
-		}
-		// validate and only construct if the validation passes.
-		if err = ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
+		var builder adapter.HandlerBuilder
+		builder, err = f.ValidateBuilder(handler, instances)
+		if err != nil {
 			h = nil
-			err = fmt.Errorf("adapter validation failed : %v", err)
+			err = fmt.Errorf("adapter builder validation failed: %v", err)
 			return
 		}
 		h, err = f.buildHandler(builder, env)
@@ -120,7 +109,7 @@ func (f *Factory) Build(
 		}
 
 		// validate if the handlerConfig supports all the necessary interfaces
-		for _, tmplName := range info.SupportedTemplates {
+		for _, tmplName := range handler.Adapter.SupportedTemplates {
 			// ti should be there for a valid configuration.
 			ti, found := f.snapshot.Templates[tmplName]
 			if !found {
