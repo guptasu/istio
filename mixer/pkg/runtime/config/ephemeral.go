@@ -139,6 +139,10 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	}
 
 	e.cachedAttributes = attributes
+	// Find all handlers, as referenced by instances, and associate to handlers.
+	//instancesByHandler := GetInstancesGroupedByHandlers(s)
+	//f := NewFactory(s)
+	//e := newEnv(snapshot.ID, handler.Name, gp)
 
 	log.Infof("Built new config.Snapshot: id='%d'", id)
 	log.Debugf("config.Snapshot contents:\n%s", s)

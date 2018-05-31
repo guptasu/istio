@@ -47,6 +47,44 @@ func NewFactory(snapshot *Snapshot) *Factory {
 	}
 }
 
+
+// build instantiates a handler object using the passed in handler and instances configuration.
+func (f *Factory) ValidateBuilder(
+	handler *HandlerLegacy,
+	instances []*InstanceLegacy) (hb adapter.HandlerBuilder, err error) {
+
+	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
+	panicErr := safecall.Execute("factory.build", func() {
+		var inferredTypesByTemplates map[string]InferredTypesMap
+		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
+			return
+		}
+
+		// Adapter should always be present for a valid configuration (reference integrity should already be checked).
+		info := handler.Adapter
+
+		hb := info.NewBuilder()
+		if hb == nil {
+			err = errors.New("nil HandlerBuilder")
+			return
+		}
+		// validate and only construct if the validation passes.
+		if err = ValidateBuilder(hb, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
+			err = fmt.Errorf("adapter validation failed : %v", err)
+			hb = nil
+			return
+		}
+	})
+
+	if panicErr != nil {
+		err = panicErr
+		hb = nil
+		return
+	}
+
+	return
+}
+
 // build instantiates a handler object using the passed in handler and instances configuration.
 func (f *Factory) Build(
 	handler *HandlerLegacy,
@@ -69,7 +107,7 @@ func (f *Factory) Build(
 			return
 		}
 		// validate and only construct if the validation passes.
-		if err = ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler, env); err != nil {
+		if err = ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
 			h = nil
 			err = fmt.Errorf("adapter validation failed : %v", err)
 			return

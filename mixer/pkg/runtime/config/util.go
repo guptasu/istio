@@ -57,8 +57,7 @@ func ValidateBuilder(
 	builder adapter.HandlerBuilder,
 	templates map[string]*template.Info,
 	inferredTypes map[string]InferredTypesMap,
-	handler *HandlerLegacy,
-	env adapter.Env) (err error) {
+	handler *HandlerLegacy) (err error) {
 	if builder == nil {
 		err = fmt.Errorf("nil builder from adapter: adapter='%s'", handler.Adapter.Name)
 		return
