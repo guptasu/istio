@@ -26,12 +26,9 @@ import (
 	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/runtime/safecall"
-	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
 
-// Map of instance name to inferred type (proto.Message)
-type inferredTypesMap map[string]proto.Message
 
 // factory is used to instantiate handlers.
 type factory struct {
@@ -60,7 +57,7 @@ func (f *factory) build(
 
 	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
 	panicErr := safecall.Execute("factory.build", func() {
-		var inferredTypesByTemplates map[string]inferredTypesMap
+		var inferredTypesByTemplates map[string]config.InferredTypesMap
 		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
 			return
 		}
@@ -73,30 +70,13 @@ func (f *factory) build(
 			err = errors.New("nil HandlerBuilder")
 			return
 		}
-
-		// validate if the builder supports all the necessary interfaces
-		for _, tmplName := range info.SupportedTemplates {
-
-			ti, found := f.snapshot.Templates[tmplName]
-			if !found {
-				// TODO (Issue #2512): This log is unnecessarily spammy. We should test for this during startup
-				// and log it once.
-				// One of the templates that is supported by the adapter was not found. We should log and simply
-				// move on.
-				log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
-					handler.Adapter.NewBuilder, tmplName)
-				continue
-			}
-
-			if supports := ti.BuilderSupportsTemplate(builder); !supports {
-				// TODO (Issue #2512): This will cause spammy logging at the call site.
-				// We should test for this during startup and log it once.
-				err = fmt.Errorf("adapter does not actually support template: template='%s', interface='%s'", tmplName, ti.BldrInterfaceName)
-				return
-			}
+		// validate and only construct if the validation passes.
+		if err = config.ValidateBuilder(builder, f.snapshot.Templates, inferredTypesByTemplates, handler, env); err != nil {
+			h = nil
+			err = fmt.Errorf("adapter validation failed : %v", err)
+			return
 		}
-
-		h, err = f.buildHandler(builder, inferredTypesByTemplates, handler.Params, env)
+		h, err = f.buildHandler(builder, env)
 		if err != nil {
 			h = nil
 			err = fmt.Errorf("adapter instantiation error: %v", err)
@@ -138,38 +118,13 @@ func (f *factory) build(
 	return
 }
 
-func (f *factory) buildHandler(
-	builder adapter.HandlerBuilder,
-	inferredTypes map[string]inferredTypesMap,
-	adapterConfig interface{},
-	env adapter.Env) (handler adapter.Handler, err error) {
-	var ti *template.Info
-	var types inferredTypesMap
-
-	for tmplName := range inferredTypes {
-		types = inferredTypes[tmplName]
-		// ti should be there for a valid configuration.
-		ti = f.snapshot.Templates[tmplName]
-		if ti.SetType != nil { // for case like APA template that does not have SetType
-			ti.SetType(types, builder)
-		}
-	}
-
-	builder.SetAdapterConfig(adapterConfig.(proto.Message))
-
-	// validate and only construct if the validation passes.
-	var ce *adapter.ConfigErrors
-	if ce = builder.Validate(); ce != nil {
-		err = fmt.Errorf("builder validation failed: '%v'", ce)
-		return
-	}
-
+func (f *factory) buildHandler(builder adapter.HandlerBuilder, env adapter.Env) (handler adapter.Handler, err error) {
 	return builder.Build(context.Background(), env)
 }
 
-func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]inferredTypesMap, error) {
+func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]config.InferredTypesMap, error) {
 
-	typesByTemplate := make(map[string]inferredTypesMap)
+	typesByTemplate := make(map[string]config.InferredTypesMap)
 	for _, instance := range instances {
 
 		inferredType, err := f.inferType(instance)
@@ -178,7 +133,7 @@ func (f *factory) inferTypes(instances []*config.InstanceLegacy) (map[string]inf
 		}
 
 		if _, exists := typesByTemplate[instance.Template.Name]; !exists {
-			typesByTemplate[instance.Template.Name] = make(inferredTypesMap)
+			typesByTemplate[instance.Template.Name] = make(config.InferredTypesMap)
 		}
 
 		typesByTemplate[instance.Template.Name][instance.Name] = inferredType
