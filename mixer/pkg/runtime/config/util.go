@@ -85,7 +85,16 @@ func ValidateBuilder(
 	for tmplName := range inferredTypes {
 		types := inferredTypes[tmplName]
 		// ti should be there for a valid configuration.
-		ti := templates[tmplName]
+		ti, found := templates[tmplName]
+		if !found {
+			// TODO (Issue #2512): This log is unnecessarily spammy. We should test for this during startup
+			// and log it once.
+			// One of the templates that is supported by the adapter was not found. We should log and simply
+			// move on.
+			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
+				handler.Adapter.NewBuilder, tmplName)
+			continue
+		}
 		if ti.SetType != nil { // for case like APA template that does not have SetType
 			ti.SetType(types, builder)
 		}

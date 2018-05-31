@@ -26,7 +26,6 @@ import (
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/lang/ast"
 	"istio.io/istio/mixer/pkg/lang/checker"
-	"istio.io/istio/mixer/pkg/runtime/safecall"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
@@ -140,9 +139,14 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 
 	e.cachedAttributes = attributes
 	// Find all handlers, as referenced by instances, and associate to handlers.
-	//instancesByHandler := GetInstancesGroupedByHandlers(s)
-	//f := NewFactory(s)
+	instancesByHandler := GetInstancesGroupedByHandlers(s)
+	f := NewFactory(s)
 	//e := newEnv(snapshot.ID, handler.Name, gp)
+	for handler, instances := range instancesByHandler {
+		if _, err := f.ValidateBuilder(handler, instances); err != nil {
+			multierror.Append(errs, err)
+		}
+	}
 
 	log.Infof("Built new config.Snapshot: id='%d'", id)
 	log.Debugf("config.Snapshot contents:\n%s", s)
@@ -370,31 +374,6 @@ func (e *Ephemeral) processRuleConfigs(
 			// If there are no valid instances found for this action, then elide the action.
 			if len(actionInstances) == 0 {
 				appenddErr(errs, counters.ruleConfigError, "No valid instances found: action='%s[%d]'", ruleName, i)
-				continue
-			}
-
-			// TODO now validate the configuration with adapter's validate function
-			var erred bool
-			panicErr := safecall.Execute("NewBuilder/SetType/SetConfig/Validate", func() {
-				//ValidateBuilder(handler.Adapter.NewBuilder(), e.templates, )
-				bld := handler.Adapter.NewBuilder()
-				if bld == nil {
-					appenddErr(errs, counters.ruleConfigError, "nil builder from adapter: adapter='%s'", handler.Adapter.Name)
-					erred = true
-				}
-				bld.SetAdapterConfig(handler.Params)
-				err := bld.Validate()
-				if err != nil {
-					appenddErr(errs, counters.ruleConfigError, err.Error())
-					erred = true
-				}
-			})
-			if erred {
-				// exact error is already logged
-				continue
-			}
-			if panicErr != nil {
-				appenddErr(errs, counters.ruleConfigError, panicErr.Error())
 				continue
 			}
 

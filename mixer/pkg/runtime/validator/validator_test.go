@@ -118,6 +118,9 @@ func getValidatorForTest() (*Validator, error) {
 			_, ierr := fn(value)
 			return nil, ierr
 		},
+		BuilderSupportsTemplate: func(builder adapter.HandlerBuilder) bool {
+			return true
+		},
 	}
 
 	v, err := New(tc, "destination.service", s, adapterInfo, templateInfo)
@@ -148,15 +151,15 @@ func TestValidator(t *testing.T) {
 		ok      bool
 		wantErr string
 	}{
-	//{
-	//	"new rule",
-	//	[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{
-	//		Actions: []*cpb.Action{
-	//			{Handler: "staticversion.listchecker.istio-system", Instances: []string{"appversion.listentry.istio-system"}},
-	//		}})},
-	//	true,
-	//	"",
-	//},
+	{
+		"new rule",
+		[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{
+			Actions: []*cpb.Action{
+				{Handler: "staticversion.listchecker.istio-system", Instances: []string{"appversion.listentry.istio-system"}},
+			}})},
+		true,
+		"",
+	},
 	//		{
 	//			"update rule",
 	//			[]*store.Event{updateEvent("checkwl.rule.istio-system", &cpb.Rule{
