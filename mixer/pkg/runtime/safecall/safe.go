@@ -15,23 +15,23 @@
 package safecall
 
 import (
-	//"fmt"
+	"fmt"
 )
 
 func Execute(name string, fn func()) (err error) {
 	// Try to detect panic, even if panic was called with nil.
-	//reachedEnd := false
-	//defer func() {
-	//	if reachedEnd {
-	//		return
-	//	}
-//
-	//	r := recover()
-	//	err = fmt.Errorf("panic during %v: '%v' ", name, r)
-	//}()
+	reachedEnd := false
+	defer func() {
+		if reachedEnd {
+			return
+		}
+
+		r := recover()
+		err = fmt.Errorf("panic during %v: '%v' ", name, r)
+	}()
 
 	fn()
 
-	//reachedEnd = true
+	reachedEnd = true
 	return
 }

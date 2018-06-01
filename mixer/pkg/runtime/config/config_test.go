@@ -29,6 +29,7 @@ import (
 	//"istio.io/istio/pkg/log"
 	"context"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
 )
 
@@ -1564,14 +1565,23 @@ var stdTemplates = map[string]*template.Info{
 	"quota": {
 		Name:    "quota",
 		Variety: adapter_model.TEMPLATE_VARIETY_QUOTA,
+		InferType: func(cp proto.Message, tEvalFn template.TypeEvalFn) (proto.Message, error) {
+			return nil, nil
+		},
 	},
 	"check": {
 		Name:    "check",
 		Variety: adapter_model.TEMPLATE_VARIETY_CHECK,
+		InferType: func(cp proto.Message, tEvalFn template.TypeEvalFn) (proto.Message, error) {
+			return nil, nil
+		},
 	},
 	"report": {
 		Name:    "report",
 		Variety: adapter_model.TEMPLATE_VARIETY_REPORT,
+		InferType: func(cp proto.Message, tEvalFn template.TypeEvalFn) (proto.Message, error) {
+			return nil, nil
+		},
 	},
 	"apa": {
 		Name:    "apa",
@@ -1584,6 +1594,9 @@ var stdTemplates = map[string]*template.Info{
 					},
 				},
 			},
+		},
+		InferType: func(cp proto.Message, tEvalFn template.TypeEvalFn) (proto.Message, error) {
+			return nil, nil
 		},
 	},
 }

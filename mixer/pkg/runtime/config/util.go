@@ -72,7 +72,7 @@ func ValidateBuilder(
 			// One of the templates that is supported by the adapter was not found. We should log and simply
 			// move on.
 			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
-				handler.Adapter.NewBuilder, tmplName)
+				handler.Adapter.Name, tmplName)
 			continue
 		}
 
@@ -92,7 +92,7 @@ func ValidateBuilder(
 			// One of the templates that is supported by the adapter was not found. We should log and simply
 			// move on.
 			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
-				handler.Adapter.NewBuilder, tmplName)
+				handler.Adapter.Name, tmplName)
 			continue
 		}
 		if ti.SetType != nil { // for case like APA template that does not have SetType

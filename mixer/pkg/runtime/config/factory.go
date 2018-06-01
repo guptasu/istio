@@ -47,7 +47,6 @@ func NewFactory(snapshot *Snapshot) *Factory {
 	}
 }
 
-
 // build instantiates a handler object using the passed in handler and instances configuration.
 func (f *Factory) ValidateBuilder(
 	handler *HandlerLegacy,
@@ -176,7 +175,7 @@ func (f *Factory) inferType(instance *InstanceLegacy) (proto.Message, error) {
 		return inferredType, nil
 	}
 
-	// t should be there since the config is already validated
+	// t should be there since the already built snapshot must ensure referential integrity.
 	t := instance.Template
 
 	inferredType, err = t.InferType(instance.Params, func(expr string) (istio_mixer_v1_config_descriptor.ValueType, error) {
