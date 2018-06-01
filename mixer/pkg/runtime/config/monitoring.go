@@ -96,6 +96,13 @@ var (
 		Name:      "unsatisfied_action_handler_count",
 		Help:      "The number of actions that were put into action due to handlers being unavailable.",
 	}, standardConfigLabels)
+
+	handlerValidationErrorCount = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "mixer",
+		Subsystem: "config",
+		Name:      "handler_validation_error_count",
+		Help:      "The number of errors encountered because handler validation returned error.",
+	}, standardConfigLabels)
 )
 
 func init() {
@@ -109,6 +116,7 @@ func init() {
 	prometheus.MustRegister(adapterInfoConfigErrorCount)
 	prometheus.MustRegister(matchErrorCount)
 	prometheus.MustRegister(unsatisfiedActionHandlerCount)
+	prometheus.MustRegister(handlerValidationErrorCount)
 }
 
 // Counters is the configuration related performance Counters. Other parts of the code can depend
@@ -126,6 +134,7 @@ type Counters struct {
 	// Externally visible counters
 	MatchErrors               prometheus.Counter
 	UnsatisfiedActionHandlers prometheus.Counter
+	HandlerValidationError    prometheus.Counter
 }
 
 func newCounters(id int64) Counters {
@@ -143,5 +152,6 @@ func newCounters(id int64) Counters {
 		adapterInfoConfigError:    adapterInfoConfigErrorCount.With(labels),
 		MatchErrors:               matchErrorCount.With(labels),
 		UnsatisfiedActionHandlers: unsatisfiedActionHandlerCount.With(labels),
+		HandlerValidationError:    handlerValidationErrorCount.With(labels),
 	}
 }

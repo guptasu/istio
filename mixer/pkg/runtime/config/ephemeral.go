@@ -16,6 +16,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/prometheus/client_golang/prometheus"
@@ -144,7 +145,12 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	//e := newEnv(snapshot.ID, handler.Name, gp)
 	for handler, instances := range instancesByHandler {
 		if _, err := f.ValidateBuilder(handler, instances); err != nil {
-			multierror.Append(errs, err)
+			insts := make([]string, 0)
+			for _, inst := range instances {
+				insts = append(insts, inst.Name)
+			}
+			appendErr(errs, fmt.Sprintf("handler[%s]/instances[%s]",
+				handler.Name, strings.Join(insts, ",")), counters.HandlerValidationError, err.Error())
 		}
 	}
 
@@ -244,7 +250,7 @@ func (e *Ephemeral) processInstanceConfigs(attributes ast.AttributeDescriptorFin
 				return e.tc.EvalType(s, attributes)
 			})
 			if err != nil {
-				appendErr(errs, counters.instanceConfigError, err.Error())
+				appendErr(errs, fmt.Sprintf("instance='%s'", instanceName), counters.instanceConfigError, err.Error())
 				continue
 			}
 		}
@@ -317,12 +323,12 @@ func (e *Ephemeral) processRuleConfigs(
 		rt := resourceType(resource.Metadata.Labels)
 		if cfg.Match != "" {
 			if err := e.tc.AssertType(cfg.Match, attributes, config.BOOL); err != nil {
-				appendErr(errs, counters.ruleConfigError, err.Error())
+				appendErr(errs, fmt.Sprintf("rule='%s'.Match", ruleName), counters.ruleConfigError, err.Error())
 			}
 
 			if m, err := ast.ExtractEQMatches(cfg.Match); err != nil {
-				appendErr(errs, counters.ruleConfigError,
-					"Unable to extract resource type from rule: name='%s'", ruleName)
+				appendErr(errs, fmt.Sprintf("rule='%s'", ruleName), counters.ruleConfigError,
+					"Unable to extract resource type from rule")
 				// instead of skipping the rule, add it to the list. This ensures that the behavior will
 				// stay the same when this block is removed.
 			} else {
@@ -341,8 +347,8 @@ func (e *Ephemeral) processRuleConfigs(
 			var handler *HandlerLegacy
 			handlerName := canonicalize(a.Handler, ruleKey.Namespace)
 			if handler, found = handlers[handlerName]; !found {
-				appendErr(errs, counters.ruleConfigError, "Handler not found: handler='%s', action='%s[%d]'",
-					handlerName, ruleName, i)
+				appendErr(errs, fmt.Sprintf("action='%s[%d]'", ruleName, i), counters.ruleConfigError, "Handler not found: handler='%s'",
+					handlerName)
 				continue
 			}
 
@@ -354,17 +360,15 @@ func (e *Ephemeral) processRuleConfigs(
 			for _, instanceName := range a.Instances {
 				instanceName = canonicalize(instanceName, ruleKey.Namespace)
 				if _, found = uniqueInstances[instanceName]; found {
-					appendErr(errs, counters.ruleConfigError,
-						"Action specified the same instance multiple times: action='%s[%d]', instance='%s',",
-						ruleName, i, instanceName)
+					appendErr(errs, fmt.Sprintf("action='%s[%d]'", ruleName, i), counters.ruleConfigError,
+						"action specified the same instance multiple times: instance='%s',", instanceName)
 					continue
 				}
 				uniqueInstances[instanceName] = true
 
 				var instance *InstanceLegacy
 				if instance, found = instances[instanceName]; !found {
-					appendErr(errs, counters.ruleConfigError, "Instance not found: instance='%s', action='%s[%d]'",
-						instanceName, ruleName, i)
+					appendErr(errs, fmt.Sprintf("action='%s[%d]'", ruleName, i), counters.ruleConfigError, "Instance not found: instance='%s'", instanceName)
 					continue
 				}
 
@@ -373,7 +377,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 			// If there are no valid instances found for this action, then elide the action.
 			if len(actionInstances) == 0 {
-				appendErr(errs, counters.ruleConfigError, "No valid instances found: action='%s[%d]'", ruleName, i)
+				appendErr(errs, fmt.Sprintf("action='%s[%d]'", ruleName, i), counters.ruleConfigError, "No valid instances found")
 				continue
 			}
 
@@ -387,7 +391,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 		// If there are no valid actions found for this rule, then elide the rule.
 		if len(actions) == 0 {
-			appendErr(errs, counters.ruleConfigError, "No valid actions found in rule: %s", ruleName)
+			appendErr(errs, fmt.Sprintf("rule=%s", ruleName), counters.ruleConfigError, "No valid actions found in rule")
 			continue
 		}
 
@@ -405,11 +409,11 @@ func (e *Ephemeral) processRuleConfigs(
 	return rules
 }
 
-func appendErr(errs *multierror.Error, counter prometheus.Counter, format string, a ...interface{}) {
+func appendErr(errs *multierror.Error, field string, counter prometheus.Counter, format string, a ...interface{}) {
 	err := fmt.Errorf(format, a...)
 	log.Error(err.Error())
 	counter.Inc()
-	multierror.Append(errs, err)
+	multierror.Append(errs, adapter.ConfigError{Field: field, Underlying: err})
 }
 
 // resourceType maps labels to rule types.
