@@ -315,17 +315,7 @@ func (v *Validator) validateUpdate(ev *store.Event) error {
 
 // Validate implements store.Validator interface.
 func (v *Validator) Validate(ev *store.Event) error {
-
 	v.e.ApplyEvent(ev)
 	_, err := v.e.BuildSnapshot()
-
-	//if ev.Type == store.Delete {
-	//	err = v.validateDelete(ev.Key)
-	//} else {
-	//	err = v.validateUpdate(ev)
-	//}
-	//if err == nil {
-	//	v.c.putCache(ev)
-	//}
 	return err
 }

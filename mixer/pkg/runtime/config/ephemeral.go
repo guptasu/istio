@@ -244,7 +244,7 @@ func (e *Ephemeral) processInstanceConfigs(attributes ast.AttributeDescriptorFin
 				return e.tc.EvalType(s, attributes)
 			})
 			if err != nil {
-				appenddErr(errs, counters.instanceConfigError, err.Error())
+				appendErr(errs, counters.instanceConfigError, err.Error())
 				continue
 			}
 		}
@@ -317,11 +317,11 @@ func (e *Ephemeral) processRuleConfigs(
 		rt := resourceType(resource.Metadata.Labels)
 		if cfg.Match != "" {
 			if err := e.tc.AssertType(cfg.Match, attributes, config.BOOL); err != nil {
-				appenddErr(errs, counters.ruleConfigError, err.Error())
+				appendErr(errs, counters.ruleConfigError, err.Error())
 			}
 
 			if m, err := ast.ExtractEQMatches(cfg.Match); err != nil {
-				appenddErr(errs, counters.ruleConfigError,
+				appendErr(errs, counters.ruleConfigError,
 					"Unable to extract resource type from rule: name='%s'", ruleName)
 				// instead of skipping the rule, add it to the list. This ensures that the behavior will
 				// stay the same when this block is removed.
@@ -341,7 +341,7 @@ func (e *Ephemeral) processRuleConfigs(
 			var handler *HandlerLegacy
 			handlerName := canonicalize(a.Handler, ruleKey.Namespace)
 			if handler, found = handlers[handlerName]; !found {
-				appenddErr(errs, counters.ruleConfigError, "Handler not found: handler='%s', action='%s[%d]'",
+				appendErr(errs, counters.ruleConfigError, "Handler not found: handler='%s', action='%s[%d]'",
 					handlerName, ruleName, i)
 				continue
 			}
@@ -354,7 +354,7 @@ func (e *Ephemeral) processRuleConfigs(
 			for _, instanceName := range a.Instances {
 				instanceName = canonicalize(instanceName, ruleKey.Namespace)
 				if _, found = uniqueInstances[instanceName]; found {
-					appenddErr(errs, counters.ruleConfigError,
+					appendErr(errs, counters.ruleConfigError,
 						"Action specified the same instance multiple times: action='%s[%d]', instance='%s',",
 						ruleName, i, instanceName)
 					continue
@@ -363,7 +363,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 				var instance *InstanceLegacy
 				if instance, found = instances[instanceName]; !found {
-					appenddErr(errs, counters.ruleConfigError, "Instance not found: instance='%s', action='%s[%d]'",
+					appendErr(errs, counters.ruleConfigError, "Instance not found: instance='%s', action='%s[%d]'",
 						instanceName, ruleName, i)
 					continue
 				}
@@ -373,7 +373,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 			// If there are no valid instances found for this action, then elide the action.
 			if len(actionInstances) == 0 {
-				appenddErr(errs, counters.ruleConfigError, "No valid instances found: action='%s[%d]'", ruleName, i)
+				appendErr(errs, counters.ruleConfigError, "No valid instances found: action='%s[%d]'", ruleName, i)
 				continue
 			}
 
@@ -387,7 +387,7 @@ func (e *Ephemeral) processRuleConfigs(
 
 		// If there are no valid actions found for this rule, then elide the rule.
 		if len(actions) == 0 {
-			appenddErr(errs, counters.ruleConfigError, "No valid actions found in rule: %s", ruleName)
+			appendErr(errs, counters.ruleConfigError, "No valid actions found in rule: %s", ruleName)
 			continue
 		}
 
@@ -405,7 +405,7 @@ func (e *Ephemeral) processRuleConfigs(
 	return rules
 }
 
-func appenddErr(errs *multierror.Error, counter prometheus.Counter, format string, a ...interface{}) {
+func appendErr(errs *multierror.Error, counter prometheus.Counter, format string, a ...interface{}) {
 	err := fmt.Errorf(format, a...)
 	log.Error(err.Error())
 	counter.Inc()

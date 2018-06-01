@@ -160,91 +160,98 @@ func TestValidator(t *testing.T) {
 			true,
 			"",
 		},
-		//		{
-		//			"update rule",
-		//			[]*store.Event{updateEvent("checkwl.rule.istio-system", &cpb.Rule{
-		//				Actions: []*cpb.Action{
-		//					{Handler: "staticversion.listchecker", Instances: []string{"appversion.listentry"}},
-		//				}})},
-		//			true,
-		//			"",
-		//		},
-		//		{
-		//			"delete rule",
-		//			[]*store.Event{deleteEvent("checkwl.rule.istio-system")},
-		//			true,
-		//			"",
-		//		},
-		//		{
-		//			"invalid updating rule: match syntax error",
-		//			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Match: "foo"})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid updating rule: match type error",
-		//			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Match: "1"})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid updating rule: reference not found",
-		//			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Actions: []*cpb.Action{{Handler: "nonexistent.listchecker.istio-system"}}})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"adding adapter",
-		//			[]*store.Event{updateEvent("test.listchecker.default", testAdapterConfig)},
-		//			true,
-		//			"",
-		//		},
-		//		{
-		//			"adding instance",
-		//			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{Fields: map[string]*types.Value{
-		//				"value": {Kind: &types.Value_StringValue{StringValue: "0"}},
-		//			}})},
-		//			true,
-		//			"",
-		//		},
-		//		{
-		//			"adapter validation failure",
-		//			[]*store.Event{updateEvent("test.listchecker.default", &types.Struct{})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid instance",
-		//			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid instance syntax",
-		//			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{Fields: map[string]*types.Value{
-		//				"value": {Kind: &types.Value_StringValue{StringValue: ""}},
-		//			}})},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid delete handler",
-		//			[]*store.Event{deleteEvent("staticversion.listchecker.istio-system")},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid delete instance",
-		//			[]*store.Event{deleteEvent("appversion.listentry.istio-system")},
-		//			false,
-		//			"",
-		//		},
-		//		{
-		//			"invalid removal of attributemanifest",
-		//			[]*store.Event{deleteEvent("kubernetes.attributemanifest.istio-system")},
-		//			false,
-		//			"",
-		//		},
+		{
+			"update rule",
+			[]*store.Event{updateEvent("checkwl.rule.istio-system", &cpb.Rule{
+				Actions: []*cpb.Action{
+					{Handler: "staticversion.listchecker", Instances: []string{"appversion.listentry"}},
+				}})},
+			true,
+			"",
+		},
+		{
+			"delete rule",
+			[]*store.Event{deleteEvent("checkwl.rule.istio-system")},
+			true,
+			"",
+		},
+		{
+			"invalid updating rule: match syntax error",
+			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Match: "foo"})},
+			false,
+			"",
+		},
+		{
+			"invalid updating rule: match type error",
+			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Match: "1"})},
+			false,
+			"",
+		},
+		{
+			"invalid updating rule: reference not found",
+			[]*store.Event{updateEvent("test.rule.default", &cpb.Rule{Actions: []*cpb.Action{{Handler: "nonexistent.listchecker.istio-system"}}})},
+			false,
+			"",
+		},
+		{
+			"adding adapter",
+			[]*store.Event{updateEvent("test.listchecker.default", testAdapterConfig)},
+			true,
+			"",
+		},
+		{
+			"adding instance",
+			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{Fields: map[string]*types.Value{
+				"value": {Kind: &types.Value_StringValue{StringValue: "0"}},
+			}})},
+			true,
+			"",
+		},
+		{
+			"adapter validation failure",
+			[]*store.Event{
+				updateEvent("test.listchecker.default", &types.Struct{}),
+				updateEvent("testInst.listentry.default", &types.Struct{}),
+				updateEvent("r1.rule.istio-system", &cpb.Rule{
+					Actions: []*cpb.Action{
+						{Handler: "test.listchecker", Instances: []string{"testInst.listentry"}},
+					}}),
+			},
+			false,
+			"",
+		},
+		{
+			"invalid instance",
+			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{})},
+			false,
+			"",
+		},
+		{
+			"invalid instance syntax",
+			[]*store.Event{updateEvent("test.listentry.default", &types.Struct{Fields: map[string]*types.Value{
+				"value": {Kind: &types.Value_StringValue{StringValue: ""}},
+			}})},
+			false,
+			"",
+		},
+		{
+			"invalid delete handler",
+			[]*store.Event{deleteEvent("staticversion.listchecker.istio-system")},
+			false,
+			"",
+		},
+		{
+			"invalid delete instance",
+			[]*store.Event{deleteEvent("appversion.listentry.istio-system")},
+			false,
+			"",
+		},
+		{
+			"invalid removal of attributemanifest",
+			[]*store.Event{deleteEvent("kubernetes.attributemanifest.istio-system")},
+			false,
+			"",
+		},
 	} {
 		t.Run(cc.title, func(tt *testing.T) {
 			v, err := getValidatorForTest()
