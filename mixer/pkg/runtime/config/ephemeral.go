@@ -87,6 +87,19 @@ func (e *Ephemeral) SetState(state map[store.Key]*store.Resource) {
 	}
 }
 
+func (e *Ephemeral) GetProcessedAttributes() map[string]*config.AttributeManifest_AttributeInfo {
+	return e.cachedAttributes
+}
+
+func (e *Ephemeral) SetProcessedAttributes(attrs map[string]*config.AttributeManifest_AttributeInfo) {
+	e.cachedAttributes = attrs
+}
+
+func (e *Ephemeral) GetEntry(event *store.Event) (*store.Resource, bool) {
+	v, ok := e.entries[event.Key]
+	return v, ok
+}
+
 // ApplyEvent to the internal ephemeral state. This gets called by an external event listener to relay store change
 // events to this ephemeral config object.
 func (e *Ephemeral) ApplyEvent(event *store.Event) {

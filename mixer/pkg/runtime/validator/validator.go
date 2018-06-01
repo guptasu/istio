@@ -315,7 +315,24 @@ func (v *Validator) validateUpdate(ev *store.Event) error {
 
 // Validate implements store.Validator interface.
 func (v *Validator) Validate(ev *store.Event) error {
+	// get old state so we can revert in case of validation error.
+	oldEntryVal, exists := v.e.GetEntry(ev)
+	oldAttrs := v.e.GetProcessedAttributes()
+
 	v.e.ApplyEvent(ev)
 	_, err := v.e.BuildSnapshot()
+
+	if err != nil {
+		v.e.SetProcessedAttributes(oldAttrs)
+		reverseEvent := *ev
+		if exists {
+			reverseEvent.Value = oldEntryVal
+			reverseEvent.Type = store.Update
+		} else if ev.Type == store.Update { // didn't existed before.
+			reverseEvent.Type = store.Delete
+		}
+		v.e.ApplyEvent(&reverseEvent)
+	}
+
 	return err
 }
