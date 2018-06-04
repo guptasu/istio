@@ -264,7 +264,6 @@ func TestValidator(t *testing.T) {
 			var result *multierror.Error
 			for _, ev := range cc.evs {
 				e := v.Validate(ev)
-				v.refreshTypeChecker()
 				result = multierror.Append(result, e)
 			}
 			ok := result.ErrorOrNil() == nil
