@@ -222,7 +222,7 @@ func validateBuilder(
 	for tmplName := range inferredTypes {
 		types := inferredTypes[tmplName]
 		// ti should be there since inferred types are created only when instance references a valid template.
-		ti, _ := templates[tmplName]
+		ti := templates[tmplName]
 		if ti.SetType != nil { // for case like APA template that does not have SetType
 			ti.SetType(types, builder)
 		}
