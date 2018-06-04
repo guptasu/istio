@@ -443,16 +443,11 @@ func resourceType(labels map[string]string) ResourceType {
 	return rt
 }
 
-// GetSnapshot creates a config.Snapshot for testing purposes, based on the supplied configuration.
-func GetSnapshot(templates map[string]*template.Info, adapters map[string]*adapter.Info, serviceConfig string, globalConfig string) *Snapshot {
-	store, err := storetest.SetupStoreForTest(serviceConfig, globalConfig)
-	if err != nil {
-		panic(fmt.Sprintf("Unable to crete store: %v", err))
-	}
+// GetSnapshotForTest creates a config.Snapshot for testing purposes, based on the supplied configuration.
+func GetSnapshotForTest(templates map[string]*template.Info, adapters map[string]*adapter.Info, serviceConfig string, globalConfig string) *Snapshot {
+	store, _ := storetest.SetupStoreForTest(serviceConfig, globalConfig)
 
-	if err = store.Init(KindMap(adapters, templates)); err != nil {
-		panic(fmt.Sprintf("Unable to initialize store: %v", err))
-	}
+	_ = store.Init(KindMap(adapters, templates))
 
 	data := store.List()
 	// tests only care about the best effort snapshot and not the errors of bad configs.

@@ -25,7 +25,7 @@ var globalCfg = data.JoinConfigs(data.HandlerACheck1, data.InstanceCheck1, data.
 func TestBasic(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil)
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
@@ -44,7 +44,7 @@ func TestBasic(t *testing.T) {
 func TestCacheUse(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil)
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
@@ -70,7 +70,7 @@ func TestAdapterSupportsAdditionalTemplates(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", SupportedTemplates: []string{"additional-template"}})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -89,7 +89,7 @@ func TestInferError(t *testing.T) {
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", ErrorAtInferType: true})
 	attributes := data.BuildAdapters(nil)
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
 	f := NewFactory(s)
@@ -103,7 +103,7 @@ func TestNilBuilder(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", NilBuilder: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -118,7 +118,7 @@ func TestBuilderDoesNotSupportTemplate(t *testing.T) {
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", BuilderDoesNotSupportTemplate: true})
 	attributes := data.BuildAdapters(nil)
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -134,7 +134,7 @@ func TestHandlerDoesNotSupportTemplate(t *testing.T) {
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", HandlerDoesNotSupportTemplate: true})
 	attributes := data.BuildAdapters(nil)
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -151,7 +151,7 @@ func TestHandlerDoesNotSupportTemplate_ErrorDuringClose(t *testing.T) {
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", HandlerDoesNotSupportTemplate: true})
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", ErrorAtHandlerClose: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -168,7 +168,7 @@ func TestHandlerDoesNotSupportTemplate_PanicDuringClose(t *testing.T) {
 	templates := data.BuildTemplates(nil, data.FakeTemplateSettings{Name: "tcheck", HandlerDoesNotSupportTemplate: true})
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", PanicAtHandlerClose: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -184,7 +184,7 @@ func TestPanicAtSetAdapterConfig(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", PanicAtSetAdapterConfig: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
@@ -200,7 +200,7 @@ func TestFailedValidation(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", ErrorAtValidate: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
@@ -217,7 +217,24 @@ func TestPanicAtValidation(t *testing.T) {
 	templates := data.BuildTemplates(nil)
 	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", PanicAtValidate: true})
 
-	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
+
+	i1 := s.InstancesLegacy[data.FqnI1]
+	h1 := s.HandlersLegacy[data.FqnACheck1]
+
+	f := NewFactory(s)
+
+	_, err := f.Build(h1, []*InstanceLegacy{i1}, nil)
+	if err == nil {
+		t.Fatal()
+	}
+}
+
+func TestFailedBuild(t *testing.T) {
+	templates := data.BuildTemplates(nil)
+	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", ErrorAtBuild:true})
+
+	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 
 	i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]

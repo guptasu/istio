@@ -560,7 +560,7 @@ func buildTableWithTemplatesAndAdapters(templates map[string]*template.Info, ada
 
 	globalConfig := data.JoinConfigs(globalConfigs...)
 
-	s := config.GetSnapshot(templates, adapters, serviceConfig, globalConfig)
+	s := config.GetSnapshotForTest(templates, adapters, serviceConfig, globalConfig)
 	ht := handler.NewTable(handler.Empty(), s, nil)
 	expb := compiled.NewBuilder(s.Attributes)
 

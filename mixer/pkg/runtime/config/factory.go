@@ -16,7 +16,6 @@ package config
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
@@ -68,10 +67,6 @@ func (f *Factory) ValidateBuilder(
 		info := handler.Adapter
 
 		hb = info.NewBuilder()
-		if hb == nil {
-			err = errors.New("nil HandlerBuilder")
-			return
-		}
 		// validate and only construct if the validation passes.
 		if err = validateBuilder(hb, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
 			err = fmt.Errorf("adapter validation failed : %v", err)

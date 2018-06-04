@@ -706,7 +706,7 @@ func TestDispatcher(t *testing.T) {
 			adapters := data.BuildAdapters(l, tst.adapters...)
 			cfg := data.JoinConfigs(tst.config...)
 
-			s := config.GetSnapshot(templates, adapters, data.ServiceConfig, cfg)
+			s := config.GetSnapshotForTest(templates, adapters, data.ServiceConfig, cfg)
 			h := handler.NewTable(handler.Empty(), s, pool.NewGoroutinePool(1, false))
 
 			expb := compiled.NewBuilder(s.Attributes)
