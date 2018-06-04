@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package config
+package validator
 
 import (
 	"os"
@@ -25,6 +25,7 @@ import (
 
 	cpb "istio.io/api/policy/v1beta1"
 	"istio.io/istio/mixer/pkg/config/store"
+	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/config/storetest"
 	"istio.io/istio/pkg/cache"
 )
@@ -43,7 +44,7 @@ type validatorCacheTestController struct {
 func newValidatorCacheForTest() (*validatorCacheTestController, error) {
 	m := storetest.NewMemstore()
 	s := store.WithBackend(m)
-	if err := s.Init(map[string]proto.Message{RulesKind: &cpb.Rule{}, AttributeManifestKind: &cpb.AttributeManifest{}}); err != nil {
+	if err := s.Init(map[string]proto.Message{config.RulesKind: &cpb.Rule{}, config.AttributeManifestKind: &cpb.AttributeManifest{}}); err != nil {
 		return nil, err
 	}
 	c := &validatorCache{
@@ -123,7 +124,7 @@ func TestValidatorCache(t *testing.T) {
 	}
 	defer c.stop()
 	c.assertListKeys(t)
-	k1 := store.Key{Kind: RulesKind, Name: "foo", Namespace: "ns"}
+	k1 := store.Key{Kind: config.RulesKind, Name: "foo", Namespace: "ns"}
 	r1 := &store.BackEndResource{Kind: k1.Kind, Metadata: store.ResourceMeta{Name: k1.Name, Namespace: k1.Namespace}, Spec: map[string]interface{}{"match": "foo"}}
 	c.m.Put(r1)
 	<-c.updatec
@@ -163,7 +164,7 @@ func TestValidatorCacheDoubleEdits(t *testing.T) {
 	spec1 := &cpb.Rule{Match: "spec1"}
 	spec2 := &cpb.Rule{Match: "spec2"}
 	base := &cpb.Rule{Match: "base"}
-	k1 := store.Key{Kind: RulesKind, Name: "foo", Namespace: "ns"}
+	k1 := store.Key{Kind: config.RulesKind, Name: "foo", Namespace: "ns"}
 	meta1 := store.ResourceMeta{Name: k1.Name, Namespace: k1.Namespace}
 	setWait := func(tt *testing.T, c *validatorCacheTestController, data proto.Message) {
 		tt.Helper()

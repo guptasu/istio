@@ -30,6 +30,7 @@ import (
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
+	"reflect"
 )
 
 type dummyHandlerBuilder struct{}
@@ -1655,11 +1656,48 @@ func runTests(t *testing.T) {
 			}
 
 			str := s.String()
-
 			if normalize(str) != normalize(test.E) {
 				tt.Fatalf("config mismatch:\n%s\n != \n%s\n", str, test.E)
 			}
 		})
+	}
+}
+
+func TestGetEntry(t *testing.T) {
+	e, _ := NewEphemeral(stdTemplates, stdAdapters)
+
+	res := &store.Resource{
+		Spec: &configpb.AttributeManifest{
+			Attributes: map[string]*configpb.AttributeManifest_AttributeInfo{
+				"foo": {
+					ValueType: descriptorpb.STRING,
+				},
+				"bar": {
+					ValueType: descriptorpb.INT64,
+				},
+			},
+		},
+	}
+
+	key := store.Key{
+		Name:      "attributes",
+		Namespace: "ns",
+		Kind:      "attributemanifest",
+	}
+
+	e.SetState(map[store.Key]*store.Resource{
+		key: res,
+	})
+	gotRes, _ := e.GetEntry(&store.Event{Key: key})
+	if !reflect.DeepEqual(res, gotRes) {
+		t.Errorf("got '%v'; want '%v'", gotRes, res)
+	}
+
+	attrs := e.GetProcessedAttributes()
+	e.SetProcessedAttributes(attrs)
+	gotRes2, _ := e.GetEntry(&store.Event{Key: key})
+	if !reflect.DeepEqual(res, gotRes2) {
+		t.Errorf("got '%v'; want '%v'", gotRes, res)
 	}
 }
 
