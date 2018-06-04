@@ -159,10 +159,10 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	}
 
 	e.cachedAttributes = attributes
-	// Find all handlers, as referenced by instances, and associate to handlers.
+
+	// validate all handlers.
 	instancesByHandler := GetInstancesGroupedByHandlers(s)
 	f := NewFactory(s)
-	//e := newEnv(snapshot.ID, handler.Name, gp)
 	for handler, instances := range instancesByHandler {
 		if _, err := f.ValidateBuilder(handler, instances); err != nil {
 			insts := make([]string, 0)
@@ -175,7 +175,7 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	}
 
 	log.Infof("Built new config.Snapshot: id='%d'", id)
-	log.Debugf("config.Snapshot contents:\n%s", s)
+	log.Debugf("config.Snapshot creation error=%v, contents:\n%s", errs.ErrorOrNil(), s)
 	return s, errs.ErrorOrNil()
 }
 
@@ -230,6 +230,7 @@ func (e *Ephemeral) processHandlerConfigs(counters Counters, errs *multierror.Er
 		var info *adapter.Info
 		var found bool
 		if info, found = e.adapters[key.Kind]; !found {
+			// This config resource is not for an adapter (or at least not for one that Mixer is currently aware of).
 			continue
 		}
 
@@ -265,16 +266,13 @@ func (e *Ephemeral) processInstanceConfigs(attributes ast.AttributeDescriptorFin
 		instanceName := key.String()
 
 		log.Debugf("Processing incoming instance config: name='%s'\n%s", instanceName, resource.Spec)
-		if info.InferType != nil {
-			_, err := info.InferType(resource.Spec, func(s string) (config.ValueType, error) {
-				return e.tc.EvalType(s, attributes)
-			})
-			if err != nil {
-				appendErr(errs, fmt.Sprintf("instance='%s'", instanceName), counters.instanceConfigError, err.Error())
-				continue
-			}
+		_, err := info.InferType(resource.Spec, func(s string) (config.ValueType, error) {
+			return e.tc.EvalType(s, attributes)
+		})
+		if err != nil {
+			appendErr(errs, fmt.Sprintf("instance='%s'", instanceName), counters.instanceConfigError, err.Error())
+			continue
 		}
-
 		cfg := &InstanceLegacy{
 			Name:     instanceName,
 			Template: info,

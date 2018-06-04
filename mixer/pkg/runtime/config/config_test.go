@@ -1627,7 +1627,7 @@ func runTests(t *testing.T) {
 				adapters = stdAdapters
 			}
 
-			e := NewEphemeral(templates, adapters)
+			e, _ := NewEphemeral(templates, adapters)
 
 			var s *Snapshot
 

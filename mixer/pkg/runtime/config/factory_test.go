@@ -90,7 +90,6 @@ func TestInferError(t *testing.T) {
 	attributes := data.BuildAdapters(nil)
 
 	s := GetSnapshot(templates, attributes, data.ServiceConfig, globalCfg)
-	//i1 := s.InstancesLegacy[data.FqnI1]
 	h1 := s.HandlersLegacy[data.FqnACheck1]
 
 	f := NewFactory(s)
