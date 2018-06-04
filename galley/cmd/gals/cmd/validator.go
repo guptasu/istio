@@ -28,7 +28,7 @@ import (
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/lang/checker"
 	runtimeConfig "istio.io/istio/mixer/pkg/runtime/config"
-	validator "istio.io/istio/mixer/pkg/runtime/config/validator"
+	"istio.io/istio/mixer/pkg/runtime/config/validator"
 	"istio.io/istio/mixer/pkg/template"
 	generatedTmplRepo "istio.io/istio/mixer/template"
 	"istio.io/istio/pilot/pkg/bootstrap"
