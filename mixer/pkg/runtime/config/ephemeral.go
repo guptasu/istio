@@ -25,6 +25,7 @@ import (
 	config "istio.io/api/policy/v1beta1"
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/store"
+	"istio.io/istio/mixer/pkg/config/storetest"
 	"istio.io/istio/mixer/pkg/lang/ast"
 	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/template"
@@ -53,9 +54,12 @@ type Ephemeral struct {
 }
 
 // NewEphemeral returns a new Ephemeral instance.
+//
+// NOTE: initial state is computed even if there are errors in the config. Configuration that has errors
+// is reported in the returned error object, and is ignored in the snapshot creation.
 func NewEphemeral(
 	templates map[string]*template.Info,
-	adapters map[string]*adapter.Info) *Ephemeral {
+	adapters map[string]*adapter.Info) (*Ephemeral, error) {
 
 	e := &Ephemeral{
 		templates: templates,
@@ -70,9 +74,9 @@ func NewEphemeral(
 	}
 
 	// build the initial snapshot.
-	_, _ = e.BuildSnapshot()
+	_, err := e.BuildSnapshot()
 
-	return e
+	return e, err
 }
 
 // SetState with the supplied state map. All existing ephemeral state is overwritten.
@@ -439,4 +443,26 @@ func resourceType(labels map[string]string) ResourceType {
 		rt.protocol = protocolTCP
 	}
 	return rt
+}
+
+// GetSnapshot creates a config.Snapshot for testing purposes, based on the supplied configuration.
+func GetSnapshot(templates map[string]*template.Info, adapters map[string]*adapter.Info, serviceConfig string, globalConfig string) *Snapshot {
+	store, err := storetest.SetupStoreForTest(serviceConfig, globalConfig)
+	if err != nil {
+		panic(fmt.Sprintf("Unable to crete store: %v", err))
+	}
+
+	if err = store.Init(KindMap(adapters, templates)); err != nil {
+		panic(fmt.Sprintf("Unable to initialize store: %v", err))
+	}
+
+	data := store.List()
+	// tests only care about the best effort snapshot and not the errors of bad configs.
+	e, _ := NewEphemeral(templates, adapters)
+	e.SetState(data)
+
+	store.Stop()
+
+	s, _ := e.BuildSnapshot()
+	return s
 }

@@ -15,9 +15,12 @@
 package config
 
 import (
+	"context"
 	"strings"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
+	"github.com/gogo/protobuf/types"
 	"github.com/golang/protobuf/ptypes/wrappers"
 
 	adapter_model "istio.io/api/mixer/adapter/model/v1beta1"
@@ -26,18 +29,12 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/template"
-	//"istio.io/istio/pkg/log"
-	"context"
-
-	"github.com/gogo/protobuf/proto"
-	"github.com/gogo/protobuf/types"
+	"istio.io/istio/pkg/log"
 )
 
-type dummyHandlerBuilder struct {
-}
+type dummyHandlerBuilder struct{}
 
-func (d *dummyHandlerBuilder) SetAdapterConfig(cfg adapter.Config) {
-}
+func (d *dummyHandlerBuilder) SetAdapterConfig(cfg adapter.Config) {}
 
 func (d *dummyHandlerBuilder) Validate() *adapter.ConfigErrors {
 	return nil
@@ -1610,10 +1607,10 @@ func TestConfigs(t *testing.T) {
 	runTests(t)
 
 	// enable debug logging and run again to ensure debug logging won't cause a crash.
-	//o := log.DefaultOptions()
-	//o.SetOutputLevel(log.DefaultScopeName, log.DebugLevel)
-	//_ = log.Configure(o)
-	//runTests(t)
+	o := log.DefaultOptions()
+	o.SetOutputLevel(log.DefaultScopeName, log.DebugLevel)
+	_ = log.Configure(o)
+	runTests(t)
 }
 
 func runTests(t *testing.T) {

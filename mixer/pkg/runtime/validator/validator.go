@@ -59,6 +59,10 @@ func New(tc checker.TypeChecker, identityAttribute string, s store.Store,
 		}
 		configData[k] = obj.Spec
 	}
+	e, err := config.NewEphemeral(templateInfo, adapterInfo)
+	if err != nil {
+		return nil, err
+	}
 	v := &Validator{
 		handlerBuilders: hb,
 		templates:       templateInfo,
@@ -68,7 +72,7 @@ func New(tc checker.TypeChecker, identityAttribute string, s store.Store,
 			configData: configData,
 		},
 		donec: make(chan struct{}),
-		e:     config.NewEphemeral(templateInfo, adapterInfo),
+		e:     e,
 	}
 	v.e.SetState(data)
 	go store.WatchChanges(ch, v.donec, time.Second, v.c.applyChanges)

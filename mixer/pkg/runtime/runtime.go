@@ -84,10 +84,13 @@ func New(
 	handlerPool *pool.GoroutinePool,
 	enableTracing bool) *Runtime {
 
+	// Ignoring the errors for bad configuration that has already made it to the store.
+	// during snapshot creation the bad configuration errors are already logged.
+	e, _ := config.NewEphemeral(templates, adapters)
 	rt := &Runtime{
 		identityAttribute:      identityAttribute,
 		defaultConfigNamespace: defaultConfigNamespace,
-		ephemeral:              config.NewEphemeral(templates, adapters),
+		ephemeral:              e,
 		snapshot:               config.Empty(),
 		handlers:               handler.Empty(),
 		dispatcher:             dispatcher.New(identityAttribute, executorPool, enableTracing),
