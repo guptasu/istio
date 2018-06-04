@@ -17,6 +17,7 @@ package config
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/prometheus/client_golang/prometheus"
@@ -35,6 +36,8 @@ import (
 // Ephemeral configuration state that gets updated by incoming config change events. By itself, the data contained
 // is not meaningful. BuildSnapshot must be called to create a new snapshot instance, which contains fully resolved
 // config.
+// The Ephemeral is thread safe, which mean the state can be incrementally built asynchronously, before calling
+// BuildSnapshot, using ApplyEvent.
 type Ephemeral struct {
 	// Static information
 	adapters  map[string]*adapter.Info
@@ -43,14 +46,12 @@ type Ephemeral struct {
 	// next snapshot id
 	nextID int64
 
+	tc checker.TypeChecker
+
+	lock sync.RWMutex // protects resources below
+
 	// entries that are currently known.
 	entries map[store.Key]*store.Resource
-
-	// attributes from the last config state update. If the manifest hasn't changed since the last config update
-	// the attributes are reused.
-	cachedAttributes map[string]*config.AttributeManifest_AttributeInfo
-
-	tc checker.TypeChecker
 }
 
 // NewEphemeral returns a new Ephemeral instance.
@@ -66,11 +67,9 @@ func NewEphemeral(
 		adapters:  adapters,
 
 		nextID: 0,
+		tc:     checker.NewTypeChecker(),
 
 		entries: make(map[store.Key]*store.Resource),
-
-		tc:               checker.NewTypeChecker(),
-		cachedAttributes: nil,
 	}
 
 	// build the initial snapshot.
@@ -81,46 +80,31 @@ func NewEphemeral(
 
 // SetState with the supplied state map. All existing ephemeral state is overwritten.
 func (e *Ephemeral) SetState(state map[store.Key]*store.Resource) {
+	e.lock.Lock()
+	defer e.lock.Unlock()
 	e.entries = state
-
-	for k := range state {
-		if k.Kind == AttributeManifestKind {
-			e.cachedAttributes = nil
-			break
-		}
-	}
-}
-
-// GetProcessedAttributes returns the cached attributes
-func (e *Ephemeral) GetProcessedAttributes() map[string]*config.AttributeManifest_AttributeInfo {
-	return e.cachedAttributes
-}
-
-// SetProcessedAttributes assigns the attributes to the attribute cache.
-func (e *Ephemeral) SetProcessedAttributes(attrs map[string]*config.AttributeManifest_AttributeInfo) {
-	e.cachedAttributes = attrs
 }
 
 // GetEntry returns the value stored for the key in the ephemeral.
 func (e *Ephemeral) GetEntry(event *store.Event) (*store.Resource, bool) {
+	e.lock.RLock()
+	defer e.lock.RUnlock()
 	v, ok := e.entries[event.Key]
 	return v, ok
 }
 
 // ApplyEvent to the internal ephemeral state. This gets called by an external event listener to relay store change
 // events to this ephemeral config object.
-func (e *Ephemeral) ApplyEvent(event *store.Event) {
-
-	if event.Kind == AttributeManifestKind {
-		e.cachedAttributes = nil
-		log.Debug("Received attribute manifest change event.")
-	}
-
-	switch event.Type {
-	case store.Update:
-		e.entries[event.Key] = event.Value
-	case store.Delete:
-		delete(e.entries, event.Key)
+func (e *Ephemeral) ApplyEvent(events []*store.Event) {
+	e.lock.Lock()
+	defer e.lock.Unlock()
+	for _, event := range events {
+		switch event.Type {
+		case store.Update:
+			e.entries[event.Key] = event.Value
+		case store.Delete:
+			delete(e.entries, event.Key)
+		}
 	}
 }
 
@@ -135,6 +119,8 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	// Allocate new counters, to use with the new snapshot.
 	counters := newCounters(id)
 
+	e.lock.RLock()
+
 	attributes := e.processAttributeManifests(counters, errs)
 
 	handlers := e.processHandlerConfigs(counters, errs)
@@ -144,7 +130,6 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 	adapterInfos := e.processAdapterInfoConfigs(counters, errs)
 
 	rules := e.processRuleConfigs(handlers, instances, af, counters, errs)
-
 	s := &Snapshot{
 		ID:                id,
 		Templates:         e.templates,
@@ -157,8 +142,7 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 		RulesLegacy:       rules,
 		Counters:          counters,
 	}
-
-	e.cachedAttributes = attributes
+	e.lock.RUnlock()
 
 	// validate all handlers.
 	instancesByHandler := GetInstancesGroupedByHandlers(s)
@@ -180,10 +164,6 @@ func (e *Ephemeral) BuildSnapshot() (*Snapshot, error) {
 }
 
 func (e *Ephemeral) processAttributeManifests(counters Counters, errs *multierror.Error) map[string]*config.AttributeManifest_AttributeInfo {
-	if e.cachedAttributes != nil {
-		return e.cachedAttributes
-	}
-
 	attrs := make(map[string]*config.AttributeManifest_AttributeInfo)
 	for k, obj := range e.entries {
 		if k.Kind != AttributeManifestKind {

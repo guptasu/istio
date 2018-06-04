@@ -161,9 +161,7 @@ func (c *Runtime) StopListening() {
 }
 
 func (c *Runtime) onConfigChange(events []*store.Event) {
-	for _, e := range events {
-		c.ephemeral.ApplyEvent(e)
-	}
+	c.ephemeral.ApplyEvent(events)
 	c.processNewConfig()
 }
 

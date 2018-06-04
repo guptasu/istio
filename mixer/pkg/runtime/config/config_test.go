@@ -1639,14 +1639,14 @@ func runTests(t *testing.T) {
 
 			if test.Events1 != nil {
 				for _, event := range test.Events1 {
-					e.ApplyEvent(event)
+					e.ApplyEvent([]*store.Event{event})
 				}
 				s, _ = e.BuildSnapshot()
 			}
 
 			if test.Events2 != nil {
 				for _, event := range test.Events2 {
-					e.ApplyEvent(event)
+					e.ApplyEvent([]*store.Event{event})
 				}
 				s, _ = e.BuildSnapshot()
 			}
@@ -1690,13 +1690,6 @@ func TestGetEntry(t *testing.T) {
 	})
 	gotRes, _ := e.GetEntry(&store.Event{Key: key})
 	if !reflect.DeepEqual(res, gotRes) {
-		t.Errorf("got '%v'; want '%v'", gotRes, res)
-	}
-
-	attrs := e.GetProcessedAttributes()
-	e.SetProcessedAttributes(attrs)
-	gotRes2, _ := e.GetEntry(&store.Event{Key: key})
-	if !reflect.DeepEqual(res, gotRes2) {
 		t.Errorf("got '%v'; want '%v'", gotRes, res)
 	}
 }

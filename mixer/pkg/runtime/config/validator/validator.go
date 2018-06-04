@@ -25,15 +25,12 @@ import (
 	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/template"
-	"istio.io/istio/pkg/cache"
 )
 
 // Validator offers semantic validation of the config changes.
 type Validator struct {
 	handlerBuilders map[string]adapter.HandlerBuilder
 	templates       map[string]*template.Info
-	tc              checker.TypeChecker
-	c               *validatorCache
 	donec           chan struct{}
 	e               *config.Ephemeral
 }
@@ -66,16 +63,11 @@ func NewValidator(tc checker.TypeChecker, identityAttribute string, s store.Stor
 	v := &Validator{
 		handlerBuilders: hb,
 		templates:       templateInfo,
-		tc:              tc,
-		c: &validatorCache{
-			c:          cache.NewTTL(validatedDataExpiration, validatedDataEviction),
-			configData: configData,
-		},
-		donec: make(chan struct{}),
-		e:     e,
+		donec:           make(chan struct{}),
+		e:               e,
 	}
 	v.e.SetState(data)
-	go store.WatchChanges(ch, v.donec, time.Second, v.c.applyChanges)
+	go store.WatchChanges(ch, v.donec, time.Second, v.e.ApplyEvent)
 	return v, nil
 }
 
@@ -88,13 +80,11 @@ func (v *Validator) Stop() {
 func (v *Validator) Validate(ev *store.Event) error {
 	// get old state so we can revert in case of validation error.
 	oldEntryVal, exists := v.e.GetEntry(ev)
-	oldAttrs := v.e.GetProcessedAttributes()
 
-	v.e.ApplyEvent(ev)
+	v.e.ApplyEvent([]*store.Event{ev})
 	_, err := v.e.BuildSnapshot()
 
 	if err != nil {
-		v.e.SetProcessedAttributes(oldAttrs)
 		reverseEvent := *ev
 		if exists {
 			reverseEvent.Value = oldEntryVal
@@ -102,7 +92,7 @@ func (v *Validator) Validate(ev *store.Event) error {
 		} else if ev.Type == store.Update { // didn't existed before.
 			reverseEvent.Type = store.Delete
 		}
-		v.e.ApplyEvent(&reverseEvent)
+		v.e.ApplyEvent([]*store.Event{&reverseEvent})
 	}
 
 	return err
