@@ -232,7 +232,7 @@ func TestPanicAtValidation(t *testing.T) {
 
 func TestFailedBuild(t *testing.T) {
 	templates := data.BuildTemplates(nil)
-	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", ErrorAtBuild:true})
+	attributes := data.BuildAdapters(nil, data.FakeAdapterSettings{Name: "acheck", ErrorAtBuild: true})
 
 	s := GetSnapshotForTest(templates, attributes, data.ServiceConfig, globalCfg)
 

@@ -16,6 +16,7 @@ package config
 
 import (
 	"context"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -30,7 +31,6 @@ import (
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
-	"reflect"
 )
 
 type dummyHandlerBuilder struct{}

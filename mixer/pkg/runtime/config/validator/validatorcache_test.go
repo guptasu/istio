@@ -25,8 +25,8 @@ import (
 
 	cpb "istio.io/api/policy/v1beta1"
 	"istio.io/istio/mixer/pkg/config/store"
-	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/config/storetest"
+	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/pkg/cache"
 )
 
