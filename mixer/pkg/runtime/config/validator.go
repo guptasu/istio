@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package validator
+package config
 
 import (
 	"time"
@@ -23,7 +23,6 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/config/store"
 	"istio.io/istio/mixer/pkg/lang/checker"
-	"istio.io/istio/mixer/pkg/runtime/config"
 	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/cache"
 )
@@ -35,14 +34,14 @@ type Validator struct {
 	tc              checker.TypeChecker
 	c               *validatorCache
 	donec           chan struct{}
-	e               *config.Ephemeral
+	e               *Ephemeral
 }
 
-// New creates a new store.Validator instance which validates runtime semantics of
+// NewValidator creates a new store.Validator instance which validates runtime semantics of
 // the configs.
-func New(tc checker.TypeChecker, identityAttribute string, s store.Store,
+func NewValidator(tc checker.TypeChecker, identityAttribute string, s store.Store,
 	adapterInfo map[string]*adapter.Info, templateInfo map[string]*template.Info) (store.Validator, error) {
-	kinds := config.KindMap(adapterInfo, templateInfo)
+	kinds := KindMap(adapterInfo, templateInfo)
 	data, ch, err := store.StartWatch(s, kinds)
 	if err != nil {
 		return nil, err
@@ -54,12 +53,12 @@ func New(tc checker.TypeChecker, identityAttribute string, s store.Store,
 	configData := make(map[store.Key]proto.Message, len(data))
 	manifests := map[store.Key]*cpb.AttributeManifest{}
 	for k, obj := range data {
-		if k.Kind == config.AttributeManifestKind {
+		if k.Kind == AttributeManifestKind {
 			manifests[k] = obj.Spec.(*cpb.AttributeManifest)
 		}
 		configData[k] = obj.Spec
 	}
-	e, err := config.NewEphemeral(templateInfo, adapterInfo)
+	e, err := NewEphemeral(templateInfo, adapterInfo)
 	if err != nil {
 		return nil, err
 	}

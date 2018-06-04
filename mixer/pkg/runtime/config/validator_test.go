@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package validator
+package config
 
 import (
 	"context"
@@ -53,16 +53,16 @@ var testAdapterConfig = &types.Struct{
 	},
 }
 
-type dummyHandlerBuilder struct {
+type dummyHandlerBldr struct {
 	want proto.Message
 	got  proto.Message
 }
 
-func (d *dummyHandlerBuilder) SetAdapterConfig(cfg adapter.Config) {
+func (d *dummyHandlerBldr) SetAdapterConfig(cfg adapter.Config) {
 	d.got = cfg
 }
 
-func (d *dummyHandlerBuilder) Validate() *adapter.ConfigErrors {
+func (d *dummyHandlerBldr) Validate() *adapter.ConfigErrors {
 	var err *adapter.ConfigErrors
 	if !reflect.DeepEqual(d.want, d.got) {
 		err = err.Appendf("", "Got %v, Want %v", d.got, d.want)
@@ -70,7 +70,7 @@ func (d *dummyHandlerBuilder) Validate() *adapter.ConfigErrors {
 	return err
 }
 
-func (d *dummyHandlerBuilder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, error) {
+func (d *dummyHandlerBldr) Build(ctx context.Context, env adapter.Env) (adapter.Handler, error) {
 	return nil, errors.New("dummy can't build")
 }
 
@@ -93,7 +93,7 @@ func getValidatorForTest() (*Validator, error) {
 	adapterInfo["listchecker"] = &adapter.Info{
 		DefaultConfig: &types.Struct{},
 		NewBuilder: func() adapter.HandlerBuilder {
-			return &dummyHandlerBuilder{want: testAdapterConfig}
+			return &dummyHandlerBldr{want: testAdapterConfig}
 		},
 	}
 
@@ -123,7 +123,7 @@ func getValidatorForTest() (*Validator, error) {
 		},
 	}
 
-	v, err := New(tc, "destination.service", s, adapterInfo, templateInfo)
+	v, err := NewValidator(tc, "destination.service", s, adapterInfo, templateInfo)
 	if err != nil {
 		return nil, err
 	}
