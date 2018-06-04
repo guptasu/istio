@@ -25,8 +25,12 @@ import (
 	"istio.io/istio/mixer/pkg/adapter"
 	"istio.io/istio/mixer/pkg/lang/checker"
 	"istio.io/istio/mixer/pkg/runtime/safecall"
+	"istio.io/istio/mixer/pkg/template"
 	"istio.io/istio/pkg/log"
 )
+
+// inferredTypesMap represents map of instance name to inferred type proto messages
+type inferredTypesMap map[string]proto.Message
 
 // Factory is used to instantiate handlers.
 type Factory struct {
@@ -38,6 +42,7 @@ type Factory struct {
 	inferredTypesCache map[string]proto.Message
 }
 
+// NewFactory returns a factory for handler constructions.
 func NewFactory(snapshot *Snapshot) *Factory {
 	return &Factory{
 		snapshot: snapshot,
@@ -47,14 +52,14 @@ func NewFactory(snapshot *Snapshot) *Factory {
 	}
 }
 
-// build instantiates a handler object using the passed in handler and instances configuration.
+// ValidateBuilder constructs and validates a builder.
 func (f *Factory) ValidateBuilder(
 	handler *HandlerLegacy,
 	instances []*InstanceLegacy) (hb adapter.HandlerBuilder, err error) {
 
 	// Do not assign the error to err directly, as this would overwrite the err returned by the inner function.
 	panicErr := safecall.Execute("factory.build", func() {
-		var inferredTypesByTemplates map[string]InferredTypesMap
+		var inferredTypesByTemplates map[string]inferredTypesMap
 		if inferredTypesByTemplates, err = f.inferTypes(instances); err != nil {
 			return
 		}
@@ -68,7 +73,7 @@ func (f *Factory) ValidateBuilder(
 			return
 		}
 		// validate and only construct if the validation passes.
-		if err = ValidateBuilder(hb, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
+		if err = validateBuilder(hb, f.snapshot.Templates, inferredTypesByTemplates, handler); err != nil {
 			err = fmt.Errorf("adapter validation failed : %v", err)
 			hb = nil
 			return
@@ -84,7 +89,7 @@ func (f *Factory) ValidateBuilder(
 	return
 }
 
-// build instantiates a handler object using the passed in handler and instances configuration.
+// Build instantiates a handler object using the passed in handler and instances configuration.
 func (f *Factory) Build(
 	handler *HandlerLegacy,
 	instances []*InstanceLegacy,
@@ -146,9 +151,9 @@ func (f *Factory) buildHandler(builder adapter.HandlerBuilder, env adapter.Env) 
 	return builder.Build(context.Background(), env)
 }
 
-func (f *Factory) inferTypes(instances []*InstanceLegacy) (map[string]InferredTypesMap, error) {
+func (f *Factory) inferTypes(instances []*InstanceLegacy) (map[string]inferredTypesMap, error) {
 
-	typesByTemplate := make(map[string]InferredTypesMap)
+	typesByTemplate := make(map[string]inferredTypesMap)
 	for _, instance := range instances {
 
 		inferredType, err := f.inferType(instance)
@@ -157,7 +162,7 @@ func (f *Factory) inferTypes(instances []*InstanceLegacy) (map[string]InferredTy
 		}
 
 		if _, exists := typesByTemplate[instance.Template.Name]; !exists {
-			typesByTemplate[instance.Template.Name] = make(InferredTypesMap)
+			typesByTemplate[instance.Template.Name] = make(inferredTypesMap)
 		}
 
 		typesByTemplate[instance.Template.Name][instance.Name] = inferredType
@@ -188,4 +193,61 @@ func (f *Factory) inferType(instance *InstanceLegacy) (proto.Message, error) {
 	f.inferredTypesCache[instance.Name] = inferredType
 
 	return inferredType, nil
+}
+
+func validateBuilder(
+	builder adapter.HandlerBuilder,
+	templates map[string]*template.Info,
+	inferredTypes map[string]inferredTypesMap,
+	handler *HandlerLegacy) (err error) {
+	if builder == nil {
+		err = fmt.Errorf("nil builder from adapter: adapter='%s'", handler.Adapter.Name)
+		return
+	}
+
+	// validate if the builder supports all the necessary interfaces
+	for _, tmplName := range handler.Adapter.SupportedTemplates {
+		ti, found := templates[tmplName]
+		if !found {
+			// TODO (Issue #2512): This log is unnecessarily spammy. We should test for this during startup
+			// and log it once.
+			// One of the templates that is supported by the adapter was not found. We should log and simply
+			// move on.
+			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
+				handler.Adapter.Name, tmplName)
+			continue
+		}
+
+		if supports := ti.BuilderSupportsTemplate(builder); !supports {
+			err = fmt.Errorf("adapter does not actually support template: template='%s', interface='%s'", tmplName, ti.BldrInterfaceName)
+			return
+		}
+	}
+
+	for tmplName := range inferredTypes {
+		types := inferredTypes[tmplName]
+		// ti should be there for a valid configuration.
+		ti, found := templates[tmplName]
+		if !found {
+			// TODO (Issue #2512): This log is unnecessarily spammy. We should test for this during startup
+			// and log it once.
+			// One of the templates that is supported by the adapter was not found. We should log and simply
+			// move on.
+			log.Infof("Ignoring unrecognized template, supported by adapter: adapter='%s', template='%s'",
+				handler.Adapter.Name, tmplName)
+			continue
+		}
+		if ti.SetType != nil { // for case like APA template that does not have SetType
+			ti.SetType(types, builder)
+		}
+	}
+
+	builder.SetAdapterConfig(handler.Params)
+
+	var ce *adapter.ConfigErrors
+	if ce = builder.Validate(); ce != nil {
+		err = fmt.Errorf("builder validation failed: '%v'", ce)
+		return
+	}
+	return
 }

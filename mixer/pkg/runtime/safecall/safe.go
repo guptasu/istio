@@ -18,6 +18,7 @@ import (
 	"fmt"
 )
 
+// Execute run the fn and in case of any panic, will be return it as an error.
 func Execute(name string, fn func()) (err error) {
 	// Try to detect panic, even if panic was called with nil.
 	reachedEnd := false

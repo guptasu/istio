@@ -87,14 +87,17 @@ func (e *Ephemeral) SetState(state map[store.Key]*store.Resource) {
 	}
 }
 
+// GetProcessedAttributes returns the cached attributes
 func (e *Ephemeral) GetProcessedAttributes() map[string]*config.AttributeManifest_AttributeInfo {
 	return e.cachedAttributes
 }
 
+// SetProcessedAttributes assigns the attributes to the attribute cache.
 func (e *Ephemeral) SetProcessedAttributes(attrs map[string]*config.AttributeManifest_AttributeInfo) {
 	e.cachedAttributes = attrs
 }
 
+// GetEntry returns the value stored for the key in the ephemeral.
 func (e *Ephemeral) GetEntry(event *store.Event) (*store.Resource, bool) {
 	v, ok := e.entries[event.Key]
 	return v, ok
@@ -426,7 +429,7 @@ func appendErr(errs *multierror.Error, field string, counter prometheus.Counter,
 	err := fmt.Errorf(format, a...)
 	log.Error(err.Error())
 	counter.Inc()
-	multierror.Append(errs, adapter.ConfigError{Field: field, Underlying: err})
+	_ = multierror.Append(errs, adapter.ConfigError{Field: field, Underlying: err})
 }
 
 // resourceType maps labels to rule types.
