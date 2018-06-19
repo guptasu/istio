@@ -13,20 +13,26 @@
 // limitations under the License.
 
 // nolint:lll
-//go:generate go run $GOPATH/src/istio.io/istio/mixer/tools/mixgen/main.go adapter -n prometheus-nosession -s=false  -c $GOPATH/src/istio.io/istio/mixer/adapter/prometheus/config/config.proto_descriptor   -t metric -o prometheus-nosession.yaml
+// Generates the mygrpcadapter adapter's resource yaml. It contains the adapter's configuration, name, supported template
+// names (metric in this case), and whether it is session or no-session based.
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -a mixer/adapter/mygrpcadapter/config/config.proto -x "-s=false -n mygrpcadapter -t metric"
 
-package prometheus
+package mygrpcadapter
 
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 
 	"google.golang.org/grpc"
 
+	"bytes"
+	//"io/ioutil"
 	"istio.io/api/mixer/adapter/model/v1beta1"
+	policy "istio.io/api/policy/v1beta1"
+	"istio.io/istio/mixer/adapter/mygrpcadapter/config"
 	"istio.io/istio/mixer/template/metric"
+	"os"
 )
 
 type (
@@ -34,18 +40,12 @@ type (
 	Server interface {
 		Addr() string
 		Close() error
-		PromPort() int
-		Run()
-	}
-	promServer interface {
-		io.Closer
-		Port() int
+		Run(shutdown chan error)
 	}
 
 	// NoSessionServer models no session adapter backend.
 	NoSessionServer struct {
 		listener net.Listener
-		shutdown chan error
 		server   *grpc.Server
 	}
 )
@@ -54,6 +54,33 @@ var _ metric.HandleMetricServiceServer = &NoSessionServer{}
 
 // HandleMetric records metric entries and responds with the programmed response
 func (s *NoSessionServer) HandleMetric(ctx context.Context, r *metric.HandleMetricRequest) (*v1beta1.ReportResult, error) {
+	var b bytes.Buffer
+	cfg := &config.Params{}
+
+	if r.AdapterConfig != nil {
+		if err := cfg.Unmarshal(r.AdapterConfig.Value); err != nil {
+			return nil, err
+		}
+	}
+
+	b.WriteString(fmt.Sprintf("HandleMetric invoked with:\n  Adapter config: %s\n  Instances: %s\n",
+		cfg.String(), prettyPrint(r.Instances)))
+
+	if cfg.FilePath == "" {
+		fmt.Println(b.String())
+	} else {
+		f, err := os.OpenFile(cfg.FilePath, os.O_APPEND|os.O_WRONLY, 0600)
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+
+		if _, err = f.Write(b.Bytes()); err != nil {
+			panic(err)
+		}
+	}
+
 	return &v1beta1.ReportResult{}, nil
 }
 
@@ -62,33 +89,48 @@ func (s *NoSessionServer) Addr() string {
 	return s.listener.Addr().String()
 }
 
-// Run starts the server run
-func (s *NoSessionServer) Run() {
-	s.shutdown = make(chan error, 1)
-	go func() {
-		err := s.server.Serve(s.listener)
-
-		// notify closer we're done
-		s.shutdown <- err
-	}()
-}
-
-// Wait waits for server to stop
-func (s *NoSessionServer) Wait() error {
-	if s.shutdown == nil {
-		return fmt.Errorf("server not running")
+func decodeDimensions(in map[string]*policy.Value) map[string]interface{} {
+	out := make(map[string]interface{}, len(in))
+	for k, v := range in {
+		out[k] = decodeValue(v.GetValue())
 	}
-
-	err := <-s.shutdown
-	s.shutdown = nil
-	return err
+	return out
 }
 
-// Close gracefully shuts down the server
+func decodeValue(in interface{}) interface{} {
+	switch t := in.(type) {
+	case *policy.Value_StringValue:
+		return t.StringValue
+	case *policy.Value_Int64Value:
+		return t.Int64Value
+	case *policy.Value_DoubleValue:
+		return t.DoubleValue
+	default:
+		return fmt.Sprintf("%v", in)
+	}
+}
+
+func prettyPrint(in []*metric.InstanceMsg) string {
+	var b bytes.Buffer
+	for _, inst := range in {
+		b.WriteString(fmt.Sprintf("'%s':\n"+
+			"  {\n"+
+			"		Value = %v\n"+
+			"		Dimensions = %v\n"+
+			"  }", inst.Name, decodeValue(inst.Value.GetValue()), decodeDimensions(inst.Dimensions)))
+	}
+	return b.String()
+}
+
+// Run starts the server run
+func (s *NoSessionServer) Run(shutdown chan error) {
+	shutdown <- s.server.Serve(s.listener)
+}
+
+// Close gracefully shuts down the server; used for testing
 func (s *NoSessionServer) Close() error {
-	if s.shutdown != nil {
+	if s.server != nil {
 		s.server.GracefulStop()
-		_ = s.Wait()
 	}
 
 	if s.listener != nil {
@@ -99,7 +141,7 @@ func (s *NoSessionServer) Close() error {
 }
 
 // NewNoSessionServer creates a new no session server from given args.
-func NewNoSessionServer(addr string) (*NoSessionServer, error) {
+func NewNoSessionServer(addr string) (Server, error) {
 	if addr == "" {
 		addr = "0"
 	}
