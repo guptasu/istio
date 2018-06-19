@@ -15,7 +15,7 @@
 // nolint:lll
 // Generates the mygrpcadapter adapter's resource yaml. It contains the adapter's configuration, name, supported template
 // names (metric in this case), and whether it is session or no-session based.
-//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -d false -a mixer/adapter/mygrpcadapter/config/config.proto -x "-s=false -n mygrpcadapter -t metric"
+//go:generate $GOPATH/src/istio.io/istio/bin/mixer_codegen.sh -a mixer/adapter/mygrpcadapter/config/config.proto -x "-s=false -n mygrpcadapter -t metric"
 
 package mygrpcadapter
 
